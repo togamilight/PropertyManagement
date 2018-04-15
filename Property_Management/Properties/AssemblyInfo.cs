@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的常规信息通过下列特性集
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("PropertyManagement.Main")]
+[assembly: AssemblyTitle("Property_Management")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PropertyManagement.Main")]
+[assembly: AssemblyProduct("Property_Management")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 如果此项目向 COM 公开，则下列 GUID 用于 typelib 的 ID
-[assembly: Guid("f4ad16db-8215-4b40-93a0-9e9c8eec0c41")]
+[assembly: Guid("d3e3119d-9cec-41ee-b1a9-e9b369ef75c5")]
 
 // 程序集的版本信息由下列四个值组成:
 //

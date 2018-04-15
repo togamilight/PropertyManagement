@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PropertyManagement.Main", "PropertyManagement.Main\PropertyManagement.Main.csproj", "{F4AD16DB-8215-4B40-93A0-9E9C8EEC0C41}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Property_Management", "Property_Management\Property_Management.csproj", "{D3E3119D-9CEC-41EE-B1A9-E9B369EF75C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F4AD16DB-8215-4B40-93A0-9E9C8EEC0C41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4AD16DB-8215-4B40-93A0-9E9C8EEC0C41}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4AD16DB-8215-4B40-93A0-9E9C8EEC0C41}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4AD16DB-8215-4B40-93A0-9E9C8EEC0C41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3E3119D-9CEC-41EE-B1A9-E9B369EF75C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3E3119D-9CEC-41EE-B1A9-E9B369EF75C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3E3119D-9CEC-41EE-B1A9-E9B369EF75C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3E3119D-9CEC-41EE-B1A9-E9B369EF75C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
