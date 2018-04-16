@@ -7,6 +7,6 @@ using System.Web;
 namespace Property_Management.DAL.Entities {
     public class BaseEntity {
         [Key]
-        public int Id;
+        public int Id { get; set; }
     }
 }

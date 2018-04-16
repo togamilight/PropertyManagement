@@ -8,12 +8,10 @@ using System.Web;
 namespace Property_Management.DAL.Entities {
     [Table("admin")]
     public class Admin : BaseEntity{
-        [Required]
-        [StringLength(20)]
+        [Display(Name = "用户名"), Required, StringLength(20)]
         public string Name { get; set; }
 
-        [Required]
-        [StringLength(20)]
+        [Display(Name = "密码"), Required, StringLength(20, MinimumLength = 6)]
         public string Password { get; set; }
     }
 }

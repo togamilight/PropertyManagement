@@ -10,7 +10,7 @@ using Property_Management.Models;
 namespace Property_Management.BLL.Service {
     public class AdminService : BaseService<Admin>, IAdminService {
         public ResultInfo ChangePassword(Admin admin, string newPassword) {
-            if (newPassword.Length > 20 || newPassword.Length < 6) {
+            if (newPassword == null || newPassword.Length > 20 || newPassword.Length < 6) {
                 return new ResultInfo(false, "密码不能大于20位或小于6位", null);
             }
 

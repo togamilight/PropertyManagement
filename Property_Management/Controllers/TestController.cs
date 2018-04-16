@@ -1,4 +1,5 @@
-﻿using Property_Management.DAL;
+﻿using Property_Management.BLL.Service;
+using Property_Management.DAL;
 using Property_Management.DAL.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace Property_Management.Controllers
 {
     public class TestController : Controller
     {
+        AdminService adminService = new AdminService();
         // GET: Test
         public ActionResult Index()
         {
@@ -20,6 +22,10 @@ namespace Property_Management.Controllers
             using (var dbContext = new MyDbContext()) {
                 return Json(dbContext.Admins.ToList(), JsonRequestBehavior.AllowGet);
             }
+        }
+
+        public ActionResult CheckAdmin(Admin admin) {
+            return Content(adminService.CheckAccount(admin).ToString());
         }
 
         public ActionResult TestDbSet() {

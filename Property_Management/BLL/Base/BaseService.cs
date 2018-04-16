@@ -18,7 +18,7 @@ namespace Property_Management.BLL.Base {
 
         public virtual ResultInfo Add(T t) {
             string msg = ValidateEntity(t);
-            if (msg != null) {
+            if (!string.IsNullOrEmpty(msg)) {
                 return new ResultInfo(false, msg, null);
             }
 
@@ -55,7 +55,7 @@ namespace Property_Management.BLL.Base {
         }
 
         public virtual ResultInfo Query(Expression<Func<T, bool>> whereLambda) {
-            var list = dbContext.Set<T>().Where(whereLambda).ToList();
+            var list = dbContext.Set<T>().Where(whereLambda).OrderByDescending(e => e.Id).ToList();
 
             return new ResultInfo(true, "", list);
         }
@@ -67,14 +67,14 @@ namespace Property_Management.BLL.Base {
 
             var entities = dbContext.Set<T>().Where(whereLambda);
             var total = entities.Count();
-            var data = entities.Skip(skipCount).Take(pageSize).ToList();
+            var data = entities.OrderByDescending(e => e.Id).Skip(skipCount).Take(pageSize).ToList();
 
             return new ResultInfo(true, "", new { Total = total, Data = data});
         }
 
         public virtual ResultInfo Update(T t) {
             string msg = ValidateEntity(t);
-            if (msg != null) {
+            if (!string.IsNullOrEmpty(msg)) {
                 return new ResultInfo(false, msg, null);
             }
 
@@ -88,7 +88,7 @@ namespace Property_Management.BLL.Base {
         public virtual string ValidateEntity(T t) {
             var validResults = new List<ValidationResult>();
             string msg = "";
-            if (!Validator.TryValidateObject(t, new ValidationContext(t), validResults)) {
+            if (!Validator.TryValidateObject(t, new ValidationContext(t), validResults, true)) {
                 foreach (var result in validResults) {
                     msg += result.ErrorMessage + "\n";
                 }
