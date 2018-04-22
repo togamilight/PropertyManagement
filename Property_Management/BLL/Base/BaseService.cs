@@ -46,6 +46,20 @@ namespace Property_Management.BLL.Base {
             return Delete(t.Id);
         }
 
+        public virtual ResultInfo Delete(int[] ids) {
+            var dbSet = dbContext.Set<T>();
+            foreach(var id in ids) {
+                var t = dbSet.FirstOrDefault(e => e.Id == id);
+                if(t != null) {
+                    dbSet.Remove(t);
+                }
+            }
+
+            dbContext.SaveChanges();
+
+            return new ResultInfo(true, "删除成功", null);
+        }
+
         public virtual ResultInfo Query(int id) {
             var t = dbContext.Set<T>().FirstOrDefault(e => e.Id == id);
             if(t == null) {

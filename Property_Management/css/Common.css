@@ -1,0 +1,20 @@
+﻿body {
+    padding-top: 70px;
+    background-color: #eee;
+}
+
+.my-datatables th, .my-datatables td {
+    text-align: center;
+}
+
+/*dataTable加载时的提示框样式*/
+.dataTables_processing {
+    border-color: #808080 !important;
+    height: 60px !important;
+    background-image: none !important;
+    background-color: white !important;
+}
+
+.my-toolbar {
+    margin-top: 15px;
+}

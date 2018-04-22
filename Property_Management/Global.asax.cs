@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Property_Management.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -15,6 +16,12 @@ namespace Property_Management
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+        }
+
+        void Application_EndRequest(object sender, EventArgs e) {
+            //EndRequest是在响应Request时最后一个触发的事件
+            //但在对象被释放或者从新建立以前，适合在这个时候清理代码
+            MyDbContextFactory.DisposeMyDbContext();
         }
     }
 }

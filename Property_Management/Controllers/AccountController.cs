@@ -1,16 +1,17 @@
-﻿using System;
+﻿using Property_Management.BLL.Service;
+using Property_Management.DAL.Entities;
+using Property_Management.Filters;
+using Property_Management.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Property_Management.Controllers
-{
-    public class AccountController : Controller
-    {
+namespace Property_Management.Controllers {
+    public class AccountController : Controller {
         // GET: Account
-        public ActionResult Index()
-        {
+        public ActionResult Index() {
             return View();
         }
 
@@ -20,6 +21,29 @@ namespace Property_Management.Controllers
         /// <returns></returns>
         public ActionResult GetHeader() {
             return PartialView("Header");
+        }
+
+        public ActionResult AdminLogin() {
+            //TODO 如果已登录，跳转到首页
+
+            return View("AdminLogin");
+        }
+
+        [JsonExceptionFilter]
+        public ActionResult DoAdminLogin(Admin admin) {
+            var adminService = new AdminService();
+            admin.Id = adminService.CheckAccount(admin);
+            if (admin.Id == 0) {
+                return Json(new ResultInfo(false, "用户名或密码错误", null));
+            }
+
+            Session["Account"] = new AccountInfo() {
+                Id = admin.Id,
+                Name = admin.Name,
+                IsAdmin = true
+            };
+            return Json(new ResultInfo(true, "登录成功", null));
+
         }
     }
 }

@@ -1,0 +1,111 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width" />
+    <title>管理员登录</title>
+    @Styles.Render("~/bundles/css/bootstrap")
+
+    <link rel="stylesheet" type="text/css" href="~/css/Common.css"/>
+
+    <style>
+        .my-form-login {
+            max-width: 350px;
+            padding: 15px;
+            margin: 0 auto;
+        }
+
+            .my-form-login .form-control {
+                position: relative;
+                padding: 10px;
+                height: auto;
+                font-size: 16px;
+            }
+
+                .my-form-login .form-control:focus {
+                    z-index: 2;
+                }
+
+        .my-input-group input:first-of-type {
+            margin-bottom: -1px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .my-input-group input:last-of-type {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+    </style>
+</head>
+<body>
+    @{Html.RenderAction("GetHeader", "Account"); }
+
+    <div class="container">
+
+        <form class="my-form-login">
+            <div class="form-group">
+                <h2>管理员登录</h2>
+            </div>
+            <div class="form-group my-input-group">
+                <label for="inputEmail" class="sr-only">用户名</label>
+                <input type="text" id="inputName" class="form-control" placeholder="用户名" maxlength="20" validate-type="required length" validate-maxLen="20" autofocus data-toggle="popover" data-placement="right">
+                <label for="inputPassword" class="sr-only">密码</label>
+                <input type="password" id="inputPassword" class="form-control" placeholder="密码" maxlength="20" validate-type="required length" validate-minLen="6" validate-maxLen="20" data-toggle="popover" data-placement="right">
+            </div>
+            <button type="button" id="btnLogin" class="btn btn-lg btn-primary btn-block">登录</button>
+        </form>
+
+    </div>
+
+    @Scripts.Render("~/bundles/js/jquery_bootstrap")
+
+    <script src="~/js/Common.js"></script>
+
+    <script>
+        $(function () {
+            //初始化popover组件
+            $("[data-toggle='popover']").popover(Common.popoverOptions);
+
+            //登录按钮点击事件
+            $("#btnLogin").click(function () {
+                let $this = $(this);
+                if (Common.validateForm($(this).parent("form"))) {
+                    $.ajax({
+                        url: "/Account/DoAdminLogin",
+                        method: "post",
+                        data: {
+                            Name: $("#inputName").val(),
+                            Password: $("#inputPassword").val()
+                        },
+                        success: function (res) {
+                            if (res.Success) {
+                                //TODO跳转
+                                window.location.href = "/Building/BuildingManage";
+                            } else {
+                                alert(res.Msg);
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
+                        },
+                        beforeSend: function () {
+                            $this.attr("disabled", true);
+                        },
+                        complete: function () {
+                            $this.attr("disabled", false);
+                        },
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
