@@ -34,6 +34,14 @@ namespace Property_Management {
                     "~/Plugins/datatables/css/jquery.dataTables.min.css",
                     "~/Plugins/datatables/css/dataTables.bootstrap.min.css"
                 ));
+
+            bundles.Add(new ScriptBundle("~/bundles/js/select").Include(
+                    "~/Plugins/bootstrap/js/bootstrap-select.min.js"
+                ));
+
+            bundles.Add(new StyleBundle("~/bundles/css/select").Include(
+                    "~/Plugins/bootstrap/css/bootstrap-select.min.css"
+                ));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Property_Management.BLL.Service;
+﻿using Property_Management.BLL.IService;
+using Property_Management.BLL.Service;
 using Property_Management.DAL.Entities;
 using Property_Management.Filters;
 using Property_Management.Util;
@@ -13,11 +14,11 @@ namespace Property_Management.Controllers
 {
     public class BuildingController : Controller
     {
-        private BuildingService buildingService = new BuildingService();
+        private IBuildingService buildingService = new BuildingService();
         // GET: Building
         public ActionResult Index()
         {
-            return View();
+            return View("BuildingManage");
         }
 
         public ActionResult BuildingManage() {

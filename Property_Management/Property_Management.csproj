@@ -124,6 +124,10 @@
   <ItemGroup>
     <Content Include="css\Common.css" />
     <Content Include="js\Common.js" />
+    <Content Include="Plugins\bootstrap\css\bootstrap-datepicker3.css" />
+    <Content Include="Plugins\bootstrap\css\bootstrap-datepicker3.min.css" />
+    <Content Include="Plugins\bootstrap\css\bootstrap-select.css" />
+    <Content Include="Plugins\bootstrap\css\bootstrap-select.min.css" />
     <Content Include="Plugins\bootstrap\css\bootstrap-theme.css" />
     <Content Include="Plugins\bootstrap\css\bootstrap-theme.min.css" />
     <Content Include="Plugins\bootstrap\css\bootstrap.css" />
@@ -138,8 +142,16 @@
     <Content Include="Plugins\bootstrap\css\bootstrap.css.map" />
     <Content Include="Plugins\bootstrap\css\bootstrap-theme.min.css.map" />
     <Content Include="Plugins\bootstrap\css\bootstrap-theme.css.map" />
+    <Content Include="Plugins\bootstrap\js\bootstrap-datepicker.js" />
+    <Content Include="Plugins\bootstrap\js\bootstrap-datepicker.min.js" />
+    <Content Include="Plugins\bootstrap\js\bootstrap-datepicker.zh-CN.min.js" />
+    <Content Include="Plugins\bootstrap\js\bootstrap-select.js" />
+    <Content Include="Plugins\bootstrap\js\bootstrap-select.min.js" />
     <Content Include="Plugins\bootstrap\js\bootstrap.js" />
     <Content Include="Plugins\bootstrap\js\bootstrap.min.js" />
+    <Content Include="Plugins\bootstrap\css\bootstrap-datepicker3.css.map" />
+    <Content Include="Plugins\bootstrap\js\bootstrap-select.js.map" />
+    <Content Include="Plugins\bootstrap\css\bootstrap-select.css.map" />
     <None Include="Plugins\jquery\jquery-1.12.4.intellisense.js" />
     <Content Include="Plugins\datatables\css\dataTables.bootstrap.css" />
     <Content Include="Plugins\datatables\css\dataTables.bootstrap.min.css" />
@@ -160,10 +172,13 @@
     <Compile Include="BLL\Base\IBaseService.cs" />
     <Compile Include="BLL\IService\IAdminService.cs" />
     <Compile Include="BLL\IService\IBuildingService.cs" />
+    <Compile Include="BLL\IService\IRoomService.cs" />
     <Compile Include="BLL\Service\AdminService.cs" />
     <Compile Include="BLL\Service\BuildingService.cs" />
+    <Compile Include="BLL\Service\RoomService.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BuildingController.cs" />
+    <Compile Include="Controllers\RoomController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="DAL\Entities\Admin.cs" />
     <Compile Include="DAL\Entities\BaseEntity.cs" />
@@ -188,6 +203,7 @@
     <Content Include="Views\Shared\Header.cshtml" />
     <Content Include="Views\Account\AdminLogin.cshtml" />
     <Content Include="Views\Building\BuildingManage.cshtml" />
+    <Content Include="Views\Room\RoomManage.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

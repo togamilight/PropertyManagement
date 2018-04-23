@@ -10,7 +10,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width" />
-    <title>楼盘管理</title>
+    <title>房子管理</title>
 
     @Styles.Render("~/bundles/css/bootstrap")
     @Styles.Render("~/bundles/css/datepicker")
@@ -24,39 +24,31 @@
     @{Html.RenderAction("GetHeader", "Account"); }
 
     <div class="container">
-        <h2>楼盘管理</h2>
+        <h2>房子管理</h2>
         <div>
-            <form class="form-inline" id="formSearch">
+            <form class="form-inline" id="formSearchRoom">
                 <div class="form-group">
                     <label>名称</label>
                     <input type="text" class="form-control" name="Name" placeholder="">
                 </div>
-                <div class="form-group">
-                    <label class="sr-only">建成日期</label>
-                    <div class="input-group input-daterange datepicker">
-                        <div class="input-group-addon">建成日期</div>
-                        <input type="text" class="form-control" name="BeginDate">
-                        <div class="input-group-addon">至</div>
-                        <input type="text" class="form-control" name="EndDate">
-                    </div>
-                </div>
-                    <button type="button" class="btn btn-default" id="btnSearch">查询</button>
+                <button type="button" class="btn btn-default" id="btnSearch">查询</button>
             </form>
 
             <div class="my-toolbar">
                 <button class="btn btn-danger" id="btnDelete">删除所选</button>
-                <button class="btn btn-primary" id="btnAdd" data-toggle="modal" data-target="#modalAdd">添加</button>
+                <button class="btn btn-primary" id="btnAdd" data-toggle="modal" data-target="#modalAddRoom">添加</button>
             </div>
 
-            <table id="myTable" class="table table-striped my-datatables">
+            <table id="roomTable" class="table table-striped my-datatables">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" id="chkAllSelect"/></th>
+                        <th><input type="checkbox" id="chkAllSelect" /></th>
                         <th>编号</th>
-                        <th>名称</th>
+                        <th>房号</th>
                         <th>面积</th>
-                        <th>层数</th>
-                        <th>建成日期</th>
+                        <th>楼盘</th>
+                        <th>楼层</th>
+                        <th>业主</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -65,17 +57,61 @@
         </div>
 
         <!-- 添加弹出窗口 -->
-        <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="modalAdd">
+        <div class="modal fade" id="modalAddRoom" tabindex="-1" role="dialog" aria-labelledby="modalAddRoom">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">添加楼盘</h4>
+                        <h4 class="modal-title" id="myModalLabel">添加房子</h4>
                     </div>
                     <div class="modal-body">
-                        <form id="formAdd" class="form-horizontal">
+                        <form id="formAddRoom" class="form-horizontal">
                             <div class="form-group">
-                                <label class="control-label col-xs-3">名称</label>
+                                <label class="control-label col-xs-3">房号</label>
+                                <div class="col-xs-6">
+                                    <input type="text" class="form-control" name="Name" placeholder="请输入房号" maxlength="20" validate-type="required" data-toggle="popover" data-placement="right">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-3">面积(m²)</label>
+                                <div class="col-xs-6">
+                                    <input type="number" class="form-control" name="Area" placeholder="请输入房子面积" validate-type="required unumber range" validate-max="1000000" data-toggle="popover" data-placement="right">
+                                </div>
+                            </div>
+                            @*<div class="form-group">
+                                <label class="control-label col-xs-3">层数</label>
+                                <div class="col-xs-6">
+                                    <input type="number" class="form-control" name="FloorNum" placeholder="请输入楼盘层数" validate-type="required uint range" validate-min="1" validate-max="10000" data-toggle="popover" data-placement="right">
+                                </div>
+                            </div>*@
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" id="btnAddRoomApply">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 编辑弹出窗口 -->
+        <div class="modal fade" id="modalEditRoom" tabindex="-1" role="dialog" aria-labelledby="modalAddRoom">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">编辑房子</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formEditRoom" class="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-xs-3">编号</label>
+                                <div class="col-xs-6">
+                                    <input type="text" readonly class="form-control" name="Id">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-3">房号</label>
                                 <div class="col-xs-6">
                                     <input type="text" class="form-control" name="Name" placeholder="请输入楼盘名称" maxlength="20" validate-type="required" data-toggle="popover" data-placement="right">
                                 </div>
@@ -102,57 +138,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                        <button type="button" class="btn btn-primary" id="btnAddApply">提交</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 编辑弹出窗口 -->
-        <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modalEdit">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">编辑楼盘</h4>
-                    </div>
-                    <div class="modal-body">
-                        <form id="formEdit" class="form-horizontal">
-                            <div class="form-group">
-                                <label class="control-label col-xs-3">编号</label>
-                                <div class="col-xs-6">
-                                    <input type="text" readonly class="form-control" name="Id">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-xs-3">名称</label>
-                                <div class="col-xs-6">
-                                    <input type="text" class="form-control" name="Name" placeholder="请输入楼盘名称" maxlength="20" validate-type="required" data-toggle="popover" data-placement="right">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-xs-3">面积(m²)</label>
-                                <div class="col-xs-6">
-                                    <input type="number" class="form-control" name="Area" placeholder="请输入楼盘面积" validate-type="required unumber range" validate-max="1000000" data-toggle="popover" data-placement="right">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-xs-3">层数</label>
-                                <div class="col-xs-6">
-                                    <input type="number" class="form-control" name="FloorNum" placeholder="请输入楼盘层数" validate-type="required uint range" validate-min="1" validate-max="10000" data-toggle="popover" data-placement="right">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-xs-3">建成日期</label>
-                                <div class="col-xs-6">
-                                    <input type="text" class="form-control datepicker" placeholder="请输入建成日期" name="BuildDate" validate-type="required" data-toggle="popover" data-placement="right">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                        <button type="button" class="btn btn-primary" id="btnEditApply">提交</button>
+                        <button type="button" class="btn btn-primary" id="btnEditRoomApply">提交</button>
                     </div>
                 </div>
             </div>
@@ -170,7 +156,7 @@
             init();
         });
 
-        var myDataTable;      //datatables对象
+        var roomDataTable;      //datatables对象
         var waitReload = false;     //表示修改或添加过，需要重载表格
 
         function init() {
@@ -186,13 +172,13 @@
             $("[data-toggle='popover']").popover(Common.popoverOptions);
 
             //初始化日期插件
-            $(".datepicker").datepicker(Common.datepickerOptions);
+            //$(".datepicker").datepicker(Common.datepickerOptions);
 
             //初始化datatable
-            var $myTable = $("#myTable");
-            //$myTable.DataTable(Common.datatablesOptions);
-            var $formSearch = $("#formSearch");
-            myDataTable = $myTable.DataTable({
+            var $roomTable = $("#roomTable");
+            //$roomTable.DataTable(Common.datatablesOptions);
+            var $formSearchRoom = $("#formSearchRoom");
+            roomDataTable = $roomTable.DataTable({
                 ajax: function (data, callback, settings) {
                     var $btnSearch = $("#btnSearch");
                     $.ajax({
@@ -201,11 +187,9 @@
                         data: {
                             pageSize: data.length,		//data.length:每页的条数
                             page: parseInt((data.start + 1) / data.length) + 1,	//data.start:第一条数据的起始位置(0)
-                            name: $formSearch.find("[name='Name']").val(),
-                            beginDate: $formSearch.find("[name='BeginDate']").val(),
-                            endDate: $formSearch.find("[name='EndDate']").val()
+                            name: $formSearchRoom.find("[name='Name']").val()
                         },
-                        url: "/Building/GetBuildingPage",
+                        url: "/Room/GetRoomPage",
                         success: function (res) {
                             var returnData = {};
                             if (res.Success) {
@@ -241,16 +225,23 @@
                             return "<input type='checkbox' class='my-chkSelect' data-id='" + data + "'/>";
                         }
                     },
-                    { data: "Id", className: "my-building-id" },
-                    { data: "Name", className: "my-building-name" },
-                    { data: "Area", className: "my-building-area" },
-                    { data: "FloorNum", className: "my-building-floorNum" },
+                    { data: "Id", className: "my-room-id" },
+                    { data: "Name", className: "my-room-name" },
+                    { data: "Area", className: "my-room-area" },
                     {
-                        data: "BuildDate",
-                        className: "my-building-buildDate",
-                        render: function (data) {
-                            var date = Common.parseDate(data);
-                            return date.format("yyyy-MM-dd");
+                        data: "BuildingName",
+                        render: function (data, type, row) {
+                            return "<div class='my-room-buidlingName my-innerDiv' data-id='" + row["BuildingId"] + "'>" + data + "</div>";
+                        }
+                    },
+                    { data: "Floor", className: "my-room-floor" },
+                    {
+                        data: "OwnerName",
+                        render: function (data, type, row) {
+                            if (!data) {
+                                data = "无";
+                            }
+                            return "<div class='my-room-ownerName my-innerDiv' data-id='" + row["OwnerId"] + "'>" + data + "</div>";
                         }
                     },
                     {
@@ -276,7 +267,7 @@
             });
 
             //添加楼盘的弹出窗口显示时初始化字段
-            $document.on("show.bs.modal", "#modalAdd", function (e) {
+            $document.on("show.bs.modal", "#modalAddRoom", function (e) {
                 var $this = $(this);
                 $this.find("input").val("");
                 //设置默认日期为今天
@@ -284,25 +275,25 @@
             });
 
             //添加、编辑楼盘的弹出窗口隐藏时隐藏提示.
-            $document.on("hide.bs.modal", "#modalAdd,#modalEdit", function (e) {
+            $document.on("hide.bs.modal", "#modalAddRoom,#modalEditRoom", function (e) {
                 var $this = $(this);
                 //隐藏提示
                 $this.find("[data-toggle='popover']").popover("hide");
 
                 if (waitReload) {
-                    myDataTable.ajax.reload();
+                    roomDataTable.ajax.reload();
                     waitReload = false;
                 }
             });
 
             //添加楼盘提交按钮点击事件
-            $document.on("click", "#btnAddApply", function () {
-                var $form = $("#formAdd");
+            $document.on("click", "#btnAddRoomApply", function () {
+                var $form = $("#formAddRoom");
                 if (Common.validateForm($form)) {
                     var $this = $(this);
                     //TODO
                     $.ajax({
-                        url: "/Building/AddBuilding",
+                        url: "/Room/AddRoom",
                         method: "post",
                         data: {
                             Name: $form.find("[name='Name']").val(),
@@ -331,32 +322,32 @@
 
             //查询按钮点击事件
             $document.on("click", "#btnSearch", function () {
-                myDataTable.ajax.reload();
+                roomDataTable.ajax.reload();
             });
 
             //编辑按钮点击事件
             $document.on("click", ".my-btnEdit", function(){
                 var $this = $(this);
                 var $tr = $this.closest("tr");
-                var $form = $("#formEdit");
+                var $form = $("#formEditRoom");
                 //给编辑框里的输入框赋值
-                $form.find("[name='Id']").val($tr.find(".my-building-id").text());
-                $form.find("[name='Name']").val($tr.find(".my-building-name").text());
-                $form.find("[name='Area']").val($tr.find(".my-building-area").text());
-                $form.find("[name='FloorNum']").val($tr.find(".my-building-floorNum").text());
-                $form.find("[name='BuildDate']").val($tr.find(".my-building-buildDate").text());
+                $form.find("[name='Id']").val($tr.find(".my-room-id").text());
+                $form.find("[name='Name']").val($tr.find(".my-room-name").text());
+                $form.find("[name='Area']").val($tr.find(".my-room-area").text());
+                $form.find("[name='FloorNum']").val($tr.find(".my-room-floorNum").text());
+                $form.find("[name='BuildDate']").val($tr.find(".my-room-buildDate").text());
 
                 //显示编辑框
-                $('#modalEdit').modal('show');
+                $('#modalEditRoom').modal('show');
             });
 
             //编辑框提交按钮
-            $document.on("click", "#btnEditApply", function () {
-                var $form = $("#formEdit");
+            $document.on("click", "#btnEditRoomApply", function () {
+                var $form = $("#formEditRoom");
                 if (Common.validateForm($form)) {
                     var $this = $(this);
                     $.ajax({
-                        url: "/Building/UpdateBuilding",
+                        url: "/Room/UpdateRoom",
                         method: "post",
                         data: {
                             Id: $form.find("[name='Id']").val(),
@@ -390,7 +381,7 @@
             });
 
             //datatable重绘时取消全选
-            myDataTable.on("draw", function () {
+            roomDataTable.on("draw", function () {
                 $("#chkAllSelect").prop("checked", false);
             });
 
@@ -407,7 +398,7 @@
                         $this = $(this);
 
                         $.ajax({
-                            url: "/Building/DeleteBuildings",
+                            url: "/Room/DeleteRooms",
                             method: "post",
                             data: {
                                 ids: ids
@@ -416,7 +407,7 @@
                             success: function (res) {
                                 alert(res.Msg);
                                 if (res.Success) {
-                                    myDataTable.ajax.reload();
+                                    roomDataTable.ajax.reload();
                                 }
                             },
                             error: function (XMLHttpRequest, textStatus, errorThrown) {
