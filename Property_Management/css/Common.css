@@ -21,3 +21,9 @@
 
 td .my-innerDiv{
 }
+
+/*select组件的搜索框样式*/
+.bs-searchbox .form-control{
+    padding: 2px 10px;
+    height: auto;
+}

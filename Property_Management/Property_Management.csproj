@@ -183,6 +183,7 @@
     <Compile Include="DAL\Entities\Admin.cs" />
     <Compile Include="DAL\Entities\BaseEntity.cs" />
     <Compile Include="DAL\Entities\Building.cs" />
+    <Compile Include="DAL\Entities\Owner.cs" />
     <Compile Include="DAL\Entities\Room.cs" />
     <Compile Include="DAL\MyDbContext.cs" />
     <Compile Include="DAL\MyDbContextFactory.cs" />

@@ -16,7 +16,7 @@ namespace Property_Management.DAL {
         public DbSet<Admin> Admins { get; set; }
 
         /// <summary>
-        /// 楼盘表
+        /// 楼栋表
         /// </summary>
         public DbSet<Building> Buildings { get; set; }
 
@@ -24,5 +24,10 @@ namespace Property_Management.DAL {
         /// 房子表
         /// </summary>
         public DbSet<Room> Rooms { get; set; }
+    
+        /// <summary>
+        /// 业主表
+        /// </summary>
+        public DbSet<Owner> Owners { get; set; }
     }
 }

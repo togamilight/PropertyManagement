@@ -65,5 +65,10 @@ namespace Property_Management.Controllers
 
             return Json(buildingService.QueryToPage(where, page, pageSize));
         }
+
+        [JsonExceptionFilter]
+        public ActionResult GetBuildingsCoreInfo() {
+            return Json(buildingService.GetCoreInfos());
+        }
     }
 }

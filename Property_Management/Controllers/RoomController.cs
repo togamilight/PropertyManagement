@@ -24,20 +24,20 @@ namespace Property_Management.Controllers
             return View();
         }
 
-        //[JsonExceptionFilter]
-        //public ActionResult AddRoom(Room room) {
-        //    return Json(buildingService.Add(room));
-        //}
+        [JsonExceptionFilter]
+        public ActionResult AddRoom(Room room) {
+            return Json(roomService.Add(room));
+        }
 
-        //[JsonExceptionFilter]
-        //public ActionResult UpdateRoom(Room room) {
-        //    return Json(buildingService.Update(room));
-        //}
+        [JsonExceptionFilter]
+        public ActionResult UpdateRoom(Room room) {
+            return Json(roomService.Update(room));
+        }
 
-        //[JsonExceptionFilter]
-        //public ActionResult DeleteRooms(int[] ids) {
-        //    return Json(buildingService.Delete(ids));
-        //}
+        [JsonExceptionFilter]
+        public ActionResult DeleteRooms(int[] ids) {
+            return Json(roomService.Delete(ids));
+        }
 
 
         [JsonExceptionFilter]

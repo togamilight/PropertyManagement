@@ -8,7 +8,7 @@ using System.Web;
 namespace Property_Management.DAL.Entities {
     [Table("building")]
     public class Building: BaseEntity {
-        [Display(Name = "楼盘名称"), Required, StringLength(20)]
+        [Display(Name = "楼栋名称"), Required, StringLength(20)]
         public string Name { get; set; }
 
         [Display(Name = "面积"), Range(0, 1000000)]

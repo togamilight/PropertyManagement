@@ -19,6 +19,9 @@ namespace Property_Management.DAL.Entities {
         [Display(Name = "面积"), Range(0, 1000000)]
         public float Area { get; set; }
 
+        [Display(Name = "房型"), Required, StringLength(20)]
+        public string Type { get; set; }
+
         public int? OwnerId { get; set; }
     }
 }

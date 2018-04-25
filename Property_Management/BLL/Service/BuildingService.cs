@@ -18,7 +18,7 @@ namespace Property_Management.BLL.Service {
 
             var buildings = dbContext.Set<Building>();
             if(buildings.Any(b => b.Name == building.Name)) {
-                return new ResultInfo(false, "该楼盘名称已存在，请换另一个名称", null);
+                return new ResultInfo(false, "该楼栋名称已存在，请换另一个名称", null);
             }
 
             buildings.Add(building);
@@ -74,6 +74,14 @@ namespace Property_Management.BLL.Service {
 
             dbContext.SaveChanges();
             return new ResultInfo(true, "删除成功", null);
+        }
+
+        public ResultInfo GetCoreInfos() {
+            var result = dbContext.Set<Building>().Select(b => new {
+                b.Id, b.Name, b.FloorNum
+            }).ToList();
+
+            return new ResultInfo(true, "", result);
         }
     }
 }
