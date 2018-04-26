@@ -29,5 +29,10 @@ namespace Property_Management.DAL {
         /// 业主表
         /// </summary>
         public DbSet<Owner> Owners { get; set; }
+
+        /// <summary>
+        /// 车位表
+        /// </summary>
+        public DbSet<Parking> Parkings { get; set; }
     }
 }

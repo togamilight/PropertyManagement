@@ -18,7 +18,7 @@ namespace Property_Management.Controllers
         // GET: Building
         public ActionResult Index()
         {
-            return View("BuildingManage");
+            return View();
         }
 
         public ActionResult BuildingManage() {
@@ -69,6 +69,11 @@ namespace Property_Management.Controllers
         [JsonExceptionFilter]
         public ActionResult GetBuildingsCoreInfo() {
             return Json(buildingService.GetCoreInfos());
+        }
+
+        [JsonExceptionFilter]
+        public ActionResult GetBuildingInfo(int id) {
+            return Json(buildingService.Query(id));
         }
     }
 }

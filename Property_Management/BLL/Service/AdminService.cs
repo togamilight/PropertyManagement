@@ -28,7 +28,7 @@ namespace Property_Management.BLL.Service {
         public int CheckAccount(Admin admin) {
             if (ValidateEntity(admin) != "")
                 return 0;
-            return dbContext.Admins.Where(a => a.Name == admin.Name && a.Password == admin.Password).Select(a => a.Id).FirstOrDefault();
+            return dbContext.Set<Admin>().Where(a => a.Name == admin.Name && a.Password == admin.Password).Select(a => a.Id).FirstOrDefault();
         }
     }
 }

@@ -154,6 +154,20 @@ Common.validateForm = function ($form) {
                         msg = str;
                     }
                     break;
+
+                case "phoneNum":    //验证手机或电话号码
+                    let regex1 = /^((1[3|4|5|8]\d{9})|([2-9]\d{6,7}))$/;
+                    if (!regex1.test(value)) {
+                        msg != "手机或固话号码的格式不正确";
+                    }
+                    break;
+
+                case "idCard":      //验证身份证号
+                    let regex2 = /^(([1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx])|([1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}))$/;
+                    if (!regex2.test(value)) {
+                        msg != "身份证号格式不正确";
+                    }
+                    break;
                 default:
                     break;
             }

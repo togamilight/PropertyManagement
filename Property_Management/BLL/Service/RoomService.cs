@@ -28,13 +28,7 @@ namespace Property_Management.BLL.Service {
                        from g1 in grp1.DefaultIfEmpty()
                        from g2 in grp2.DefaultIfEmpty()
                        select new {
-                           r.Id,
-                           r.Name,
-                           r.Area,
-                           r.Type,
-                           r.Floor,
-                           r.BuildingId,
-                           r.OwnerId,
+                           Room = r,
                            BuildingName = g1.Name,
                            OwnerName = g2.Name
                        };
@@ -120,6 +114,12 @@ namespace Property_Management.BLL.Service {
             }
 
             return msg;
+        }
+
+        public ResultInfo GetEmptyRoomInBuilding(int buildingId) {
+            var rooms = dbContext.Set<Room>().Where(r => r.BuildingId == buildingId && r.OwnerId == null).Select(r => new { r.Id, r.Name });
+
+            return new ResultInfo(true, "", rooms);
         }
     }
 }

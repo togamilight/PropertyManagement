@@ -172,18 +172,22 @@
     <Compile Include="BLL\Base\IBaseService.cs" />
     <Compile Include="BLL\IService\IAdminService.cs" />
     <Compile Include="BLL\IService\IBuildingService.cs" />
+    <Compile Include="BLL\IService\IOwnerService.cs" />
     <Compile Include="BLL\IService\IRoomService.cs" />
     <Compile Include="BLL\Service\AdminService.cs" />
     <Compile Include="BLL\Service\BuildingService.cs" />
+    <Compile Include="BLL\Service\OwnerService.cs" />
     <Compile Include="BLL\Service\RoomService.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BuildingController.cs" />
+    <Compile Include="Controllers\OwnerController.cs" />
     <Compile Include="Controllers\RoomController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="DAL\Entities\Admin.cs" />
     <Compile Include="DAL\Entities\BaseEntity.cs" />
     <Compile Include="DAL\Entities\Building.cs" />
     <Compile Include="DAL\Entities\Owner.cs" />
+    <Compile Include="DAL\Entities\Parking.cs" />
     <Compile Include="DAL\Entities\Room.cs" />
     <Compile Include="DAL\MyDbContext.cs" />
     <Compile Include="DAL\MyDbContextFactory.cs" />
@@ -205,6 +209,7 @@
     <Content Include="Views\Account\AdminLogin.cshtml" />
     <Content Include="Views\Building\BuildingManage.cshtml" />
     <Content Include="Views\Room\RoomManage.cshtml" />
+    <Content Include="Views\Owner\OwnerManage.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

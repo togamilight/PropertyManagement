@@ -9,5 +9,6 @@ using System.Web;
 namespace Property_Management.BLL.IService {
     public interface IBuildingService: IBaseService<Building> {
         ResultInfo GetCoreInfos();
+        
     }
 }
