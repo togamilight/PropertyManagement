@@ -78,7 +78,7 @@ Date.prototype.format = function (format) {
 
 //校验表单字段，传入表单的jquery对象
 Common.validateForm = function ($form) {
-    var $validateObj = $form.find("input[validate-type]");
+    var $validateObj = $form.find("[validate-type]:not(:disabled)");
     var isValid = true;
 
     $validateObj.each(function (index, element) {
@@ -156,16 +156,23 @@ Common.validateForm = function ($form) {
                     break;
 
                 case "phoneNum":    //验证手机或电话号码
-                    let regex1 = /^((1[3|4|5|8]\d{9})|([2-9]\d{6,7}))$/;
-                    if (!regex1.test(value)) {
-                        msg != "手机或固话号码的格式不正确";
+                    let regexPhoneNum = /^((1[3|4|5|8]\d{9})|([2-9]\d{6,7}))$/;
+                    if (!regexPhoneNum.test(value)) {
+                        msg = "手机或固话号码的格式不正确";
                     }
                     break;
 
                 case "idCard":      //验证身份证号
-                    let regex2 = /^(([1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx])|([1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}))$/;
-                    if (!regex2.test(value)) {
-                        msg != "身份证号格式不正确";
+                    let regexIDCard = /^(([1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx])|([1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}))$/;
+                    if (!regexIDCard.test(value)) {
+                        msg = "身份证号格式不正确";
+                    }
+                    break;
+
+                case "carNum":      //验证车牌号
+                    let regexCarNum = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/;
+                    if (!regexCarNum.test(value)) {
+                        msg = "车牌号格式不正确";
                     }
                     break;
                 default:

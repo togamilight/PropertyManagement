@@ -22,5 +22,11 @@ namespace Property_Management.BLL.IService {
         /// 搬走住户
         /// </summary>
         ResultInfo Disuse(int[] ids);
+
+        /// <summary>
+        /// 获取所有现有住户的姓名和id
+        /// </summary>
+        /// <returns></returns>
+        ResultInfo GetCoreInfo();
     }
 }

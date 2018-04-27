@@ -11,12 +11,13 @@ namespace Property_Management.DAL.Entities {
         [Display(Name = "车位号"), Required, StringLength(20)]
         public string Name { get; set; }
 
+        [Display(Name = "分配日期")]
         public DateTime? Date { get; set; }
 
-        [Display(Name = "车型"), StringLength(20)]
+        [Display(Name = "车型")]
         public string CarType { get; set; }
 
-        [Display(Name = "车牌号"), StringLength(20)]
+        [Display(Name = "车牌号")]
         public string CarNum { get; set; }
 
         public int? OwnerId { get; set; }

@@ -52,7 +52,7 @@ namespace Property_Management.Controllers
                 where = where.And(r => r.Type.Contains(type));
             }
 
-            if(buildingId != 0) {
+            if(buildingId > 0) {
                 where = where.And(r => r.BuildingId == buildingId);
             }
 
@@ -62,6 +62,11 @@ namespace Property_Management.Controllers
         [JsonExceptionFilter]
         public ActionResult GetEmptyRoomInBuilding(int buildingId) {
             return Json(roomService.GetEmptyRoomInBuilding(buildingId));
+        }
+
+        [JsonExceptionFilter]
+        public ActionResult GetRoomInfo(int id) {
+            return Json(roomService.Query(id));
         }
     }
 }

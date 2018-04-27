@@ -237,13 +237,13 @@
             </div>
         </div>
 
-        <!-- 楼栋详情弹出窗口 -->
-        <div class="modal fade" id="modalBuildingInfo" tabindex="-1" role="dialog" aria-labelledby="modalAdd">
+        <!-- 房子详情弹出窗口 -->
+        <div class="modal fade" id="modalRoomInfo" tabindex="-1" role="dialog" aria-labelledby="modalRoomInfo">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">楼栋详情</h4>
+                        <h4 class="modal-title" id="myModalLabel">房子详情</h4>
                     </div>
                     <div class="modal-body">
                         <div class="row">
@@ -253,7 +253,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <label class="control-label col-xs-3 text-right">名称</label>
+                            <label class="control-label col-xs-3 text-right">房号</label>
                             <div class="col-xs-6" name="Name">
                                 加载中...
                             </div>
@@ -265,14 +265,67 @@
                             </div>
                         </div>
                         <div class="row">
-                            <label class="control-label col-xs-3 text-right">层数</label>
-                            <div class="col-xs-6" name="FloorNum">
+                            <label class="control-label col-xs-3 text-right">房型</label>
+                            <div class="col-xs-6" name="Type">
                                 加载中...
                             </div>
                         </div>
                         <div class="row">
-                            <label class="control-label col-xs-3 text-right">建成日期</label>
-                            <div class="col-xs-6" name="BuildDate">
+                            <label class="control-label col-xs-3 text-right">楼栋</label>
+                            <div class="col-xs-6" name="Building">
+                                加载中...
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right">楼层</label>
+                            <div class="col-xs-6" name="Floor">
+                                加载中...
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 车位详情弹出窗口 -->
+        <div class="modal fade" id="modalParkingInfo" tabindex="-1" role="dialog" aria-labelledby="modalParkingInfo">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">车位详情</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right">编号</label>
+                            <div class="col-xs-6" name="Id">
+                                加载中...
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right">车位号</label>
+                            <div class="col-xs-6" name="Name">
+                                加载中...
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right">车型</label>
+                            <div class="col-xs-6" name="CarType">
+                                加载中...
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right">车牌号</label>
+                            <div class="col-xs-6" name="CarNum">
+                                加载中...
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right">分配日期</label>
+                            <div class="col-xs-6" name="Date">
                                 加载中...
                             </div>
                         </div>
@@ -308,7 +361,7 @@
 
         function initView() {
             //设置菜单选项激活
-            $("#liHouseManage").addClass("active");
+            $("#liOwnerManage").addClass("active");
 
             //初始化popover组件
             $("[data-toggle='popover']").popover(Common.popoverOptions);
@@ -422,7 +475,7 @@
                             if (!data) {
                                 return "无";
                             }
-                            return "<a href='#' class='my-innerDiv' data-id='" + row["Owner"].ParkingId + "'>" + data + "</a>";
+                            return "<a href='#' class='my-owner-parking my-innerDiv' data-id='" + row["Owner"].ParkingId + "'>" + data + "</a>";
                         }
                     },
                     {
@@ -543,7 +596,9 @@
                 $form.find("[name='Sex']").each(function (index, element) {
                     var $this = $(this);
                     if ($this.val() == sex) {
-                        $this.attr("checked", "checked");
+                        $this.prop("checked", true);
+                    } else {
+                        $this.prop("checked", false);
                     }
                 });
 
@@ -693,7 +748,7 @@
                 }
             });
 
-            //楼栋select选择时更新楼层select
+            //楼栋select选择时更新房子select
             $document.on("changed.bs.select", "select[name='BuildingId']", function (e, room) {
                 var $this = $(this);
                 var $roomSelect = $this.closest("form").find("select[name='RoomId']");
@@ -717,50 +772,105 @@
                 }
             });
 
-            //楼栋名称点击时显示楼栋详情
-            $document.on("click", "a.my-owner-building", function () {
+            //房号点击时显示房子详情
+            $document.on("click", "a.my-owner-room", function () {
                 var $this = $(this);
-                var $modalBuildingInfo = $("#modalBuildingInfo");
+                var $modalRoomInfo = $("#modalRoomInfo");
 
-                var id = $this.attr("data-id");
+                var data = myDataTable.rows($this.attr("data-rowIndex")).data()[0];
 
-                var divId = $modalBuildingInfo.find("div[name='Id']");
+                var id = data.Owner.RoomId;
+
+                var divId = $modalRoomInfo.find("div[name='Id']");
                 //跟已显示的详情不一样，重新获取
                 if (divId.text() != id) {
                     divId.text(id);
-                    $modalBuildingInfo.find("div[name='Name']").text($this.text());
+                    $modalRoomInfo.find("div[name='Name']").text(data.RoomName);
 
-                    var divArea = $modalBuildingInfo.find("div[name='Area']");
-                    var divFloorNum = $modalBuildingInfo.find("div[name='FloorNum']");
-                    var divBuildDate = $modalBuildingInfo.find("div[name='BuildDate']");
+                    var divArea = $modalRoomInfo.find("div[name='Area']");
+                    var divType = $modalRoomInfo.find("div[name='Type']");
+                    var divFloor = $modalRoomInfo.find("div[name='Floor']");
+                    var divBuilding = $modalRoomInfo.find("div[name='Building']");
 
                     divArea.text("加载中...");
-                    divFloorNum.text("加载中...");
-                    divBuildDate.text("加载中...");
+                    divType.text("加载中...");
+                    divFloor.text("加载中...");
+                    divBuilding.text("加载中...");
 
                     $.ajax({
-                        url: "/Building/GetBuildingInfo",
+                        url: "/Room/GetRoomInfo",
                         method: "post",
                         data: {
                             id: id
                         },
                         success: function (res) {
                             if (res.Success) {
-                                divArea.text(res.Result.Area);
-                                divFloorNum.text(res.Result.FloorNum);
-                                divBuildDate.text(Common.parseDate(res.Result.BuildDate).format("yyyy-MM-dd"));
+                                divArea.text(res.Result.Room.Area);
+                                divType.text(res.Result.Room.Type);
+                                divFloor.text(res.Result.Room.Floor);
+                                divBuilding.text(res.Result.BuildingName);
                             } else {
                                 alert(res.Msg);
                             }
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            divId.text("");
                             Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
                         }
                     });
                 }
 
                 //显示详情框
-                $modalBuildingInfo.modal('show');
+                $modalRoomInfo.modal('show');
+
+                return false;
+            });
+
+            //车位号点击时显示车位详情
+            $document.on("click", "a.my-owner-parking", function () {
+                var $this = $(this);
+                var $modalParkingInfo = $("#modalParkingInfo");
+
+                var id = $this.attr("data-id");
+
+                var divId = $modalParkingInfo.find("div[name='Id']");
+                //跟已显示的详情不一样，重新获取
+                if (divId.text() != id) {
+                    divId.text(id);
+                    $modalParkingInfo.find("div[name='Name']").text($this.text());
+
+                    var divCarType = $modalParkingInfo.find("div[name='CarType']");
+                    var divCarNum = $modalParkingInfo.find("div[name='CarNum']");
+                    var divDate = $modalParkingInfo.find("div[name='Date']");
+
+                    divCarType.text("加载中...");
+                    divCarNum.text("加载中...");
+                    divDate.text("加载中...");
+
+                    $.ajax({
+                        url: "/Parking/GetParkingInfo",
+                        method: "post",
+                        data: {
+                            id: id
+                        },
+                        success: function (res) {
+                            if (res.Success) {
+                                divCarType.text(res.Result.CarType);
+                                divCarNum.text(res.Result.CarNum);
+                                divDate.text(Common.parseDate(res.Result.Date).format("yyyy-MM-dd"));
+                            } else {
+                                alert(res.Msg);
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            divId.text("");
+                            Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
+                        }
+                    });
+                }
+
+                //显示详情框
+                $modalParkingInfo.modal('show');
 
                 return false;
             });

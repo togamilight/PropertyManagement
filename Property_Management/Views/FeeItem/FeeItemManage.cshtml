@@ -10,10 +10,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width" />
-    <title>楼栋管理</title>
+    <title>收费项目管理</title>
 
     @Styles.Render("~/bundles/css/bootstrap")
-    @Styles.Render("~/bundles/css/datepicker")
+    @*@Styles.Render("~/bundles/css/datepicker")*@
     @Styles.Render("~/bundles/css/datatables")
     <link rel="stylesheet" type="text/css" href="~/css/Common.css" />
 
@@ -24,21 +24,12 @@
     @{Html.RenderAction("GetHeader", "Account"); }
 
     <div class="container">
-        <h2>楼栋管理</h2>
+        <h2>收费项目管理</h2>
         <div>
             <form class="form-inline" id="formSearch">
                 <div class="form-group">
-                    <label>名称</label>
+                    <label>项目名称</label>
                     <input type="text" class="form-control" name="Name" placeholder="">
-                </div>
-                <div class="form-group">
-                    <label class="sr-only">建成日期</label>
-                    <div class="input-group input-daterange datepicker">
-                        <div class="input-group-addon">建成日期</div>
-                        <input type="text" class="form-control" name="BeginDate">
-                        <div class="input-group-addon">至</div>
-                        <input type="text" class="form-control" name="EndDate">
-                    </div>
                 </div>
                     <button type="button" class="btn btn-default" id="btnSearch">查询</button>
             </form>
@@ -53,10 +44,8 @@
                     <tr>
                         <th><input type="checkbox" id="chkAllSelect"/></th>
                         <th>编号</th>
-                        <th>名称</th>
-                        <th>面积</th>
-                        <th>层数</th>
-                        <th>建成日期</th>
+                        <th>项目名称</th>
+                        <th>收费标准</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -70,32 +59,26 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">添加楼栋</h4>
+                        <h4 class="modal-title" id="myModalLabel">添加收费项目</h4>
                     </div>
                     <div class="modal-body">
                         <form id="formAdd" class="form-horizontal">
                             <div class="form-group">
-                                <label class="control-label col-xs-3">名称</label>
+                                <label class="control-label col-xs-3">项目名称</label>
                                 <div class="col-xs-6">
-                                    <input type="text" class="form-control" name="Name" placeholder="请输入楼栋名称" maxlength="20" validate-type="required" data-toggle="popover" data-placement="right">
+                                    <input type="text" class="form-control" name="Name" placeholder="请输入收费项目名称" maxlength="20" validate-type="required" data-toggle="popover" data-placement="right">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-xs-3">面积(m²)</label>
+                                <label class="control-label col-xs-3">收费标准</label>
                                 <div class="col-xs-6">
-                                    <input type="number" class="form-control" name="Area" placeholder="请输入楼栋面积" validate-type="required unumber range" validate-max="1000000" data-toggle="popover" data-placement="right">
+                                    <input type="text" class="form-control" name="Scale" placeholder="请输入收费标准" validate-type="required" data-toggle="popover" data-placement="right">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-xs-3">层数</label>
+                                <label class="control-label col-xs-3">描述</label>
                                 <div class="col-xs-6">
-                                    <input type="number" class="form-control" name="FloorNum" placeholder="请输入楼栋层数" validate-type="required uint range" validate-min="1" validate-max="10000" data-toggle="popover" data-placement="right">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-xs-3">建成日期</label>
-                                <div class="col-xs-6">
-                                    <input type="text" class="form-control datepicker" placeholder="请输入建成日期" id="addBuildDate" name="BuildDate" validate-type="required" data-toggle="popover" data-placement="right">
+                                    <textarea rows="5" class="form-control" name="Discription" validate-type="length" validate-maxLen="100" data-toggle="popover" data-placement="right"></textarea>
                                 </div>
                             </div>
                         </form>
@@ -114,7 +97,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">编辑楼栋</h4>
+                        <h4 class="modal-title" id="myModalLabel">编辑收费项目</h4>
                     </div>
                     <div class="modal-body">
                         <form id="formEdit" class="form-horizontal">
@@ -125,27 +108,21 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-xs-3">名称</label>
+                                <label class="control-label col-xs-3">项目名称</label>
                                 <div class="col-xs-6">
-                                    <input type="text" class="form-control" name="Name" placeholder="请输入楼栋名称" maxlength="20" validate-type="required" data-toggle="popover" data-placement="right">
+                                    <input type="text" class="form-control" name="Name" placeholder="请输入收费项目名称" maxlength="20" validate-type="required" data-toggle="popover" data-placement="right">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-xs-3">面积(m²)</label>
+                                <label class="control-label col-xs-3">收费标准</label>
                                 <div class="col-xs-6">
-                                    <input type="number" class="form-control" name="Area" placeholder="请输入楼栋面积" validate-type="required unumber range" validate-max="1000000" data-toggle="popover" data-placement="right">
+                                    <input type="text" class="form-control" name="Scale" placeholder="请输入收费标准" validate-type="required" data-toggle="popover" data-placement="right">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-xs-3">层数</label>
+                                <label class="control-label col-xs-3">描述</label>
                                 <div class="col-xs-6">
-                                    <input type="number" class="form-control" name="FloorNum" placeholder="请输入楼栋层数" validate-type="required uint range" validate-min="1" validate-max="10000" data-toggle="popover" data-placement="right">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-xs-3">建成日期</label>
-                                <div class="col-xs-6">
-                                    <input type="text" class="form-control datepicker" placeholder="请输入建成日期" name="BuildDate" validate-type="required" data-toggle="popover" data-placement="right">
+                                    <textarea rows="5" class="form-control" name="Discription" validate-type="length" validate-maxLen="100" data-toggle="popover" data-placement="right"></textarea>
                                 </div>
                             </div>
                         </form>
@@ -161,7 +138,7 @@
     </div>
 
     @Scripts.Render("~/bundles/js/jquery_bootstrap")
-    @Scripts.Render("~/bundles/js/datepicker")
+    @*@Scripts.Render("~/bundles/js/datepicker")*@
     @Scripts.Render("~/bundles/js/datatables")
     <script src="~/js/Common.js"></script>
 
@@ -180,13 +157,13 @@
 
         function initView() {
             //设置菜单选项激活
-            $("#liHouseManage").addClass("active");
+            $("#liFeeManage").addClass("active");
 
             //初始化popover组件
             $("[data-toggle='popover']").popover(Common.popoverOptions);
 
             //初始化日期插件
-            $(".datepicker").datepicker(Common.datepickerOptions);
+            //$(".datepicker").datepicker(Common.datepickerOptions);
 
             //初始化datatable
             var $myTable = $("#myTable");
@@ -202,10 +179,8 @@
                             pageSize: data.length,		//data.length:每页的条数
                             page: parseInt((data.start + 1) / data.length) + 1,	//data.start:第一条数据的起始位置(0)
                             name: $formSearch.find("[name='Name']").val(),
-                            beginDate: $formSearch.find("[name='BeginDate']").val(),
-                            endDate: $formSearch.find("[name='EndDate']").val()
                         },
-                        url: "/Building/GetBuildingPage",
+                        url: "/FeeItem/GetFeeItemPage",
                         success: function (res) {
                             var returnData = {};
                             if (res.Success) {
@@ -243,16 +218,7 @@
                     },
                     { data: "Id"},
                     { data: "Name"},
-                    { data: "Area"},
-                    { data: "FloorNum"},
-                    {
-                        data: "BuildDate",
-                        className: "my-building-buildDate",
-                        render: function (data) {
-                            var date = Common.parseDate(data);
-                            return date.format("yyyy-MM-dd");
-                        }
-                    },
+                    { data: "Scale"},
                     {
                         render: function (data, type, row, meta) {
                             return "<button type='button' class='btn btn-primary btn-sm my-btnEdit' data-rowIndex='" + meta.row + "'>编辑</button>";
@@ -280,7 +246,7 @@
                 var $this = $(this);
                 $this.find("input").val("");
                 //设置默认日期为今天
-                $("#addBuildDate").datepicker("setDate", Date());
+                //$("#addBuildDate").datepicker("setDate", Date());
             });
 
             //添加、编辑的弹出窗口隐藏时隐藏提示.
@@ -302,13 +268,12 @@
                     var $this = $(this);
                     //TODO
                     $.ajax({
-                        url: "/Building/AddBuilding",
+                        url: "/FeeItem/AddFeeItem",
                         method: "post",
                         data: {
                             Name: $form.find("[name='Name']").val(),
-                            Area: $form.find("[name='Area']").val(),
-                            FloorNum: $form.find("[name='FloorNum']").val(),
-                            BuildDate: $form.find("[name='BuildDate']").val(),
+                            Scale: $form.find("[name='Scale']").val(),
+                            Discription: $form.find("[name='Discription']").val(),
                         },
                         success: function (res) {
                             alert(res.Msg);
@@ -343,9 +308,8 @@
                 //给编辑框里的输入框赋值
                 $form.find("[name='Id']").val(data.Id);
                 $form.find("[name='Name']").val(data.Name);
-                $form.find("[name='Area']").val(data.Area);
-                $form.find("[name='FloorNum']").val(data.FloorNum);
-                $form.find("[name='BuildDate']").val(Common.parseDate(data.BuildDate).format("yyyy-MM-dd"));
+                $form.find("[name='Scale']").val(data.Scale);
+                $form.find("[name='Discription']").val(data.Discription);
 
                 //显示编辑框
                 $('#modalEdit').modal('show');
@@ -357,14 +321,13 @@
                 if (Common.validateForm($form)) {
                     var $this = $(this);
                     $.ajax({
-                        url: "/Building/UpdateBuilding",
+                        url: "/FeeItem/UpdateFeeItem",
                         method: "post",
                         data: {
                             Id: $form.find("[name='Id']").val(),
                             Name: $form.find("[name='Name']").val(),
-                            Area: $form.find("[name='Area']").val(),
-                            FloorNum: $form.find("[name='FloorNum']").val(),
-                            BuildDate: $form.find("[name='BuildDate']").val(),
+                            Scale: $form.find("[name='Scale']").val(),
+                            Discription: $form.find("[name='Discription']").val(),
                         },
                         success: function (res) {
                             alert(res.Msg);
@@ -404,11 +367,11 @@
                 if (ids.length == 0) {
                     alert("请先勾选要删除的条目");
                 } else {
-                    if (confirm("确定要删除吗？将会删除该楼中的所有房间数据")) {
+                    if (confirm("确定要删除吗？该项目下的所有记录")) {
                         $this = $(this);
 
                         $.ajax({
-                            url: "/Building/DeleteBuildings",
+                            url: "/FeeItem/DeleteFeeItems",
                             method: "post",
                             data: {
                                 ids: ids

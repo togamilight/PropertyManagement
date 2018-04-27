@@ -172,20 +172,31 @@
     <Compile Include="BLL\Base\IBaseService.cs" />
     <Compile Include="BLL\IService\IAdminService.cs" />
     <Compile Include="BLL\IService\IBuildingService.cs" />
+    <Compile Include="BLL\IService\IFeeItemService.cs" />
+    <Compile Include="BLL\IService\IFeeService.cs" />
     <Compile Include="BLL\IService\IOwnerService.cs" />
+    <Compile Include="BLL\IService\IParkingService.cs" />
     <Compile Include="BLL\IService\IRoomService.cs" />
     <Compile Include="BLL\Service\AdminService.cs" />
     <Compile Include="BLL\Service\BuildingService.cs" />
+    <Compile Include="BLL\Service\FeeItemService.cs" />
+    <Compile Include="BLL\Service\FeeService.cs" />
     <Compile Include="BLL\Service\OwnerService.cs" />
+    <Compile Include="BLL\Service\ParkingService.cs" />
     <Compile Include="BLL\Service\RoomService.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BuildingController.cs" />
+    <Compile Include="Controllers\FeeController.cs" />
+    <Compile Include="Controllers\FeeItemController.cs" />
     <Compile Include="Controllers\OwnerController.cs" />
+    <Compile Include="Controllers\ParkingController.cs" />
     <Compile Include="Controllers\RoomController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="DAL\Entities\Admin.cs" />
     <Compile Include="DAL\Entities\BaseEntity.cs" />
     <Compile Include="DAL\Entities\Building.cs" />
+    <Compile Include="DAL\Entities\Fee.cs" />
+    <Compile Include="DAL\Entities\FeeItem.cs" />
     <Compile Include="DAL\Entities\Owner.cs" />
     <Compile Include="DAL\Entities\Parking.cs" />
     <Compile Include="DAL\Entities\Room.cs" />
@@ -210,6 +221,8 @@
     <Content Include="Views\Building\BuildingManage.cshtml" />
     <Content Include="Views\Room\RoomManage.cshtml" />
     <Content Include="Views\Owner\OwnerManage.cshtml" />
+    <Content Include="Views\Parking\ParkingManage.cshtml" />
+    <Content Include="Views\FeeItem\FeeItemManage.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -219,6 +232,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Fee\" />
     <Folder Include="Views\Test\" />
   </ItemGroup>
   <PropertyGroup>

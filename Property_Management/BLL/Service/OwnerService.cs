@@ -61,6 +61,30 @@ namespace Property_Management.BLL.Service {
             return new ResultInfo(true, "", new { Total = total, Data = data });
         }
 
+        public override ResultInfo Query(int id) {
+            var owner = dbContext.Set<Owner>().Where(o => o.Id == id);
+            var data = (from o in owner
+                       join r in dbContext.Set<Room>()
+                       on o.RoomId equals r.Id into grp1
+                       join p in dbContext.Set<Parking>()
+                       on o.ParkingId equals p.Id into grp2
+                       from g1 in grp1.DefaultIfEmpty()
+                       join b in dbContext.Set<Building>()
+                       on g1.BuildingId equals b.Id into grp3
+                       from g2 in grp2.DefaultIfEmpty()
+                       from g3 in grp3.DefaultIfEmpty()
+                       select new {
+                           Owner = o,
+                           RoomName = g1.Name,
+                           Floor = g1.Floor,
+                           ParkingName = g2.Name,
+                           BuildingName = g3.Name,
+                           BuildingId = g3.Id
+                       }).FirstOrDefault();
+
+            return new ResultInfo(true, "", data);
+        }
+
         public override ResultInfo Add(Owner owner) {
             string msg = ValidateEntity(owner);
             if (!string.IsNullOrEmpty(msg)) {
@@ -82,6 +106,8 @@ namespace Property_Management.BLL.Service {
                         return new ResultInfo(false, "该房子已有住户", null);
                     }
 
+                    owner.Disuse = false;
+                    owner.ParkingId = null;
                     owners.Add(owner);
                     dbContext.SaveChanges();
                     room.OwnerId = owner.Id;
@@ -160,8 +186,9 @@ namespace Property_Management.BLL.Service {
 
                     var parking = dbContext.Set<Parking>().FirstOrDefault(r => r.Id == owner.ParkingId);
                     parking.OwnerId = null;
-                    parking.CarNum = "";
-                    parking.CarType = "";
+                    parking.CarNum = null;
+                    parking.CarType = null;
+                    parking.Date = null;
 
                     //TODO 删除收费和维修记录
 
@@ -182,10 +209,13 @@ namespace Property_Management.BLL.Service {
                     var room = dbContext.Set<Room>().FirstOrDefault(r => r.Id == owner.RoomId);
                     room.OwnerId = null;
 
-                    var parking = dbContext.Set<Parking>().FirstOrDefault(r => r.Id == owner.ParkingId);
-                    parking.OwnerId = null;
-                    parking.CarNum = "";
-                    parking.CarType = "";
+                    if(owner.ParkingId != null) {
+                        var parking = dbContext.Set<Parking>().FirstOrDefault(r => r.Id == owner.ParkingId);
+                        parking.OwnerId = null;
+                        parking.CarNum = null;
+                        parking.CarType = null;
+                        parking.Date = null;
+                    }
 
                     //TODO disuse收费和维修记录
 
@@ -196,6 +226,12 @@ namespace Property_Management.BLL.Service {
             dbContext.SaveChanges();
 
             return new ResultInfo(true, "搬走成功", null);
+        }
+
+        public ResultInfo GetCoreInfo() {
+            var data = dbContext.Set<Owner>().Where(o => !o.Disuse).Select(o => new { o.Id, o.Name });
+
+            return new ResultInfo(true, "", data);
         }
     }
 }

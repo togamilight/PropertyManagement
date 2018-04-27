@@ -34,5 +34,15 @@ namespace Property_Management.DAL {
         /// 车位表
         /// </summary>
         public DbSet<Parking> Parkings { get; set; }
+
+        /// <summary>
+        /// 收费项目
+        /// </summary>
+        public DbSet<FeeItem> FeeItems { get; set; }
+
+        /// <summary>
+        /// 收费记录
+        /// </summary>
+        public DbSet<Fee> Fees { get; set; }
     }
 }

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Property_Management.BLL.IService {
-    public interface IRoomService : IBaseService<Room> {
-        ResultInfo GetEmptyRoomInBuilding(int buildingId);
+    public interface IFeeItemService : IBaseService<FeeItem> {
+        ResultInfo GetCoreInfos();
     }
 }

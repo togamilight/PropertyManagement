@@ -36,6 +36,24 @@ namespace Property_Management.BLL.Service {
             return new ResultInfo(true, "", new { Total = total, Data = data });
         }
 
+        public override ResultInfo Query(int id) {
+            var room = dbContext.Set<Room>().Where(r => r.Id == id);
+            var data = (from r in room
+                       join b in dbContext.Set<Building>()
+                       on r.BuildingId equals b.Id into grp1
+                       join o in dbContext.Set<Owner>()
+                       on r.OwnerId equals o.Id into grp2
+                       from g1 in grp1.DefaultIfEmpty()
+                       from g2 in grp2.DefaultIfEmpty()
+                       select new {
+                           Room = r,
+                           BuildingName = g1.Name,
+                           OwnerName = g2.Name
+                       }).FirstOrDefault();
+
+            return new ResultInfo(true, "", data);
+        }
+
         public override ResultInfo Add(Room room) {
             string msg = ValidateEntity(room);
             if (!string.IsNullOrEmpty(msg)) {

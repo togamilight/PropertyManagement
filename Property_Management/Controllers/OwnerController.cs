@@ -76,5 +76,15 @@ namespace Property_Management.Controllers
 
             return Json(ownerService.QueryToPage(where, page, pageSize));
         }
+
+        [JsonExceptionFilter]
+        public ActionResult GetOwnerInfo(int id) {
+            return Json(ownerService.Query(id));
+        }
+
+        [JsonExceptionFilter]
+        public ActionResult GetOwnersCoreInfo() {
+            return Json(ownerService.GetCoreInfo());
+        }
     }
 }
