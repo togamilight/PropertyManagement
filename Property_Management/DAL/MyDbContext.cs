@@ -44,5 +44,15 @@ namespace Property_Management.DAL {
         /// 收费记录
         /// </summary>
         public DbSet<Fee> Fees { get; set; }
+
+        /// <summary>
+        /// 维修记录
+        /// </summary>
+        public DbSet<Repair> Repairs { get; set; }
+
+        /// <summary>
+        /// 公告
+        /// </summary>
+        public DbSet<Announcement> Announcements { get; set; }
     }
 }

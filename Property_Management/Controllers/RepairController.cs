@@ -12,41 +12,37 @@ using System.Web.Mvc;
 namespace Property_Management.Controllers
 {
     [AccountFilter("Admin")]
-    public class FeeController : Controller
+    public class RepairController : Controller
     {
-        private IFeeService feeService = new FeeService();
-        // GET: Fee
+        private IRepairService repairService = new RepairService();
+        // GET: Repair
         public ActionResult Index() {
             return View();
         }
 
-        public ActionResult FeeManage() {
+        public ActionResult RepairManage() {
             return View();
         }
 
         [JsonExceptionFilter]
-        public ActionResult AddFee(Fee fee) {
-            return Json(feeService.Add(fee));
+        public ActionResult AddRepair(Repair repair) {
+            return Json(repairService.Add(repair));
         }
 
         [JsonExceptionFilter]
-        public ActionResult UpdateFee(Fee fee) {
-            return Json(feeService.Update(fee));
+        public ActionResult UpdateRepair(Repair repair) {
+            return Json(repairService.Update(repair));
         }
 
         [JsonExceptionFilter]
-        public ActionResult DeleteFees(int[] ids) {
-            return Json(feeService.Delete(ids));
+        public ActionResult DeleteRepairs(int[] ids) {
+            return Json(repairService.Delete(ids));
         }
 
 
         [JsonExceptionFilter]
-        public ActionResult GetFeePage(int page = 1, int pageSize = 10, int feeItemId = 0, int ownerId = 0, string beginDate = "", string endDate = "", int isFinish = 2, int isDisuse = 2 ) {
-            var where = PredicateBuilder.True<Fee>();
-
-            if (feeItemId > 0) {
-                where = where.And(f => f.FeeItemId == feeItemId);
-            }
+        public ActionResult GetRepairPage(int page = 1, int pageSize = 10, int ownerId = 0, string beginDate = "", string endDate = "", int isFinish = 2, int isDisuse = 2) {
+            var where = PredicateBuilder.True<Repair>();
 
             if (ownerId > 0) {
                 where = where.And(f => f.OwnerId == ownerId);
@@ -55,20 +51,21 @@ namespace Property_Management.Controllers
             if (!string.IsNullOrEmpty(beginDate)) {
                 DateTime begin;
                 if (DateTime.TryParse(beginDate, out begin)) {
-                    where = where.And(f => f.Date >= begin);
+                    where = where.And(f => f.ApplyDate >= begin);
                 }
             }
 
             if (!string.IsNullOrEmpty(endDate)) {
                 DateTime end;
                 if (DateTime.TryParse(endDate, out end)) {
-                    where = where.And(f => f.Date <= end);
+                    where = where.And(f => f.ApplyDate <= end);
                 }
             }
 
-            if(isFinish == 1) {
+            if (isFinish == 1) {
                 where = where.And(f => f.FinishDate != null);
-            }else if(isFinish == 0) {
+            }
+            else if (isFinish == 0) {
                 where = where.And(f => f.FinishDate == null);
             }
 
@@ -79,7 +76,7 @@ namespace Property_Management.Controllers
                 where = where.And(f => !f.Disuse);
             }
 
-            return Json(feeService.QueryToPage(where, page, pageSize));
+            return Json(repairService.QueryToPage(where, page, pageSize));
         }
     }
 }

@@ -191,6 +191,11 @@ namespace Property_Management.BLL.Service {
                     parking.Date = null;
 
                     //TODO 删除收费和维修记录
+                    var fees = dbContext.Set<Fee>().Where(f => f.OwnerId == owner.Id);
+                    dbContext.Set<Fee>().RemoveRange(fees);
+
+                    var repairs = dbContext.Set<Repair>().Where(r => r.OwnerId == owner.Id);
+                    dbContext.Set<Repair>().RemoveRange(repairs);
 
                     owners.Remove(owner);
                 }
@@ -204,10 +209,11 @@ namespace Property_Management.BLL.Service {
         public ResultInfo Disuse(int[] ids) {
             var owners = dbContext.Set<Owner>();
             foreach (var id in ids) {
-                var owner = owners.FirstOrDefault(e => e.Id == id);
+                var owner = owners.FirstOrDefault(e => e.Id == id && !e.Disuse);
                 if (owner != null) {
                     var room = dbContext.Set<Room>().FirstOrDefault(r => r.Id == owner.RoomId);
                     room.OwnerId = null;
+                    owner.RoomId = null;
 
                     if(owner.ParkingId != null) {
                         var parking = dbContext.Set<Parking>().FirstOrDefault(r => r.Id == owner.ParkingId);
@@ -218,8 +224,19 @@ namespace Property_Management.BLL.Service {
                     }
 
                     //TODO disuse收费和维修记录
+                    var fees = dbContext.Set<Fee>().Where(f => f.OwnerId == owner.Id);
+                    foreach(var fee in fees) {
+                        fee.Disuse = true;
+                    }
+
+                    var repairs = dbContext.Set<Repair>().Where(r => r.OwnerId == owner.Id);
+                    foreach(var repair in repairs) {
+                        repair.Disuse = true;
+                    }
+
 
                     owner.Disuse = true;
+                    owner.DisuseDate = DateTime.Now.Date;
                 }
             }
 
@@ -228,8 +245,8 @@ namespace Property_Management.BLL.Service {
             return new ResultInfo(true, "搬走成功", null);
         }
 
-        public ResultInfo GetCoreInfo() {
-            var data = dbContext.Set<Owner>().Where(o => !o.Disuse).Select(o => new { o.Id, o.Name });
+        public ResultInfo GetCoreInfo(Expression<Func<Owner, bool>> whereLambda) {
+            var data = dbContext.Set<Owner>().Where(whereLambda).Select(o => new { o.Id, o.Name });
 
             return new ResultInfo(true, "", data);
         }

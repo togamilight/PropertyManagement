@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace Property_Management.Controllers
 {
+    [AccountFilter("Admin")]
     public class BuildingController : Controller
     {
         private IBuildingService buildingService = new BuildingService();

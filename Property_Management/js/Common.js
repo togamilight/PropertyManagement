@@ -19,27 +19,29 @@ Common.datepickerOptions = {
 }
 
 // 设置datatables默认值
-$.extend($.fn.dataTable.defaults, {
-    autoWidth: false,
-    scrollX: true,              //横向滚动
-    ordering: false,            //排序
-    lengthChange: false,        //选择每页条数
-    searching: false,           //搜索
-    serverSide: true,           //服务器端处理
-    processing: true,           //显示处理中
-    language: {                 //中文
-        emptyTable: "无可用数据",
-        infoEmpty: "没有数据可以显示",
-        zeroRecords: "没有匹配的数据",
-        infoFiltered: "(从总共 _MAX_ 条数据中过滤)",
-        info: "_TOTAL_ 条数据中的第 _START_ 至 _END_ 条",
-        processing: "数据正在加载中......",
-        paginate: {
-            next: "下一页",
-            previous: "上一页"
+if ($.fn.dataTable) {
+    $.extend($.fn.dataTable.defaults, {
+        autoWidth: false,
+        scrollX: true,              //横向滚动
+        ordering: false,            //排序
+        lengthChange: false,        //选择每页条数
+        searching: false,           //搜索
+        serverSide: true,           //服务器端处理
+        processing: true,           //显示处理中
+        language: {                 //中文
+            emptyTable: "无可用数据",
+            infoEmpty: "没有数据可以显示",
+            zeroRecords: "没有匹配的数据",
+            infoFiltered: "(从总共 _MAX_ 条数据中过滤)",
+            info: "_TOTAL_ 条数据中的第 _START_ 至 _END_ 条",
+            processing: "数据正在加载中......",
+            paginate: {
+                next: "下一页",
+                previous: "上一页"
+            }
         }
-    }
-});
+    });
+}
 //Common.datatablesOptions = {
 //    scrollX: true,			//横向滚动
 //    ordering: false,			//排序

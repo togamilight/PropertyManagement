@@ -10,7 +10,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width" />
-    <title>车位管理</title>
+    <title>维修记录管理</title>
 
     @Styles.Render("~/bundles/css/bootstrap")
     @Styles.Render("~/bundles/css/datepicker")
@@ -25,31 +25,41 @@
     @{Html.RenderAction("GetHeader", "Account"); }
 
     <div class="container">
-        <h2>车位管理</h2>
+        <h2>维修记录管理</h2>
         <div>
             <form class="form-inline" id="formSearch">
                 <div class="form-group">
-                    <label>车位号</label>
-                    <input type="text" class="form-control" name="Name" placeholder="">
+                    <label>&nbsp;&nbsp;住户状态</label>
+                    <select class="selectpicker form-control" name="IsDisuse">
+                        <option value="2">全部</option>
+                        <option value="0">现有住户</option>
+                        <option value="1">搬走住户</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>车型</label>
-                    <input type="text" class="form-control" name="CarType" placeholder="">
+                    <label>&nbsp;&nbsp;住户</label>
+                    <select class="selectpicker form-control" name="OwnerId">
+                        <option value="0">全部</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>车牌号</label>
-                    <input type="text" class="form-control" name="CarNum" placeholder="">
+                    <label>&nbsp;&nbsp;完成状态</label>
+                    <select class="selectpicker form-control" name="IsFinish">
+                        <option value="2">全部</option>
+                        <option value="0">未完成</option>
+                        <option value="1">已完成</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label class="sr-only">分配日期</label>
+                    <label class="sr-only">日期</label>
                     <div class="input-group input-daterange datepicker">
-                        <div class="input-group-addon">分配日期</div>
+                        <div class="input-group-addon">日期</div>
                         <input type="text" class="form-control" name="BeginDate">
                         <div class="input-group-addon">至</div>
                         <input type="text" class="form-control" name="EndDate">
                     </div>
                 </div>
-                <button type="button" class="btn btn-default" id="btnSearch">查询</button>
+                <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
             </form>
 
             <div class="my-toolbar">
@@ -62,11 +72,12 @@
                     <tr>
                         <th><input type="checkbox" id="chkAllSelect" /></th>
                         <th>编号</th>
-                        <th>车位号</th>
+                        <th>维修项目</th>
+                        <th>申请日期</th>
                         <th>住户</th>
-                        <th>车型</th>
-                        <th>车牌号</th>
-                        <th>分配日期</th>
+                        <th>完成日期</th>
+                        <th>维修人员</th>
+                        <th>费用</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -80,46 +91,14 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">添加车位</h4>
+                        <h4 class="modal-title" id="myModalLabel">添加维修记录</h4>
                     </div>
                     <div class="modal-body">
                         <form id="formAdd" class="form-horizontal">
                             <div class="form-group">
-                                <label class="control-label col-xs-3">车位号</label>
+                                <label class="control-label col-xs-3">维修项目</label>
                                 <div class="col-xs-6">
-                                    <input type="text" class="form-control" name="Name" placeholder="请输入车位号" maxlength="20" validate-type="required" data-toggle="popover" data-placement="right">
-                                </div>
-                            </div> 
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                        <button type="button" class="btn btn-primary" id="btnAddApply">提交</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 编辑弹出窗口 -->
-        <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modalEdit">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">编辑车位</h4>
-                    </div>
-                    <div class="modal-body">
-                        <form id="formEdit" class="form-horizontal">
-                            <div class="form-group">
-                                <label class="control-label col-xs-3">编号</label>
-                                <div class="col-xs-6">
-                                    <input type="text" readonly class="form-control" name="Id">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-xs-3">车位号</label>
-                                <div class="col-xs-6">
-                                    <input type="text" class="form-control" name="Name" placeholder="请输入车位号" maxlength="20" validate-type="required" data-toggle="popover" data-placement="right">
+                                    <input type="text" class="form-control" name="Name" placeholder="请输入维修项目" maxlength="20" validate-type="required" data-toggle="popover" data-placement="right">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -131,21 +110,85 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-xs-3">车型</label>
+                                <label class="control-label col-xs-3">申请日期</label>
                                 <div class="col-xs-6">
-                                    <input type="text" class="form-control" maxlength="20" name="CarType" placeholder="请输入车型" validate-type="required" data-toggle="popover" data-placement="right">
+                                    <input type="text" class="form-control datepicker" placeholder="请输入申请日期" id="addApplyDate" name="ApplyDate" validate-type="required" data-toggle="popover" data-placement="right">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-xs-3">车牌号</label>
+                                <label class="control-label col-xs-3">说明</label>
                                 <div class="col-xs-6">
-                                    <input type="text" class="form-control" name="CarNum" placeholder="请输入车牌号" maxlength="20" validate-type="required carNum" data-toggle="popover" data-placement="right">
+                                    <textarea rows="8" class="form-control" placeholder="请描述您遇到的问题" name="Discription" validate-type="required length" validate-maxLen="200" data-toggle="popover" data-placement="right"></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" id="btnAddApply">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 编辑弹出窗口 -->
+        <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modalAdd">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">编辑维修记录</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formEdit" class="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-xs-3 text-right">编号</label>
+                                <div class="col-xs-6">
+                                    <input type="text" readonly class="form-control" name="Id">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-xs-3">分配日期</label>
+                                <label class="control-label col-xs-3">维修项目</label>
                                 <div class="col-xs-6">
-                                    <input type="text" class="form-control datepicker" placeholder="请输入分配日期" name="Date" validate-type="required" data-toggle="popover" data-placement="right">
+                                    <input type="text" class="form-control" name="Name" placeholder="请输入维修项目" maxlength="20" validate-type="required" data-toggle="popover" data-placement="right">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-3">住户</label>
+                                <div class="col-xs-6">
+                                    <select class="selectpicker" name="OwnerId">
+                                        <option value="0">加载中...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-3">申请日期</label>
+                                <div class="col-xs-6">
+                                    <input type="text" class="form-control datepicker" placeholder="请输入申请日期" name="ApplyDate" validate-type="required" data-toggle="popover" data-placement="right">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-3">完成日期</label>
+                                <div class="col-xs-6">
+                                    <input type="text" class="form-control datepicker" name="FinishDate">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-3">维修人员</label>
+                                <div class="col-xs-6">
+                                    <input type="text" class="form-control" name="Staff" placeholder="请输入维修人员" maxlength="20">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-3">费用</label>
+                                <div class="col-xs-6">
+                                    <input type="number" class="form-control" name="Money" value="0" maxlength="20" validate-type="unumber" data-toggle="popover" data-placement="right">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-3">说明</label>
+                                <div class="col-xs-6">
+                                    <textarea rows="8" class="form-control" placeholder="请描述您遇到的问题" name="Discription" validate-type="required length" validate-maxLen="200" data-toggle="popover" data-placement="right"></textarea>
                                 </div>
                             </div>
                         </form>
@@ -238,7 +281,8 @@
 
         var myDataTable;      //datatables对象
         var waitReload = false;     //表示修改或添加过，需要重载表格
-        var ownerOptHtml = "";   //住户select的option
+        var useOwnerOptHtml = "";   //现有住户select的option
+        var disuseOwnerOptHtml = "";   //现有住户select的option
 
         function init() {
             initView();
@@ -247,13 +291,14 @@
 
         function initView() {
             //设置菜单选项激活
-            $("#liParkingManage").addClass("active");
+            $("#liRepairManage").addClass("active");
 
             //初始化popover组件
             $("[data-toggle='popover']").popover(Common.popoverOptions);
 
             //初始化日期插件
             $(".datepicker").datepicker(Common.datepickerOptions);
+
 
             //初始化select组件
             $(".selectpicker").selectpicker({
@@ -262,9 +307,22 @@
                 width: "auto"
             });
 
+            //获取住户选项
+            $.when(setOwnerOptHtml()).done(function (data) {
+                var html = "<option value='0'>全部</option>";
+                if (data) {
+                    alert("加载住户信息失败：" + data);
+                } else {
+                    html += useOwnerOptHtml + disuseOwnerOptHtml;
+                }
+
+                var $ownerSelect = $("#formSearch").find("[name='OwnerId']");
+                $ownerSelect.html(html);
+                $ownerSelect.selectpicker("refresh");
+            });
+
             //初始化datatable
             var $myTable = $("#myTable");
-            //$myTable.DataTable(Common.datatablesOptions);
             var $formSearch = $("#formSearch");
             myDataTable = $myTable.DataTable({
                 ajax: function (data, callback, settings) {
@@ -275,13 +333,13 @@
                         data: {
                             pageSize: data.length,		//data.length:每页的条数
                             page: parseInt((data.start + 1) / data.length) + 1,	//data.start:第一条数据的起始位置(0)
-                            name: $formSearch.find("[name='Name']").val(),
-                            carType: $formSearch.find("[name='CarType']").val(),
-                            carNum: $formSearch.find("[name='CarNum']").val(),
+                            ownerId: $formSearch.find("[name='OwnerId']").val(),
                             beginDate: $formSearch.find("[name='BeginDate']").val(),
-                            endDate: $formSearch.find("[name='EndDate']").val()
+                            endDate: $formSearch.find("[name='EndDate']").val(),
+                            isFinish: $formSearch.find("[name='IsFinish']").val(),
+                            isDisuse: $formSearch.find("[name='IsDisuse']").val(),
                         },
-                        url: "/Parking/GetParkingPage",
+                        url: "/Repair/GetRepairPage",
                         success: function (res) {
                             var returnData = {};
                             if (res.Success) {
@@ -292,11 +350,11 @@
                             } else {
                                 alert(res.Msg);
 
-                                returnData.data = {};             //数据
-                                returnData.recordsTotal = 0;      //总数据数
-                                returnData.recordsFiltered = 0;   //过滤后的数据总数
+                                returnData.data = {};
+                                returnData.recordsTotal = 0;
+                                returnData.recordsFiltered = 0;
                             }
-                            returnData.draw = data.draw;                     //确保Ajax从服务器返回的是对应的
+                            returnData.draw = data.draw;
                             callback(returnData);
                         },
                         error: function (xmlHttpRequest, textStatus, errorThrown) {
@@ -312,51 +370,40 @@
                 },
                 columns: [
                     {
-                        data: "Parking.Id",
+                        data: "Repair.Id",
                         render: function (data) {
                             return "<input type='checkbox' class='my-chkSelect' data-id='" + data + "'/>";
                         }
                     },
-                    { data: "Parking.Id" },
-                    { data: "Parking.Name" },
+                    { data: "Repair.Id" },
+                    { data: "Repair.Name"},
+                    {
+                        data: "Repair.ApplyDate",
+                        render: function (data) {
+                            return Common.parseDate(data).format("yyyy-MM-dd");
+                        }
+                    },
                     {
                         data: "OwnerName",
                         render: function (data, type, row) {
-                            if (!data) {
-                                return "无";
+                            var style = "";
+                            if (row["Repair"].Disuse) {
+                                style = "style='color:red;'";
                             }
-                            return "<a href='#' class='my-parking-owner my-innerDiv' data-id='" + row["Parking"].OwnerId + "'>" + data + "</a>";
+                            return "<a href='#' class='my-repair-owner my-innerDiv' data-id='" + row["Repair"].OwnerId + "' " + style + ">" + data + "</a>";
                         }
                     },
                     {
-                        data: "Parking.CarType",
+                        data: "Repair.FinishDate",
                         render: function (data) {
                             if (!data) {
-                                return "无";
+                                return "未完成";
                             }
-                            return data;
+                            return Common.parseDate(data).format("yyyy-MM-dd");
                         }
                     },
-                    {
-                        data: "Parking.CarNum",
-                        render: function (data) {
-                            if (!data) {
-                                return "无";
-                            }
-                            return data;
-                        }
-                    },
-                    {
-                        data: "Parking.Date",
-                        className: "my-parking-buildDate",
-                        render: function (data) {
-                            if (!data) {
-                                return "无";
-                            }
-                            var date = Common.parseDate(data);
-                            return date.format("yyyy-MM-dd");
-                        }
-                    },
+                    { data: "Repair.Staff" },
+                    { data: "Repair.Money" },
                     {
                         render: function (data, type, row, meta) {
                             return "<button type='button' class='btn btn-primary btn-sm my-btnEdit' data-rowIndex='" + meta.row + "'>编辑</button>";
@@ -383,8 +430,23 @@
             $document.on("show.bs.modal", "#modalAdd", function (e) {
                 var $this = $(this);
                 $this.find("input").val("");
+
+                //获取现有选项
+                $.when(setOwnerOptHtml()).done(function (data) {
+                    var html = "<option value='0'>加载中...</option>";
+                    if (data) {
+                        alert("加载住户信息失败：" + data);
+                    } else {
+                        html = useOwnerOptHtml;
+                    }
+
+                    var $ownerSelect = $this.find("[name='OwnerId']");
+                    $ownerSelect.html(html);
+                    $ownerSelect.selectpicker("refresh");
+                });
+
                 //设置默认日期为今天
-                //$("#addBuildDate").datepicker("setDate", Date());
+                $("#addApplyDate").datepicker("setDate", Date());
             });
 
             //添加、编辑的弹出窗口隐藏时隐藏提示.
@@ -402,14 +464,20 @@
             //添加提交按钮点击事件
             $document.on("click", "#btnAddApply", function () {
                 var $form = $("#formAdd");
-                if (Common.validateForm($form)) {
+                var $owner = $form.find("[name='OwnerId']");
+                if ($owner.val() <= 0) {
+                    alert("请先选择住户，如果加载失败，请重新打开");
+                } else if (Common.validateForm($form)) {
                     var $this = $(this);
                     //TODO
                     $.ajax({
-                        url: "/Parking/AddParking",
+                        url: "/Repair/AddRepair",
                         method: "post",
                         data: {
                             Name: $form.find("[name='Name']").val(),
+                            OwnerId: $owner.val(),
+                            Discription: $form.find("[name='Discription']").val(),
+                            ApplyDate: $form.find("[name='ApplyDate']").val(),
                         },
                         success: function (res) {
                             alert(res.Msg);
@@ -436,43 +504,46 @@
             });
 
             //编辑按钮点击事件
-            $document.on("click", ".my-btnEdit", function(){
+            $document.on("click", ".my-btnEdit", function () {
                 var $this = $(this);
                 var $form = $("#formEdit");
                 var data = myDataTable.rows($this.attr("data-rowIndex")).data()[0];
 
-                //获取现有住户选项
+                //给编辑框里的输入框赋值
+                $form.find("[name='Id']").val(data.Repair.Id);
+                $form.find("[name='Name']").val(data.Repair.Name);
+                $form.find("[name='Money']").val(data.Repair.Money);
+                $form.find("[name='Staff']").val(data.Repair.Staff);
+                $form.find("[name='Discription']").val(data.Repair.Discription);
+                $form.find("[name='ApplyDate']").val(Common.parseDate(data.Repair.ApplyDate).format("yyyy-MM-dd"));
+                if(data.Repair.FinishDate){
+                    $form.find("[name='FinishDate']").val(Common.parseDate(data.Repair.FinishDate).format("yyyy-MM-dd"));
+                } else {
+                    $form.find("[name='FinishDate']").val("");
+                }
+
+                //获取现有选项
                 $.when(setOwnerOptHtml()).done(function (res) {
-                    var html = "<option value='0'>无</option>"
-                    if (res) {
-                        alert("加载住户信息失败：" + res);
-                        if (data.Parking.OwnerId) {
-                            html += "<option value='" + data.Parking.OwnerId + "'>" + data.OwnerName + "</option>";
+                    var html = "<option value='" + data.Repair.OwnerId + "'>" + data.OwnerName + "</option>";
+                    if (!(data.Repair.Disuse)) {
+                        if (res) {
+                            alert("加载住户信息失败：" + res);
+                        } else {
+                            html = useOwnerOptHtml;
                         }
-                        
-                    } else {
-                        html += ownerOptHtml;
                     }
+
                     var $ownerSelect = $form.find("[name='OwnerId']");
                     $ownerSelect.html(html);
                     $ownerSelect.selectpicker("refresh");
-                    if (data.Parking.OwnerId) {
-                        $ownerSelect.selectpicker("val", data.Parking.OwnerId);
-                    }
-                    $ownerSelect.trigger("changed.bs.select");
+                    $ownerSelect.selectpicker("val", data.Repair.OwnerId);
                 });
 
-                //给编辑框里的输入框赋值
-                $form.find("[name='Id']").val(data.Parking.Id);
-                $form.find("[name='Name']").val(data.Parking.Name);
-                if (data.Parking.OwnerId) {
-                    $form.find("[name='CarType']").val(data.Parking.CarType);
-                    $form.find("[name='CarNum']").val(data.Parking.CarNum);
-                    $form.find("[name='Date']").val(Common.parseDate(data.Parking.Date).format("yyyy-MM-dd"));
+                //当住户已搬走时禁止编辑
+                if (data.Repair.Disuse) {
+                    $('#modalEdit').find("#btnEditApply").prop("disabled", true);
                 } else {
-                    $form.find("[name='CarType']").val("");
-                    $form.find("[name='CarNum']").val("");
-                    $form.find("[name='Date']").val("");
+                    $('#modalEdit').find("#btnEditApply").prop("disabled", false);
                 }
 
                 //显示编辑框
@@ -482,18 +553,23 @@
             //编辑框提交按钮
             $document.on("click", "#btnEditApply", function () {
                 var $form = $("#formEdit");
-                if (Common.validateForm($form)) {
+                var $owner = $form.find("[name='OwnerId']");
+                if ($owner.val() <= 0) {
+                    alert("请先选择住户，如果加载失败，请重新打开");
+                } else if (Common.validateForm($form)) {
                     var $this = $(this);
                     $.ajax({
-                        url: "/Parking/UpdateParking",
+                        url: "/Repair/UpdateRepair",
                         method: "post",
                         data: {
                             Id: $form.find("[name='Id']").val(),
                             Name: $form.find("[name='Name']").val(),
-                            OwnerId: $form.find("[name='OwnerId']").val(),
-                            CarType: $form.find("[name='CarType']").val(),
-                            CarNum: $form.find("[name='CarNum']").val(),
-                            Date: $form.find("[name='Date']").val(),
+                            OwnerId: $owner.val(),
+                            Money: $form.find("[name='Money']").val(),
+                            Staff: $form.find("[name='Staff']").val(),
+                            ApplyDate: $form.find("[name='ApplyDate']").val(),
+                            FinishDate: $form.find("[name='FinishDate']").val(),
+                            Discription: $form.find("[name='Discription']").val(),
                         },
                         success: function (res) {
                             alert(res.Msg);
@@ -537,7 +613,7 @@
                         $this = $(this);
 
                         $.ajax({
-                            url: "/Parking/DeleteParkings",
+                            url: "/Repair/DeleteRepairs",
                             method: "post",
                             data: {
                                 ids: ids
@@ -563,17 +639,42 @@
                 }
             });
 
-            //住户select选择时
-            $document.on("changed.bs.select", "select[name='OwnerId']", function () {
+            //住户状态select选择时更新住户select
+            $document.on("changed.bs.select", "select[name='IsDisuse']", function () {
                 var $this = $(this);
-                var $form = $this.closest("form");
-                $form.find("[name='CarType']").prop("disabled", $this.val() <= 0);
-                $form.find("[name='CarNum']").prop("disabled", $this.val() <= 0);
-                $form.find("[name='Date']").prop("disabled", $this.val() <= 0);
+                var $ownerSelect = $this.closest("form").find("select[name='OwnerId']");
+                if ($ownerSelect.length > 0) {
+                    //获取住户选项
+                    $.when(setOwnerOptHtml()).done(function (data) {
+                        var html = "<option value='0'>全部</option>";
+                        if (data) {
+                            alert("加载住户信息失败：" + data);
+                        } else {
+                            console.log($this.val());
+                            switch ($this.val()) {
+                                case 0:
+                                case "0":
+                                    html += useOwnerOptHtml;
+                                    break;
+                                case 1:
+                                case "1":
+                                    html += disuseOwnerOptHtml;
+                                    break;
+                                default:
+                                    html += useOwnerOptHtml + disuseOwnerOptHtml;
+                                    break;
+                            }
+                        }
+
+                        var $ownerSelect = $("#formSearch").find("[name='OwnerId']");
+                        $ownerSelect.html(html);
+                        $ownerSelect.selectpicker("refresh");
+                    });
+                }
             });
 
             //住户名称点击时显示住户详情
-            $document.on("click", "a.my-parking-owner", function () {
+            $document.on("click", "a.my-repair-owner", function () {
                 var $this = $(this);
                 var $modalOwnerInfo = $("#modalOwnerInfo");
 
@@ -635,28 +736,37 @@
         function setOwnerOptHtml() {
             var deferredObj = $.Deferred();
             //当没有时用ajax获取
-            if (!ownerOptHtml) {
+            if (!useOwnerOptHtml) {
                 $.ajax({
                     url: "/Owner/GetOwnersCoreInfo",
                     //async: false,
-                    method: "post",
-                    data:{
-                        isDisuse: 0
+                    data: {
+                        isDisuse: 3
                     },
+                    method: "post",
                     success: function (res) {
                         if (res.Success) {
                             //myDataTable.ajax.reload();
-                            var list = res.Result;
-                            if (list.length == 0) {
+                            var uselist = res.Result.UseOwner;
+                            if (uselist.length == 0) {
                                 deferredObj.resolve("请先添加住户");
+                                return;
                             } else {
-                                var html = "";
-                                for (let i = 0; i < list.length; i++) {
-                                    html += "<option value='" + list[i].Id + "'>" + list[i].Name + "</option>";
+                                var html1 = "";
+                                for (let i = 0; i < uselist.length; i++) {
+                                    html1 += "<option value='" + uselist[i].Id + "'>" + uselist[i].Name + "</option>";
                                 }
-                                ownerOptHtml = html;
-                                deferredObj.resolve("");
+                                useOwnerOptHtml = html1;
                             }
+
+                            var disuselist = res.Result.DisuseOwner;
+                            var html2 = "";
+                            for (let i = 0; i < disuselist.length; i++) {
+                                html2 += "<option value='" + disuselist[i].Id + "'>" + disuselist[i].Name + "</option>";
+                            }
+                            disuseOwnerOptHtml = html2;
+
+                            deferredObj.resolve("");
                         }
                         else deferredObj.resolve(res.Msg);
                     },

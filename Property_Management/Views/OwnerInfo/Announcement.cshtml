@@ -1,0 +1,219 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width" />
+    <title>公告管理</title>
+
+    @Styles.Render("~/bundles/css/bootstrap")
+    @Styles.Render("~/bundles/css/datepicker")
+    @Styles.Render("~/bundles/css/datatables")
+    <link rel="stylesheet" type="text/css" href="~/css/Common.css" />
+
+    <style>
+    </style>
+</head>
+<body>
+    @{Html.RenderAction("GetHeader", "Account"); }
+
+    <div class="container">
+        <h2>公告</h2>
+        <div>
+            <form class="form-inline" id="formSearch">
+                <div class="form-group">
+                    <label>标题</label>
+                    <input type="text" class="form-control" name="Title" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label class="sr-only">日期</label>
+                    <div class="input-group input-daterange datepicker">
+                        <div class="input-group-addon">日期</div>
+                        <input type="text" class="form-control" name="BeginDate">
+                        <div class="input-group-addon">至</div>
+                        <input type="text" class="form-control" name="EndDate">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-default" id="btnSearch">查询</button>
+            </form>
+
+            <div class="my-toolbar">
+            </div>
+
+            <table id="myTable" class="table table-striped my-datatables">
+                <thead>
+                    <tr>
+                        <th>标题</th>
+                        <th>日期</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- 弹出窗口 -->
+        <div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-labelledby="modalInfo">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">公告详情</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right"></label>
+                            <h4 class="col-xs-6" name="Title"></h4>
+                        </div>
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right"></label>
+                            <div class="col-xs-6" name="Date"></div>
+                        </div>
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right"></label>
+                            <pre class="col-xs-6 my-announcement-content" name="Content">
+                            </pre>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    @Scripts.Render("~/bundles/js/jquery_bootstrap")
+    @Scripts.Render("~/bundles/js/datepicker")
+    @Scripts.Render("~/bundles/js/datatables")
+    <script src="~/js/Common.js"></script>
+
+    <script>
+        $(function () {
+            init();
+        });
+
+        var myDataTable;      //datatables对象
+        var waitReload = false;     //表示修改或添加过，需要重载表格
+
+        function init() {
+            initView();
+            bindEvent();
+        }
+
+        function initView() {
+            //设置菜单选项激活
+            $("#liOwnerAnnouncement").addClass("active");
+
+            //初始化popover组件
+            $("[data-toggle='popover']").popover(Common.popoverOptions);
+
+            //初始化日期插件
+            $(".datepicker").datepicker(Common.datepickerOptions);
+
+            //初始化datatable
+            var $myTable = $("#myTable");
+            //$myTable.DataTable(Common.datatablesOptions);
+            var $formSearch = $("#formSearch");
+            myDataTable = $myTable.DataTable({
+                ajax: function (data, callback, settings) {
+                    var $btnSearch = $("#btnSearch");
+                    $.ajax({
+                        dataType: "JSON",
+                        type: "POST",
+                        data: {
+                            pageSize: data.length,		//data.length:每页的条数
+                            page: parseInt((data.start + 1) / data.length) + 1,	//data.start:第一条数据的起始位置(0)
+                            title: $formSearch.find("[name='Title']").val(),
+                            beginDate: $formSearch.find("[name='BeginDate']").val(),
+                            endDate: $formSearch.find("[name='EndDate']").val()
+                        },
+                        url: "/OwnerInfo/GetAnnouncementPage",
+                        success: function (res) {
+                            var returnData = {};
+                            if (res.Success) {
+                                //封装返回的json变为dataTable要求的标准
+                                returnData.data = res.Result.Data;               //数据
+                                returnData.recordsTotal = res.Result.Total;      //总数据数
+                                returnData.recordsFiltered = res.Result.Total;   //过滤后的数据总数
+                            } else {
+                                alert(res.Msg);
+
+                                returnData.data = {};             //数据
+                                returnData.recordsTotal = 0;      //总数据数
+                                returnData.recordsFiltered = 0;   //过滤后的数据总数
+                            }
+                            returnData.draw = data.draw;                     //确保Ajax从服务器返回的是对应的
+                            callback(returnData);
+                        },
+                        error: function (xmlHttpRequest, textStatus, errorThrown) {
+                            Common.ajaxError(xmlHttpRequest, textStatus, errorThrown);
+                        },
+                        beforeSend: function () {
+                            $btnSearch.attr("disabled", true);
+                        },
+                        complete: function () {
+                            $btnSearch.attr("disabled", false);
+                        },
+                    });
+                },
+                columns: [
+                    {
+                        data: "Title",
+                        render: function (data, row, type, meta) {
+                            return "<a href='#' class='my-announcement-title my-innerDiv' data-rowIndex='" + meta.row + "'>" + data + "</a>"
+                        }
+                    },
+                    {
+                        data: "Date",
+                        render: function (data) {
+                            var date = Common.parseDate(data);
+                            return date.format("yyyy-MM-dd");
+                        }
+                    },
+                ],
+            });
+        }
+
+        function bindEvent() {
+            var $document = $(document);
+
+            //阻止datepicker的show/hide事件向上冒泡，因为会触发modal的事件
+            $document.on("show", ".datepicker", function (e) {
+                //e.preventDefault();
+                e.stopPropagation();
+            });
+            $document.on("hide", ".datepicker", function (e) {
+                //e.preventDefault();
+                e.stopPropagation();
+            });
+
+            //查看公告点击事件
+            $document.on("click", "a.my-announcement-title", function () {
+                var $this = $(this);
+                var $modalInfo = $("#modalInfo");
+                var data = myDataTable.rows($this.attr("data-rowIndex")).data()[0];
+
+                //给编辑框里的输入框赋值
+                $modalInfo.find("[name='Title']").text(data.Title);
+                $modalInfo.find("[name='Content']").text(data.Content);
+                $modalInfo.find("[name='Date']").text(Common.parseDate(data.Date).format("yyyy-MM-dd"));
+
+                //显示编辑框
+                $('#modalInfo').modal('show');
+            });
+
+            //查询按钮点击事件
+            $document.on("click", "#btnSearch", function () {
+                myDataTable.ajax.reload();
+            });
+        }
+    </script>
+</body>
+</html>

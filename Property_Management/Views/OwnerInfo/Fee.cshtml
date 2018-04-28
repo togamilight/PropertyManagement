@@ -1,0 +1,344 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width" />
+    <title>缴费记录</title>
+
+    @Styles.Render("~/bundles/css/bootstrap")
+    @Styles.Render("~/bundles/css/datepicker")
+    @Styles.Render("~/bundles/css/datatables")
+    @Styles.Render("~/bundles/css/select")
+    <link rel="stylesheet" type="text/css" href="~/css/Common.css" />
+
+    <style>
+    </style>
+</head>
+<body>
+    @{Html.RenderAction("GetHeader", "Account"); }
+
+    <div class="container">
+        <h2>缴费记录</h2>
+        <div>
+            <form class="form-inline" id="formSearch">
+                <div class="form-group">
+                    <label>&nbsp;&nbsp;项目</label>
+                    <select class="selectpicker form-control" name="FeeItemId">
+                        <option value="0">全部</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>&nbsp;&nbsp;缴费状态</label>
+                    <select class="selectpicker form-control" name="IsFinish">
+                        <option value="2">全部</option>
+                        <option value="0">未缴</option>
+                        <option value="1">已缴</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="sr-only">日期</label>
+                    <div class="input-group input-daterange datepicker">
+                        <div class="input-group-addon">日期</div>
+                        <input type="text" class="form-control" name="BeginDate">
+                        <div class="input-group-addon">至</div>
+                        <input type="text" class="form-control" name="EndDate">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
+            </form>
+
+            <div class="my-toolbar">
+            </div>
+
+            <table id="myTable" class="table table-striped my-datatables">
+                <thead>
+                    <tr>
+                        <th>项目</th>
+                        <th>收费标准</th>
+                        <th>费用</th>
+                        <th>日期</th>
+                        <th>缴费日期</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- 收费项目详情弹出窗口 -->
+        <div class="modal fade" id="modalFeeItemInfo" tabindex="-1" role="dialog" aria-labelledby="modalFeeItemInfo">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">收费项目详情</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right">编号</label>
+                            <div class="col-xs-6" name="Id">
+                                加载中...
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right">名称</label>
+                            <div class="col-xs-6" name="Name">
+                                加载中...
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right">收费标准</label>
+                            <div class="col-xs-6" name="Scale">
+                                加载中...
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right">描述</label>
+                            <pre class="col-xs-6" name="Discription"></pre>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    @Scripts.Render("~/bundles/js/jquery_bootstrap")
+    @Scripts.Render("~/bundles/js/datepicker")
+    @Scripts.Render("~/bundles/js/datatables")
+    @Scripts.Render("~/bundles/js/select")
+    <script src="~/js/Common.js"></script>
+
+    <script>
+        $(function () {
+            init();
+        });
+
+        var myDataTable;      //datatables对象
+        var waitReload = false;     //表示修改或添加过，需要重载表格
+        var feeItemOptHtml = "";        //收费项目select的option
+
+        function init() {
+            initView();
+            bindEvent();
+        }
+
+        function initView() {
+            //设置菜单选项激活
+            $("#liOwnerFee").addClass("active");
+
+            //初始化popover组件
+            $("[data-toggle='popover']").popover(Common.popoverOptions);
+
+            //初始化日期插件
+            $(".datepicker").datepicker(Common.datepickerOptions);
+
+
+            //初始化select组件
+            $(".selectpicker").selectpicker({
+                size: 10,
+                liveSearch: true,
+                width: "auto"
+            });
+
+            //获取收费项目选项
+            $.when(setFeeItemOptHtml()).done(function (data) {
+                var html = "<option value='0'>全部</option>";
+                if (data) {
+                    alert("加载收费项目信息失败：" + data);
+                } else {
+                    html += feeItemOptHtml;
+                }
+
+                var $feeItemIdSelect = $("#formSearch").find("[name='FeeItemId']");
+                $feeItemIdSelect.html(html);
+                $feeItemIdSelect.selectpicker("refresh");
+            });
+
+            //初始化datatable
+            var $myTable = $("#myTable");
+            var $formSearch = $("#formSearch");
+            myDataTable = $myTable.DataTable({
+                ajax: function (data, callback, settings) {
+                    var $btnSearch = $("#btnSearch");
+                    $.ajax({
+                        dataType: "JSON",
+                        type: "POST",
+                        data: {
+                            pageSize: data.length,		//data.length:每页的条数
+                            page: parseInt((data.start + 1) / data.length) + 1,	//data.start:第一条数据的起始位置(0)
+                            feeItemId: $formSearch.find("[name='FeeItemId']").val(),
+                            beginDate: $formSearch.find("[name='BeginDate']").val(),
+                            endDate: $formSearch.find("[name='EndDate']").val(),
+                            isFinish: $formSearch.find("[name='IsFinish']").val(),
+                        },
+                        url: "/OwnerInfo/GetFeePage",
+                        success: function (res) {
+                            var returnData = {};
+                            if (res.Success) {
+                                //封装返回的json变为dataTable要求的标准
+                                returnData.data = res.Result.Data;               //数据
+                                returnData.recordsTotal = res.Result.Total;      //总数据数
+                                returnData.recordsFiltered = res.Result.Total;   //过滤后的数据总数
+                            } else {
+                                alert(res.Msg);
+
+                                returnData.data = {};
+                                returnData.recordsTotal = 0;
+                                returnData.recordsFiltered = 0;
+                            }
+                            returnData.draw = data.draw;
+                            callback(returnData);
+                        },
+                        error: function (xmlHttpRequest, textStatus, errorThrown) {
+                            Common.ajaxError(xmlHttpRequest, textStatus, errorThrown);
+                        },
+                        beforeSend: function () {
+                            $btnSearch.attr("disabled", true);
+                        },
+                        complete: function () {
+                            $btnSearch.attr("disabled", false);
+                        },
+                    });
+                },
+                columns: [
+                    {
+                        data: "FeeItemName",
+                        render: function (data, type, row) {
+                            return "<a href='#' class='my-fee-feeItem my-innerDiv' data-id='" + row["Fee"].FeeItemId + "' data-scale='" + row.Scale + "'>" + data + "</a>";
+                        }
+                    },
+                    { data: "Scale" },
+                    { data: "Fee.Money" },
+                    {
+                        data: "Fee.Date",
+                        render: function (data) {
+                            return Common.parseDate(data).format("yyyy-MM-dd");
+                        }
+                    },
+                    {
+                        data: "Fee.FinishDate",
+                        render: function (data) {
+                            if (!data) {
+                                return "未缴";
+                            }
+                            return Common.parseDate(data).format("yyyy-MM-dd");
+                        }
+                    },
+                    { data: "Fee.Remark" }
+                ],
+            });
+        }
+
+        function bindEvent() {
+            var $document = $(document);
+
+            //阻止datepicker的show/hide事件向上冒泡，因为会触发modal的事件
+            $document.on("show", ".datepicker", function (e) {
+                //e.preventDefault();
+                e.stopPropagation();
+            });
+            $document.on("hide", ".datepicker", function (e) {
+                //e.preventDefault();
+                e.stopPropagation();
+            });
+
+            //收费项目名称点击时显示收费项目详情
+            $document.on("click", "a.my-fee-feeItem", function () {
+                var $this = $(this);
+                var $modalFeeItemInfo = $("#modalFeeItemInfo");
+
+                var id = $this.attr("data-id");
+                var scale = $this.attr("data-scale");
+
+                var divId = $modalFeeItemInfo.find("div[name='Id']");
+                //跟已显示的详情不一样，重新获取
+                if (divId.text() != id) {
+                    divId.text(id);
+                    $modalFeeItemInfo.find("div[name='Name']").text($this.text());
+
+                    var divScale = $modalFeeItemInfo.find("div[name='Scale']");
+                    var divDiscription = $modalFeeItemInfo.find("[name='Discription']");
+
+                    divScale.text(scale);
+                    divDiscription.html("加载中...");
+
+                    $.ajax({
+                        url: "/FeeItem/GetFeeItemInfo",
+                        method: "post",
+                        data: {
+                            id: id
+                        },
+                        success: function (res) {
+                            if (res.Success) {
+                                divDiscription.text(res.Result.Discription);
+                                divScale.text(res.Result.Scale);
+                            } else {
+                                alert(res.Msg);
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            divId.text("");
+                            Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
+                        }
+                    });
+                }
+
+                //显示详情框
+                $modalFeeItemInfo.modal('show');
+
+                return false;
+            });
+        }
+
+        //收费项目select的选项,传入延迟对象来配合ajax保证延迟执行，不阻塞线程
+        function setFeeItemOptHtml() {
+            var deferredObj = $.Deferred();
+            //当没有时用ajax获取
+            if (!feeItemOptHtml) {
+                $.ajax({
+                    url: "/FeeItem/GetFeeItemsCoreInfo",
+                    //async: false,
+                    method: "post",
+                    success: function (res) {
+                        if (res.Success) {
+                            //myDataTable.ajax.reload();
+                            var list = res.Result;
+                            if (list.length == 0) {
+                                deferredObj.resolve("请先添加收费项目");
+                                return;
+                            } else {
+                                var html = "";
+                                for (let i = 0; i < list.length; i++) {
+                                    html += "<option value='" + list[i].Id + "' data-scale='" + list[i].Scale + "'>" + list[i].Name + "</option>";
+                                }
+                                feeItemOptHtml = html;
+                                deferredObj.resolve("");
+                            }
+                        }
+                        else deferredObj.resolve(res.Msg);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        //Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
+                        deferredObj.resolve("连接失败，请稍候重试");
+                    },
+                });
+            } else {
+                deferredObj.resolve("");
+            }
+
+            return deferredObj;
+        }
+    </script>
+</body>
+</html>

@@ -11,6 +11,7 @@ using System.Web.Mvc;
 
 namespace Property_Management.Controllers
 {
+    [AccountFilter("Admin")]
     public class FeeItemController : Controller
     {
         private IFeeItemService feeItemService = new FeeItemService();
@@ -51,11 +52,13 @@ namespace Property_Management.Controllers
             return Json(feeItemService.QueryToPage(where, page, pageSize));
         }
 
+        [AccountFilter("Both")]
         [JsonExceptionFilter]
         public ActionResult GetFeeItemsCoreInfo() {
             return Json(feeItemService.GetCoreInfos());
         }
 
+        [AccountFilter("Both")]
         [JsonExceptionFilter]
         public ActionResult GetFeeItemInfo(int id) {
             return Json(feeItemService.Query(id));

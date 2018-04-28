@@ -17,36 +17,59 @@
                 if (account != null) {
                     if (account.IsAdmin) {
                         <ul class="nav navbar-nav">
-                            <li><a href="#">Home</a></li>
-                            <li><a href="#about">About</a></li>
+                            <li id="liAnnouncementManage"><a href="/Announcement/AnnouncementManage">公告管理</a></li>
                             <li class="dropdown" id="liOwnerManage">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">住户管理 <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">现有住户</a></li>
+                                    <li><a href="/Owner/OwnerManage">现有住户</a></li>
                                     <li><a href="#">搬走住户</a></li>
                                 </ul>
                             </li>
                             <li class="dropdown" id="liHouseManage">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">房产管理 <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">楼栋管理</a></li>
-                                    <li><a href="#">房屋管理</a></li>
+                                    <li><a href="/Building/BuildingManage">楼栋管理</a></li>
+                                    <li><a href="/Room/RoomManage">房屋管理</a></li>
                                 </ul>
                             </li>
-                            <li id="liParkingManage"><a href="#">车位管理</a></li>
+                            <li id="liParkingManage"><a href="/Parking/ParkingManage">车位管理</a></li>
+                            <li class="dropdown" id="liFeeManage">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">收费管理 <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/FeeItem/FeeItemManage">收费项目</a></li>
+                                    <li><a href="/Fee/FeeManage">收费记录</a></li>
+                                </ul>
+                            </li>
+                            <li id="liRepairManage"><a href="/Repair/RepairManage">维修管理</a></li>
                         </ul>
 
                         <ul class="nav navbar-nav navbar-right">
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@account.Name <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">修改密码</a></li>
-                                    <li><a href="#">注销</a></li>
+                                    <li><a href="/AdminInfo/ChangePassword">修改密码</a></li>
+                                    <li><a href="/AdminInfo/LogOut">注销</a></li>
                                 </ul>
                             </li>
                         </ul>
-                    }else {
+                    }
+                    else {
+                        <ul class="nav navbar-nav">
+                            <li id="liOwnerInfo"><a href="/OwnerInfo/OwnerInfo">个人信息</a></li>
+                            <li id="liOwnerAnnouncement"><a href="/OwnerInfo/Announcement">公告</a></li>
+                            <li id="liOwnerFee"><a href="/OwnerInfo/Fee">缴费记录</a></li>
+                            <li id="liOwnerRepair"><a href="/OwnerInfo/Repair">维修记录</a></li>
+                        </ul>
 
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@account.Name <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/OwnerInfo/ChangePassword">修改密码</a></li>
+                                    <li><a href="/OwnerInfo/LogOut">注销</a></li>
+                                </ul>
+                            </li>
+                        </ul>
                     }
                 }
             }

@@ -4,6 +4,7 @@ using Property_Management.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Web;
 
 namespace Property_Management.BLL.IService {
@@ -27,6 +28,6 @@ namespace Property_Management.BLL.IService {
         /// 获取所有现有住户的姓名和id
         /// </summary>
         /// <returns></returns>
-        ResultInfo GetCoreInfo();
+        ResultInfo GetCoreInfo(Expression<Func<Owner, bool>> whereLambda);
     }
 }

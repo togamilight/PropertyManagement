@@ -11,6 +11,7 @@ using System.Web.Mvc;
 
 namespace Property_Management.Controllers
 {
+    [AccountFilter("Admin")]
     public class ParkingController : Controller
     {
         private IParkingService parkingService = new ParkingService();

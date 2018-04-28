@@ -10,13 +10,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width" />
-    <title>管理员登录</title>
+    <title>住户登录</title>
     @Styles.Render("~/bundles/css/bootstrap")
 
-    <link rel="stylesheet" type="text/css" href="~/css/Common.css"/>
+    <link rel="stylesheet" type="text/css" href="~/css/Common.css" />
 
-    <style>
-    </style>
 </head>
 <body>
     @{Html.RenderAction("GetHeader", "Account"); }
@@ -25,7 +23,7 @@
 
         <form class="my-form-login">
             <div class="form-group">
-                <h2>管理员登录</h2>
+                <h2>请先登录</h2>
             </div>
             <div class="form-group my-input-group">
                 <label for="inputEmail" class="sr-only">用户名</label>
@@ -52,7 +50,7 @@
                 let $this = $(this);
                 if (Common.validateForm($(this).parent("form"))) {
                     $.ajax({
-                        url: "/Account/DoAdminLogin",
+                        url: "/Account/DoOwnerLogin",
                         method: "post",
                         data: {
                             Name: $("#inputName").val(),
@@ -61,7 +59,7 @@
                         success: function (res) {
                             if (res.Success) {
                                 //TODO跳转
-                                window.location.href = "/Announcement/AnnouncementManage";
+                                window.location.href = "/OwnerInfo/Announcement";
                             } else {
                                 alert(res.Msg);
                             }

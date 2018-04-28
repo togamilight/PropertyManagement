@@ -11,6 +11,7 @@ using System.Web.Mvc;
 
 namespace Property_Management.Controllers
 {
+    [AccountFilter("Admin")]
     public class RoomController : Controller
     {
         private IRoomService roomService = new RoomService();

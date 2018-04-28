@@ -2,6 +2,7 @@
 using Property_Management.BLL.Service;
 using Property_Management.DAL.Entities;
 using Property_Management.Filters;
+using Property_Management.Models;
 using Property_Management.Util;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Web.Mvc;
 
 namespace Property_Management.Controllers
 {
+    [AccountFilter("Admin")]
     public class OwnerController : Controller
     {
         private IOwnerService ownerService = new OwnerService();
@@ -83,8 +85,24 @@ namespace Property_Management.Controllers
         }
 
         [JsonExceptionFilter]
-        public ActionResult GetOwnersCoreInfo() {
-            return Json(ownerService.GetCoreInfo());
+        public ActionResult GetOwnersCoreInfo(int isDisuse = 0) {
+            var where = PredicateBuilder.True<Owner>();
+            if (isDisuse == 1) {
+                where = where.And(o => o.Disuse);
+            }else if(isDisuse == 0) {
+                where = where.And(o => !o.Disuse);
+            }else if(isDisuse == 3) {
+                var where1 = PredicateBuilder.True<Owner>().And(o => o.Disuse);
+                var res1 = ownerService.GetCoreInfo(where1);
+                var where2 = PredicateBuilder.True<Owner>().And(o => !o.Disuse);
+                var res2 = ownerService.GetCoreInfo(where2);
+                var res = new ResultInfo(true, "", new { DisuseOwner = res1.Result, UseOwner = res2.Result });
+
+                return Json(res);
+            }
+
+
+            return Json(ownerService.GetCoreInfo(where));
         }
     }
 }

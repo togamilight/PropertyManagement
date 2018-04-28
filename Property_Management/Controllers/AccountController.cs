@@ -26,7 +26,13 @@ namespace Property_Management.Controllers {
         public ActionResult AdminLogin() {
             //TODO 如果已登录，跳转到首页
 
-            return View("AdminLogin");
+            return View();
+        }
+
+        public ActionResult OwnerLogin() {
+            //TODO 如果已登录，跳转到首页
+
+            return View();
         }
 
         [JsonExceptionFilter]
@@ -41,6 +47,23 @@ namespace Property_Management.Controllers {
                 Id = admin.Id,
                 Name = admin.Name,
                 IsAdmin = true
+            };
+            return Json(new ResultInfo(true, "登录成功", null));
+
+        }
+
+        [JsonExceptionFilter]
+        public ActionResult DoOwnerLogin(Owner owner) {
+            var ownerService = new OwnerService();
+            owner.Id = ownerService.CheckAccount(owner);
+            if (owner.Id == 0) {
+                return Json(new ResultInfo(false, "用户名或密码错误", null));
+            }
+
+            Session["Account"] = new AccountInfo() {
+                Id = owner.Id,
+                Name = owner.Name,
+                IsAdmin = false
             };
             return Json(new ResultInfo(true, "登录成功", null));
 

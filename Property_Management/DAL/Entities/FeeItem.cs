@@ -14,7 +14,7 @@ namespace Property_Management.DAL.Entities {
         [Display(Name = "收费标准"), Required, StringLength(20)]
         public string Scale { get; set; }
 
-        [Display(Name = "描述"), StringLength(100)]
+        [Display(Name = "描述"), StringLength(200)]
         public string Discription { get; set; }
     }
 }

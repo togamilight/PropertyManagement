@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace Property_Management.Filters {
     public class AccountFilter: ActionFilterAttribute {
@@ -20,16 +21,28 @@ namespace Property_Management.Filters {
             if (account == null) {
                 flag = true;
                 //TODO 跳转到用户登录页面
-                //filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "MyAdmin", action = "Login", message = "请先登录" }));
+            }else {
+                switch (CheckType) {
+                    case "Admin":
+                        if (!account.IsAdmin) {
+                            flag = true;
+                            //TODO 跳转到您无权限页面
+                        }
+                        break;
+                    case "Owner":
+                        if (account.IsAdmin) {
+                            flag = true;
+                            //TODO 跳转到用户登录页面
+                        }
+                        break;
+                    case "Both":
+                        flag = false;
+                        break;
+                }
             }
-            else if(CheckType == "Admin") {
-                if (!account.IsAdmin) {
-                    //TODO 跳转到您无权限页面
-                }
-            }else if(CheckType == "Owner") {
-                if (account.IsAdmin) {
-                    //TODO 跳转到用户登录页面
-                }
+
+            if (flag) {
+                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "OwnerLogin", message = "请先登录" }));
             }
         }
     }
