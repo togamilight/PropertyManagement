@@ -299,6 +299,11 @@
 
                 return false;
             });
+
+            //查询按钮点击事件
+            $document.on("click", "#btnSearch", function () {
+                myDataTable.ajax.reload();
+            });
         }
 
         //收费项目select的选项,传入延迟对象来配合ajax保证延迟执行，不阻塞线程

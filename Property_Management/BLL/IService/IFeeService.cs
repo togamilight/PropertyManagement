@@ -11,5 +11,9 @@ using System.Threading.Tasks;
 namespace Property_Management.BLL.IService {
     public interface IFeeService : IBaseService<Fee> {
         ResultInfo QueryToPageByOwner(Expression<Func<Fee, bool>> whereLambda, int page, int pageSize);
+
+        int GetUnFinishCountForOwner(int ownerId);
+
+        ResultInfo GetStatistics();
     }
 }

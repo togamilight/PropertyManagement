@@ -60,7 +60,7 @@
                         <th>房型</th>
                         <th>楼栋</th>
                         <th>楼层</th>
-                        <th>业主</th>
+                        <th>住户</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -653,19 +653,19 @@
 
                 var id = $this.attr("data-id");
 
-                var divId = $modalBuildingInfo.find("div[name='Id']");
+                var $divId = $modalBuildingInfo.find("div[name='Id']");
                 //跟已显示的详情不一样，重新获取
-                if (divId.text() != id) {
-                    divId.text(id);
+                if ($divId.text() != id) {
+                    $divId.text(id);
                     $modalBuildingInfo.find("div[name='Name']").text($this.text());
 
-                    var divArea = $modalBuildingInfo.find("div[name='Area']");
-                    var divFloorNum = $modalBuildingInfo.find("div[name='FloorNum']");
-                    var divBuildDate = $modalBuildingInfo.find("div[name='BuildDate']");
+                    var $divArea = $modalBuildingInfo.find("div[name='Area']");
+                    var $divFloorNum = $modalBuildingInfo.find("div[name='FloorNum']");
+                    var $divBuildDate = $modalBuildingInfo.find("div[name='BuildDate']");
 
-                    divArea.text("加载中...");
-                    divFloorNum.text("加载中...");
-                    divBuildDate.text("加载中...");
+                    $divArea.text("加载中...");
+                    $divFloorNum.text("加载中...");
+                    $divBuildDate.text("加载中...");
 
                     $.ajax({
                         url: "/Building/GetBuildingInfo",
@@ -675,15 +675,16 @@
                         },
                         success: function (res) {
                             if (res.Success) {
-                                divArea.text(res.Result.Area);
-                                divFloorNum.text(res.Result.FloorNum);
-                                divBuildDate.text(Common.parseDate(res.Result.BuildDate).format("yyyy-MM-dd"));
+                                $divArea.text(res.Result.Area);
+                                $divFloorNum.text(res.Result.FloorNum);
+                                $divBuildDate.text(Common.parseDate(res.Result.BuildDate).format("yyyy-MM-dd"));
                             } else {
                                 alert(res.Msg);
+                                $divId.text("");
                             }
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
-                            divId.text("");
+                            $divId.text("");
                             Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
                         }
                     });
@@ -702,25 +703,25 @@
 
                 var id = $this.attr("data-id");
 
-                var divId = $modalOwnerInfo.find("div[name='Id']");
+                var $divId = $modalOwnerInfo.find("div[name='Id']");
                 //跟已显示的详情不一样，重新获取
-                if (divId.text() != id) {
-                    divId.text(id);
+                if ($divId.text() != id) {
+                    $divId.text(id);
                     $modalOwnerInfo.find("div[name='Name']").text($this.text());
 
-                    var divSex = $modalOwnerInfo.find("div[name='Sex']");
-                    var divPhoneNum = $modalOwnerInfo.find("div[name='PhoneNum']");
-                    var divIDCard = $modalOwnerInfo.find("div[name='IDCard']");
-                    var divRoom = $modalOwnerInfo.find("div[name='Room']");
-                    var divParking = $modalOwnerInfo.find("div[name='Parking']");
-                    var divDate = $modalOwnerInfo.find("div[name='Date']");
+                    var $divSex = $modalOwnerInfo.find("div[name='Sex']");
+                    var $divPhoneNum = $modalOwnerInfo.find("div[name='PhoneNum']");
+                    var $divIDCard = $modalOwnerInfo.find("div[name='IDCard']");
+                    var $divRoom = $modalOwnerInfo.find("div[name='Room']");
+                    var $divParking = $modalOwnerInfo.find("div[name='Parking']");
+                    var $divDate = $modalOwnerInfo.find("div[name='Date']");
 
-                    divSex.text("加载中...");
-                    divPhoneNum.text("加载中...");
-                    divIDCard.text("加载中...");
-                    divRoom.text("加载中...");
-                    divParking.text("加载中...");
-                    divDate.text("加载中...");
+                    $divSex.text("加载中...");
+                    $divPhoneNum.text("加载中...");
+                    $divIDCard.text("加载中...");
+                    $divRoom.text("加载中...");
+                    $divParking.text("加载中...");
+                    $divDate.text("加载中...");
 
                     $.ajax({
                         url: "/Owner/GetOwnerInfo",
@@ -730,18 +731,19 @@
                         },
                         success: function (res) {
                             if (res.Success) {
-                                divSex.text(res.Result.Owner.Sex ? "男" : "女");
-                                divPhoneNum.text(res.Result.Owner.PhoneNum);
-                                divIDCard.text(res.Result.Owner.IDCard);
-                                divRoom.text(res.Result.RoomName + "(" + res.Result.BuildingName + ")");
-                                divParking.text(res.Result.ParkingName ? res.Result.ParkingName : "无");
-                                divDate.text(Common.parseDate(res.Result.Owner.Date).format("yyyy-MM-dd"));
+                                $divSex.text(res.Result.Owner.Sex ? "男" : "女");
+                                $divPhoneNum.text(res.Result.Owner.PhoneNum);
+                                $divIDCard.text(res.Result.Owner.IDCard);
+                                $divRoom.text(res.Result.RoomName + "(" + res.Result.BuildingName + ")");
+                                $divParking.text(res.Result.ParkingName ? res.Result.ParkingName : "无");
+                                $divDate.text(Common.parseDate(res.Result.Owner.Date).format("yyyy-MM-dd"));
                             } else {
                                 alert(res.Msg);
+                                $divId.text("");
                             }
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
-                            divId.text("");
+                            $divId.text("");
                             Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
                         }
                     });

@@ -1,0 +1,92 @@
+﻿@model Property_Management.Models.OwnerBaseInfo
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width" />
+    <title>个人信息</title>
+
+    @Styles.Render("~/bundles/css/bootstrap")
+    <link rel="stylesheet" type="text/css" href="~/css/Common.css" />
+
+    <style>
+    </style>
+</head>
+<body>
+    @{Html.RenderAction("GetHeader", "Account"); }
+
+    <div class="container">
+        <h2>个人信息</h2>
+        <div class="row">
+            <label class="control-label col-xs-2">用户名</label>
+            <div class="col-xs-4">@Model.OwnerName</div>
+            <label class="control-label col-xs-2">性别</label>
+            <div class="col-xs-4">
+                @if (Model.Sex) {
+                    @:男
+                } else {
+                    @:女
+                }
+            </div>
+        </div>
+        <div class="row">
+            <label class="control-label col-xs-2">联系电话</label>
+            <div class="col-xs-4">@Model.PhoneNum</div>
+            <label class="control-label col-xs-2">身份证号</label>
+            <div class="col-xs-4">@Model.IDCard</div>
+        </div>
+        <div class="row">
+            <label class="control-label col-xs-2">入住日期</label>
+            <div class="col-xs-4">@Model.OwnerDate.Date</div>
+        </div>
+
+        <h3>住房信息</h3>
+        <div class="row">
+            <label class="control-label col-xs-2">房号</label>
+            <div class="col-xs-4">@Model.RoomName</div>
+            <label class="control-label col-xs-2">面积</label>
+            <div class="col-xs-4">@Model.RoomArea</div>
+        </div>
+        <div class="row">
+            <label class="control-label col-xs-2">所在楼栋</label>
+            <div class="col-xs-4">@Model.BuildingName</div>
+            <label class="control-label col-xs-2">所在楼层</label>
+            <div class="col-xs-4">@Model.RoomFloor</div>
+        </div>
+        <div class="row">
+            <label class="control-label col-xs-2">房型</label>
+            <div class="col-xs-4">@Model.RoomType</div>
+        </div>
+
+        @{
+            if (!string.IsNullOrEmpty(Model.ParkingName)) {
+                <h3>车位信息</h3>
+                <div class="row">
+                    <label class="control-label col-xs-2">车位号</label>
+                    <div class="col-xs-4">@Model.ParkingName</div>
+                    <label class="control-label col-xs-2">分配日期</label>
+                    <div class="col-xs-4">@Model.ParkingDate.Value.Date</div>
+                </div>
+                <div class="row">
+                    <label class="control-label col-xs-2">车型</label>
+                    <div class="col-xs-4">@Model.CarType</div>
+                    <label class="control-label col-xs-2">车牌号</label>
+                    <div class="col-xs-4">@Model.CarNum</div>
+                </div>
+            }
+        }
+    </div>
+
+    @Scripts.Render("~/bundles/js/jquery_bootstrap")
+
+    <script>
+        $("#liOwnerBaseInfo").addClass("active");
+    </script>
+</body>
+</html>

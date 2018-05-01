@@ -29,5 +29,17 @@ namespace Property_Management.BLL.IService {
         /// </summary>
         /// <returns></returns>
         ResultInfo GetCoreInfo(Expression<Func<Owner, bool>> whereLambda);
+
+        /// <summary>
+        /// 分页查询搬走住户
+        /// </summary>
+        ResultInfo QueryDisuseToPage(Expression<Func<Owner, bool>> whereLambda, int page, int pageSize);
+
+        /// <summary>
+        /// 恢复搬走住户
+        /// </summary>
+        ResultInfo Recover(Owner owner);
+
+        ResultInfo GetBaseInfoForOwner(int ownerId);
     }
 }

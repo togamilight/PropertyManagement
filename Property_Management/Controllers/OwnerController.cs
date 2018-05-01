@@ -25,6 +25,10 @@ namespace Property_Management.Controllers
             return View();
         }
 
+        public ActionResult DisuseOwnerManage() {
+            return View();
+        }
+
         [JsonExceptionFilter]
         public ActionResult AddOwner(Owner owner) {
             return Json(ownerService.Add(owner));
@@ -40,12 +44,21 @@ namespace Property_Management.Controllers
             return Json(ownerService.Delete(ids));
         }
 
+        [JsonExceptionFilter]
+        public ActionResult DisuseOwners(int[] ids) {
+            return Json(ownerService.Disuse(ids));
+        }
 
         [JsonExceptionFilter]
-        public ActionResult GetOwnerPage(int page = 1, int pageSize = 10, string name = "", int sex = 2, string beginDate = "", string endDate = "", bool disuse = false) {
+        public ActionResult RecoverOwner(Owner owner) {
+            return Json(ownerService.Recover(owner));
+        }
+
+        [JsonExceptionFilter]
+        public ActionResult GetOwnerPage(int page = 1, int pageSize = 10, string name = "", int sex = 2, string beginDate = "", string endDate = "") {
             var where = PredicateBuilder.True<Owner>();
 
-            where = where.And(o => o.Disuse == disuse);
+            where = where.And(o => !o.Disuse);
 
             if (!string.IsNullOrEmpty(name)) {
                 where = where.And(o => o.Name.Contains(name));
@@ -77,6 +90,44 @@ namespace Property_Management.Controllers
             }
 
             return Json(ownerService.QueryToPage(where, page, pageSize));
+        }
+
+        [JsonExceptionFilter]
+        public ActionResult GetDisuseOwnerPage(int page = 1, int pageSize = 10, string name = "", int sex = 2, string beginDate = "", string endDate = "") {
+            var where = PredicateBuilder.True<Owner>();
+
+            where = where.And(o => o.Disuse);
+
+            if (!string.IsNullOrEmpty(name)) {
+                where = where.And(o => o.Name.Contains(name));
+            }
+
+            switch (sex) {
+                case 0: //女
+                    where = where.And(o => !o.Sex);
+                    break;
+                case 1: //男
+                    where = where.And(o => o.Sex);
+                    break;
+                default:
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(beginDate)) {
+                DateTime begin;
+                if (DateTime.TryParse(beginDate, out begin)) {
+                    where = where.And(o => o.DisuseDate >= begin);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(endDate)) {
+                DateTime end;
+                if (DateTime.TryParse(endDate, out end)) {
+                    where = where.And(o => o.DisuseDate <= end);
+                }
+            }
+
+            return Json(ownerService.QueryDisuseToPage(where, page, pageSize));
         }
 
         [JsonExceptionFilter]

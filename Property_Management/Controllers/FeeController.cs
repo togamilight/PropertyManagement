@@ -81,5 +81,10 @@ namespace Property_Management.Controllers
 
             return Json(feeService.QueryToPage(where, page, pageSize));
         }
+
+        [JsonExceptionFilter]
+        public ActionResult GetFeeStatistics() {
+            return Json(feeService.GetStatistics(), JsonRequestBehavior.AllowGet);
+        }
     }
 }

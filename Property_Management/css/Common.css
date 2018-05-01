@@ -63,3 +63,7 @@ td .my-innerDiv{
 .my-announcement-content{
     min-height: 350px;
 }
+
+pre.my-announcement-content{
+    background-color: white;
+}

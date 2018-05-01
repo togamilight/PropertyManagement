@@ -72,7 +72,7 @@ namespace Property_Management.BLL.Service {
 
             var entities = dbContext.Set<Fee>().Where(whereLambda);
             var total = entities.Count();
-            var fees = entities.OrderByDescending(e => e.Id).Skip(skipCount).Take(pageSize).ToList();
+            var fees = entities.OrderByDescending(e => e.Date).Skip(skipCount).Take(pageSize).ToList();
 
             var data = from f in fees
                        join i in dbContext.Set<FeeItem>()
@@ -88,7 +88,7 @@ namespace Property_Management.BLL.Service {
                            OwnerName = g2.Name
                        };
 
-            return new ResultInfo(true, "", new { Total = total, Data = data });
+            return new ResultInfo(true, "", new { Total = total, Data = data.OrderByDescending(e => e.Fee.Date) });
         }
 
         public ResultInfo QueryToPageByOwner(Expression<Func<Fee, bool>> whereLambda, int page, int pageSize) {
@@ -98,7 +98,7 @@ namespace Property_Management.BLL.Service {
 
             var entities = dbContext.Set<Fee>().Where(whereLambda);
             var total = entities.Count();
-            var fees = entities.OrderByDescending(e => e.Id).Skip(skipCount).Take(pageSize).ToList();
+            var fees = entities.OrderByDescending(e => e.Date).Skip(skipCount).Take(pageSize).ToList();
 
             var data = from f in fees
                        join i in dbContext.Set<FeeItem>()
@@ -110,7 +110,7 @@ namespace Property_Management.BLL.Service {
                            Scale = g1.Scale,
                        };
 
-            return new ResultInfo(true, "", new { Total = total, Data = data });
+            return new ResultInfo(true, "", new { Total = total, Data = data.OrderByDescending(e => e.Fee.Date) });
         }
 
         public override string ValidateEntity(Fee fee) {
@@ -133,6 +133,17 @@ namespace Property_Management.BLL.Service {
             }
 
             return msg;
+        }
+
+        public int GetUnFinishCountForOwner(int ownerId) {
+            return dbContext.Set<Fee>().Where(f => f.OwnerId == ownerId && f.FinishDate == null).Count();
+        }
+
+        public ResultInfo GetStatistics() {
+            var sql = "select Date_Format(Date, '%Y-%m') as Month, feeitem.Name as FeeItemName, count(*) as Count, sum(Money) as MoneySum from fee join feeitem on fee.FeeItemId = feeitem.Id group by Month, FeeItemId; ";
+
+            var dictFeeStatistics = dbContext.Database.SqlQuery<FeeStatistics>(sql).ToList();
+            return new ResultInfo(true, "", null);
         }
     }
 }

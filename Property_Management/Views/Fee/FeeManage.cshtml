@@ -281,6 +281,12 @@
                                 加载中...
                             </div>
                         </div>
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right">搬走日期</label>
+                            <div class="col-xs-6" name="DisuseDate">
+                                加载中...
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -853,25 +859,27 @@
 
                 var id = $this.attr("data-id");
 
-                var divId = $modalOwnerInfo.find("div[name='Id']");
+                var $divId = $modalOwnerInfo.find("div[name='Id']");
                 //跟已显示的详情不一样，重新获取
-                if (divId.text() != id) {
-                    divId.text(id);
+                if ($divId.text() != id) {
+                    $divId.text(id);
                     $modalOwnerInfo.find("div[name='Name']").text($this.text());
 
-                    var divSex = $modalOwnerInfo.find("div[name='Sex']");
-                    var divPhoneNum = $modalOwnerInfo.find("div[name='PhoneNum']");
-                    var divIDCard = $modalOwnerInfo.find("div[name='IDCard']");
-                    var divRoom = $modalOwnerInfo.find("div[name='Room']");
-                    var divParking = $modalOwnerInfo.find("div[name='Parking']");
-                    var divDate = $modalOwnerInfo.find("div[name='Date']");
+                    var $divSex = $modalOwnerInfo.find("div[name='Sex']");
+                    var $divPhoneNum = $modalOwnerInfo.find("div[name='PhoneNum']");
+                    var $divIDCard = $modalOwnerInfo.find("div[name='IDCard']");
+                    var $divRoom = $modalOwnerInfo.find("div[name='Room']");
+                    var $divParking = $modalOwnerInfo.find("div[name='Parking']");
+                    var $divDate = $modalOwnerInfo.find("div[name='Date']");
+                    var $divDisuseDate = $modalOwnerInfo.find("div[name='DisuseDate']");
 
-                    divSex.text("加载中...");
-                    divPhoneNum.text("加载中...");
-                    divIDCard.text("加载中...");
-                    divRoom.text("加载中...");
-                    divParking.text("加载中...");
-                    divDate.text("加载中...");
+                    $divSex.text("加载中...");
+                    $divPhoneNum.text("加载中...");
+                    $divIDCard.text("加载中...");
+                    $divRoom.text("加载中...");
+                    $divParking.text("加载中...");
+                    $divDate.text("加载中...");
+                    $divDisuseDate.text("加载中...");
 
                     $.ajax({
                         url: "/Owner/GetOwnerInfo",
@@ -881,18 +889,30 @@
                         },
                         success: function (res) {
                             if (res.Success) {
-                                divSex.text(res.Result.Owner.Sex ? "男" : "女");
-                                divPhoneNum.text(res.Result.Owner.PhoneNum);
-                                divIDCard.text(res.Result.Owner.IDCard);
-                                divRoom.text(res.Result.RoomName + "(" + res.Result.BuildingName + ")");
-                                divParking.text(res.Result.ParkingName ? res.Result.ParkingName : "无");
-                                divDate.text(Common.parseDate(res.Result.Owner.Date).format("yyyy-MM-dd"));
+                                $divSex.text(res.Result.Owner.Sex ? "男" : "女");
+                                $divPhoneNum.text(res.Result.Owner.PhoneNum);
+                                $divIDCard.text(res.Result.Owner.IDCard);
+                                $divDate.text(Common.parseDate(res.Result.Owner.Date).format("yyyy-MM-dd"));
+                                if (!(res.Result.Owner.Disuse)) {
+                                    $divRoom.text(res.Result.RoomName + "(" + res.Result.BuildingName + ")");
+                                    $divParking.text(res.Result.ParkingName ? res.Result.ParkingName : "无");
+                                    $divRoom.closest(".row").show();
+                                    $divParking.closest(".row").show();
+                                    $divDisuseDate.closest(".row").hide();
+                                } else {
+                                    $divDisuseDate.text(Common.parseDate(res.Result.Owner.DisuseDate).format("yyyy-MM-dd"));
+
+                                    $divRoom.closest(".row").hide();
+                                    $divParking.closest(".row").hide();
+                                    $divDisuseDate.closest(".row").show();
+                                }
                             } else {
                                 alert(res.Msg);
+                                $divId.text("");
                             }
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
-                            divId.text("");
+                            $divId.text("");
                             Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
                         }
                     });

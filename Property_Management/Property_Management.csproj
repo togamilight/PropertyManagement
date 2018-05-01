@@ -161,6 +161,8 @@
     <Content Include="Plugins\datatables\js\dataTables.bootstrap.min.js" />
     <Content Include="Plugins\datatables\js\jquery.dataTables.js" />
     <Content Include="Plugins\datatables\js\jquery.dataTables.min.js" />
+    <Content Include="Plugins\echarts\echarts.common.min.js" />
+    <Content Include="Plugins\echarts\echarts.simple.min.js" />
     <Content Include="Plugins\jquery\jquery-1.12.4.js" />
     <Content Include="Plugins\jquery\jquery-1.12.4.min.js" />
     <Content Include="Web.config" />
@@ -218,6 +220,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountInfo.cs" />
+    <Compile Include="Models\FeeStatistics.cs" />
+    <Compile Include="Models\OwnerBaseInfo.cs" />
     <Compile Include="Models\ResultInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\PredicateBuilder.cs" />
@@ -242,6 +246,8 @@
     <Content Include="Views\OwnerInfo\Announcement.cshtml" />
     <Content Include="Views\OwnerInfo\Fee.cshtml" />
     <Content Include="Views\OwnerInfo\Repair.cshtml" />
+    <Content Include="Views\Owner\DisuseOwnerManage.cshtml" />
+    <Content Include="Views\OwnerInfo\OwnerBaseInfo.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -119,7 +119,7 @@
                             <div class="form-group">
                                 <label class="control-label col-xs-3">身份证号</label>
                                 <div class="col-xs-6">
-                                    <input type="text" class="form-control" name="IDCard" placeholder="请输入身份证号" maxlength="20" validate-type="required phoneNum" data-toggle="popover" data-placement="right">
+                                    <input type="text" class="form-control" name="IDCard" placeholder="请输入身份证号" maxlength="20" validate-type="required idcard" data-toggle="popover" data-placement="right">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -202,7 +202,7 @@
                             <div class="form-group">
                                 <label class="control-label col-xs-3">身份证号</label>
                                 <div class="col-xs-6">
-                                    <input type="text" class="form-control" name="IDCard" placeholder="请输入身份证号" maxlength="20" validate-type="required phoneNum" data-toggle="popover" data-placement="right">
+                                    <input type="text" class="form-control" name="IDCard" placeholder="请输入身份证号" maxlength="20" validate-type="required idCard" data-toggle="popover" data-placement="right">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -613,7 +613,8 @@
                     }
                     $buildingSelect.selectpicker("refresh");
                     $buildingSelect.selectpicker("val", data.BuildingId);
-                    $buildingSelect.trigger("changed.bs.select", { roomId: data.Owner.RoomId, roomName: data.RoomName });
+                    $buildingSelect.find(":selected").data("room", { roomId: data.Owner.RoomId, roomName: data.RoomName });
+                    $buildingSelect.trigger("changed.bs.select");
                 });
 
                 //显示编辑框
@@ -628,6 +629,8 @@
                     alert("请先选择楼栋和房子，如果楼栋或房子加载失败，请重新打开");
                 } else if (Common.validateForm($form)) {
                     var $this = $(this);
+                    var roomId = $roomId.val();
+                    var roomName = $roomId.find(":selected").text();
                     $.ajax({
                         url: "/Owner/UpdateOwner",
                         method: "post",
@@ -645,6 +648,9 @@
                             alert(res.Msg);
                             if (res.Success) {
                                 waitReload = true;
+                                var $buildingSelect = $form.find("[name='BuildingId']");
+                                $buildingSelect.find("option").data("room", null);
+                                $buildingSelect.find(":selected").data("room", { roomId: roomId, roomName: roomName });
                             }
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -749,12 +755,13 @@
             });
 
             //楼栋select选择时更新房子select
-            $document.on("changed.bs.select", "select[name='BuildingId']", function (e, room) {
+            $document.on("changed.bs.select", "select[name='BuildingId']", function (e) {
                 var $this = $(this);
                 var $roomSelect = $this.closest("form").find("select[name='RoomId']");
                 if ($roomSelect.length > 0) {
                     var $option = $this.find("option:selected");
                     $.when(getRoomOptHtml($option.val())).done(function (data) {
+                        var room = $this.find(":selected").data("room");
                         if (room) {
                             data = "<option value='" + room.roomId + "'>" + room.roomName + "</option>" + data;
                         }
@@ -811,6 +818,7 @@
                                 divBuilding.text(res.Result.BuildingName);
                             } else {
                                 alert(res.Msg);
+                                divId.text("");
                             }
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -860,6 +868,7 @@
                                 divDate.text(Common.parseDate(res.Result.Date).format("yyyy-MM-dd"));
                             } else {
                                 alert(res.Msg);
+                                divId.text("");
                             }
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {

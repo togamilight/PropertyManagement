@@ -53,6 +53,13 @@ namespace Property_Management.Controllers
             return View();
         }
 
+        public ActionResult OwnerBaseInfo() {
+            var ownerService = new OwnerService();
+            var account = Session["Account"] as AccountInfo;
+            var baseInfo = ownerService.GetBaseInfoForOwner(account.Id).Result as OwnerBaseInfo;
+            return View(baseInfo);
+        }
+
         [JsonExceptionFilter]
         public ActionResult GetAnnouncementPage(int page = 1, int pageSize = 10, string title = "", string beginDate = "", string endDate = "") {
             var announcementService = new AnnouncementService();

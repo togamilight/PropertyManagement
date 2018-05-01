@@ -42,6 +42,10 @@ namespace Property_Management {
             bundles.Add(new StyleBundle("~/bundles/css/select").Include(
                     "~/Plugins/bootstrap/css/bootstrap-select.min.css"
                 ));
+
+            bundles.Add(new ScriptBundle("~/bundles/js/echarts").Include(
+                    "~/Plugins/echarts/echarts.common.min.js"
+                ));
         }
     }
 }

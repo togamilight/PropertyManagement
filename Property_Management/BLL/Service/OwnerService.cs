@@ -58,7 +58,19 @@ namespace Property_Management.BLL.Service {
                            BuildingId = g3.Id
                        };
 
-            return new ResultInfo(true, "", new { Total = total, Data = data });
+            return new ResultInfo(true, "", new { Total = total, Data = data.ToList() });
+        }
+
+        public ResultInfo QueryDisuseToPage(Expression<Func<Owner, bool>> whereLambda, int page, int pageSize) {
+            page = page < 1 ? 1 : page;
+            pageSize = pageSize < 10 ? 10 : pageSize;
+            var skipCount = pageSize * (page - 1);
+
+            var entities = dbContext.Set<Owner>().Where(whereLambda);
+            var total = entities.Count();
+            var owners = entities.OrderByDescending(e => e.Id).Skip(skipCount).Take(pageSize);
+
+            return new ResultInfo(true, "", new { Total = total, Data = owners });
         }
 
         public override ResultInfo Query(int id) {
@@ -76,10 +88,10 @@ namespace Property_Management.BLL.Service {
                        select new {
                            Owner = o,
                            RoomName = g1.Name,
-                           Floor = g1.Floor,
+                           Floor = (int?)g1.Floor,
                            ParkingName = g2.Name,
                            BuildingName = g3.Name,
-                           BuildingId = g3.Id
+                           BuildingId = (int?)g3.Id
                        }).FirstOrDefault();
 
             return new ResultInfo(true, "", data);
@@ -221,6 +233,8 @@ namespace Property_Management.BLL.Service {
                         parking.CarNum = null;
                         parking.CarType = null;
                         parking.Date = null;
+
+                        owner.ParkingId = null;
                     }
 
                     //TODO disuse收费和维修记录
@@ -247,6 +261,74 @@ namespace Property_Management.BLL.Service {
 
         public ResultInfo GetCoreInfo(Expression<Func<Owner, bool>> whereLambda) {
             var data = dbContext.Set<Owner>().Where(whereLambda).Select(o => new { o.Id, o.Name });
+
+            return new ResultInfo(true, "", data);
+        }
+
+        public ResultInfo Recover(Owner owner) {
+            var owners = dbContext.Set<Owner>();
+            var rooms = dbContext.Set<Room>();
+
+            var oldOwner = owners.FirstOrDefault(o => o.Id == owner.Id && o.Disuse);
+            if (oldOwner == null) {
+                return new ResultInfo(false, "该住户不存在", null);
+            }
+
+            var newRoom = rooms.FirstOrDefault(r => r.Id == owner.RoomId);
+
+            if (newRoom == null) {
+                return new ResultInfo(false, "该房子不存在", null);
+            }
+
+            if (newRoom.OwnerId != null) {
+                return new ResultInfo(false, "该房子已有其它住户", null);
+            }
+
+            newRoom.OwnerId = owner.Id;
+            oldOwner.RoomId = owner.RoomId;
+
+            oldOwner.Date = owner.Date;
+            oldOwner.Disuse = false;
+            oldOwner.DisuseDate = null;
+
+            dbContext.SaveChanges();
+
+            return new ResultInfo(true, "恢复成功", null);
+        }
+
+        public ResultInfo GetBaseInfoForOwner(int ownerId) {
+            var owner = dbContext.Set<Owner>().Where(o => o.Id == ownerId && !o.Disuse);
+
+            if (!owner.Any()) {
+                return new ResultInfo(false, "该住户不存在", null);
+            }
+
+            var data = (from o in owner
+                        join r in dbContext.Set<Room>()
+                        on o.RoomId equals r.Id into grp1
+                        join p in dbContext.Set<Parking>()
+                        on o.ParkingId equals p.Id into grp2
+                        from g1 in grp1.DefaultIfEmpty()
+                        join b in dbContext.Set<Building>()
+                        on g1.BuildingId equals b.Id into grp3
+                        from g2 in grp2.DefaultIfEmpty()
+                        from g3 in grp3.DefaultIfEmpty()
+                        select new OwnerBaseInfo() {
+                            OwnerName = o.Name,
+                            Sex = o.Sex,
+                            PhoneNum = o.PhoneNum,
+                            IDCard = o.IDCard,
+                            OwnerDate = o.Date,
+                            RoomName = g1.Name,
+                            RoomFloor = g1.Floor,
+                            RoomArea = g1.Area,
+                            RoomType = g1.Type,
+                            BuildingName = g3.Name,
+                            ParkingName = g2.Name,
+                            ParkingDate = g2.Date,
+                            CarNum = g2.CarNum,
+                            CarType = g2.CarType
+                        }).FirstOrDefault();
 
             return new ResultInfo(true, "", data);
         }

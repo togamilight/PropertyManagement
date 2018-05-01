@@ -18,6 +18,10 @@
     <link rel="stylesheet" type="text/css" href="~/css/Common.css" />
 
     <style>
+        #myTable tbody tr td:first-child{
+            text-align: left;
+            padding-left: 30px;
+        }
     </style>
 </head>
 <body>
@@ -49,8 +53,8 @@
             <table id="myTable" class="table table-striped my-datatables">
                 <thead>
                     <tr>
-                        <th>标题</th>
-                        <th>日期</th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -68,16 +72,16 @@
                     <div class="modal-body">
                         <div class="row">
                             <label class="control-label col-xs-3 text-right"></label>
-                            <h4 class="col-xs-6" name="Title"></h4>
-                        </div>
-                        <div class="row">
-                            <label class="control-label col-xs-3 text-right"></label>
-                            <div class="col-xs-6" name="Date"></div>
+                            <h4 class="col-xs-6" name="Title" style="padding-left: 0;padding-right: 0;"></h4>
                         </div>
                         <div class="row">
                             <label class="control-label col-xs-3 text-right"></label>
                             <pre class="col-xs-6 my-announcement-content" name="Content">
                             </pre>
+                        </div>
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right"></label>
+                            <div class="col-xs-6 text-right" name="Date"></div>
                         </div>
                     </div>
                     <div class="modal-footer">

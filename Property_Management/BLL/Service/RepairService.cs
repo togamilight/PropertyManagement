@@ -112,7 +112,7 @@ namespace Property_Management.BLL.Service {
 
             var entities = dbContext.Set<Repair>().Where(whereLambda);
             var total = entities.Count();
-            var repairs = entities.OrderByDescending(e => e.Id).Skip(skipCount).Take(pageSize).ToList();
+            var repairs = entities.OrderByDescending(e => e.ApplyDate).Skip(skipCount).Take(pageSize).ToList();
 
             var data = from r in repairs
                        join o in dbContext.Set<Owner>()
@@ -123,7 +123,7 @@ namespace Property_Management.BLL.Service {
                            OwnerName = g1.Name
                        };
 
-            return new ResultInfo(true, "", new { Total = total, Data = data });
+            return new ResultInfo(true, "", new { Total = total, Data = data.OrderByDescending(e => e.Repair.ApplyDate) });
         }
 
         public ResultInfo QueryToPageByOwner(Expression<Func<Repair, bool>> whereLambda, int page, int pageSize) {
@@ -133,9 +133,9 @@ namespace Property_Management.BLL.Service {
 
             var entities = dbContext.Set<Repair>().Where(whereLambda);
             var total = entities.Count();
-            var repairs = entities.OrderByDescending(e => e.Id).Skip(skipCount).Take(pageSize).ToList();
+            var repairs = entities.OrderByDescending(e => e.ApplyDate).Skip(skipCount).Take(pageSize).ToList();
 
-            return new ResultInfo(true, "", new { Total = total, Data = repairs });
+            return new ResultInfo(true, "", new { Total = total, Data = repairs});
         }
 
         public ResultInfo DeleteByOwner(int[] ids, int ownerId) {
@@ -172,6 +172,10 @@ namespace Property_Management.BLL.Service {
             }
 
             return msg;
+        }
+
+        public int GetUnFinishCount() {
+            return dbContext.Set<Repair>().Where(r => r.FinishDate == null && !r.Disuse).Count();
         }
     }
 }

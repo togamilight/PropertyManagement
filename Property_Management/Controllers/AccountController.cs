@@ -20,6 +20,16 @@ namespace Property_Management.Controllers {
         /// </summary>
         /// <returns></returns>
         public ActionResult GetHeader() {
+            var account = Session["Account"] as AccountInfo;
+            if(account != null) {
+                if (account.IsAdmin) {
+                    var repairService = new RepairService();
+                    ViewData["RepairUnFinishCount"] = repairService.GetUnFinishCount();
+                }else {
+                    var feeService = new FeeService();
+                    ViewData["FeeUnFinishCount"] = feeService.GetUnFinishCountForOwner(account.Id);
+                }
+            }
             return PartialView("Header");
         }
 
