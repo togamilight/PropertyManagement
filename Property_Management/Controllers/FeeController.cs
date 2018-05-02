@@ -24,6 +24,10 @@ namespace Property_Management.Controllers
             return View();
         }
 
+        public ActionResult FeeStatistics() {
+            return View();
+        }
+
         [JsonExceptionFilter]
         public ActionResult AddFee(Fee fee) {
             return Json(feeService.Add(fee));
@@ -83,8 +87,13 @@ namespace Property_Management.Controllers
         }
 
         [JsonExceptionFilter]
-        public ActionResult GetFeeStatistics() {
-            return Json(feeService.GetStatistics(), JsonRequestBehavior.AllowGet);
+        public ActionResult GetFeeBarData() {
+            return Json(feeService.GetBarData());
+        }
+
+        [JsonExceptionFilter]
+        public ActionResult GetFeePieData(string beginDate, string endDate) {
+            return Json(feeService.GetPieData(beginDate, endDate));
         }
     }
 }

@@ -220,7 +220,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountInfo.cs" />
-    <Compile Include="Models\FeeStatistics.cs" />
+    <Compile Include="Models\FeeBarData.cs" />
+    <Compile Include="Models\FeePieData.cs" />
     <Compile Include="Models\OwnerBaseInfo.cs" />
     <Compile Include="Models\ResultInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -248,6 +249,7 @@
     <Content Include="Views\OwnerInfo\Repair.cshtml" />
     <Content Include="Views\Owner\DisuseOwnerManage.cshtml" />
     <Content Include="Views\OwnerInfo\OwnerBaseInfo.cshtml" />
+    <Content Include="Views\Fee\FeeStatistics.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

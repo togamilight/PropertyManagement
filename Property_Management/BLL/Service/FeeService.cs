@@ -139,11 +139,37 @@ namespace Property_Management.BLL.Service {
             return dbContext.Set<Fee>().Where(f => f.OwnerId == ownerId && f.FinishDate == null).Count();
         }
 
-        public ResultInfo GetStatistics() {
-            var sql = "select Date_Format(Date, '%Y-%m') as Month, feeitem.Name as FeeItemName, count(*) as Count, sum(Money) as MoneySum from fee join feeitem on fee.FeeItemId = feeitem.Id group by Month, FeeItemId; ";
+        public ResultInfo GetBarData() {
+            var sql = "select Date_Format(Date, '%Y-%m') as Month, count(*) as Count, sum(Money) as MoneySum from fee group by Month order by Month; ";
 
-            var dictFeeStatistics = dbContext.Database.SqlQuery<FeeStatistics>(sql).ToList();
-            return new ResultInfo(true, "", null);
+            var data = dbContext.Database.SqlQuery<FeeBarData>(sql).ToList();
+
+            return new ResultInfo(true, "", data);
+        }
+
+        public ResultInfo GetPieData(string beginDate, string endDate) {
+            var strBeginDate = "";
+            var strEndDate = "";
+            
+            if (!string.IsNullOrEmpty(beginDate)) {
+                DateTime begin;
+                if (DateTime.TryParse(beginDate, out begin)) {
+                    strBeginDate += "and Date_Format(Date, '%Y-%m') >= '" + begin.ToString("yyyy-MM") + "' ";
+                }
+            }
+
+            if (!string.IsNullOrEmpty(endDate)) {
+                DateTime end;
+                if (DateTime.TryParse(endDate, out end)) {
+                    strEndDate += "and Date_Format(Date, '%Y-%m') <= '" + end.ToString("yyyy-MM") + "' ";
+                }
+            }
+
+            var sql = "select feeitem.Name as FeeItemName, count(*) as Count, sum(Money) as MoneySum from fee join feeitem on fee.FeeItemId = feeitem.Id where 1 = 1 " + strBeginDate + strEndDate + "group by FeeItemId; ";
+
+            var data = dbContext.Database.SqlQuery<FeePieData>(sql).ToList();
+
+            return new ResultInfo(true, "", data);
         }
     }
 }

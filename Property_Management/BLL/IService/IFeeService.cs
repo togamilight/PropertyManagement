@@ -14,6 +14,7 @@ namespace Property_Management.BLL.IService {
 
         int GetUnFinishCountForOwner(int ownerId);
 
-        ResultInfo GetStatistics();
+        ResultInfo GetBarData();
+        ResultInfo GetPieData(string beginDate, string endDate);
     }
 }

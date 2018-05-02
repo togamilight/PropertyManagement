@@ -1,0 +1,270 @@
+﻿
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width" />
+    <title>收费记录统计</title>
+
+    @Styles.Render("~/bundles/css/bootstrap")
+    @Styles.Render("~/bundles/css/datepicker")
+    <link rel="stylesheet" type="text/css" href="~/css/Common.css" />
+
+    <style>
+    </style>
+</head>
+<body>
+    @{Html.RenderAction("GetHeader", "Account"); }
+    <div class="container">
+        <h3>月度统计</h3>
+        <select class="form-control" style="margin-left: 100px; max-width: 150px" id="selectBarType">
+            <option value="0">费用</option>
+            <option value="1">数量</option>
+        </select>
+        <div id="barChart" style="height:400px;"></div>
+
+        <h3>分类统计</h3>
+        <form class="form-inline" id="formSearch">
+            <div class="form-group">
+                <label class="sr-only">日期</label>
+                <div class="input-group input-daterange datepicker">
+                    <div class="input-group-addon">日期</div>
+                    <input type="text" class="form-control" name="BeginDate">
+                    <div class="input-group-addon">至</div>
+                    <input type="text" class="form-control" name="EndDate">
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
+        </form>
+        <select class="form-control" style="margin-top: 20px;margin-left: 100px; max-width: 150px" id="selectPieType">
+            <option value="0">费用</option>
+            <option value="1">数量</option>
+        </select>
+        <div id="pieChart" style="height:400px;"></div>
+    </div>
+    @Scripts.Render("~/bundles/js/jquery_bootstrap")
+    @Scripts.Render("~/bundles/js/echarts")
+    @Scripts.Render("~/bundles/js/datepicker")
+
+    <script>
+        var barChart;
+        var pieChart;
+        var barData = null;
+        var barMoney = [];
+        var barCount = [];
+        var pieData = null;
+        var pieMoney = [];
+        var pieCount = [];
+        $(function () {
+            init();
+        });
+
+        function init() {
+            initView();
+            bindEvent();
+        }
+
+        function initView() {
+            //初始化日期插件
+            $(".datepicker").datepicker({
+                autoclose: true,            //选择日期后自动关闭选择框
+                minViewMode: "months",
+                startDate: "1970-01",    //最小日期
+                endDate: "0m",           
+                format: "yyyy-mm",       //日期格式
+                language: "zh-CN",          //语言：中文
+                container: "body"
+            });
+
+            barChart = echarts.init(document.getElementById('barChart'));
+            pieChart = echarts.init(document.getElementById('pieChart'));
+
+            $("#btnSearch").trigger("click");
+
+            $.ajax({
+                url: "/Fee/GetFeeBarData",
+                method: "post",
+                success: function(res){
+                    if (res.Success) {
+                        var barMonth = [];
+                        barData = res.Result;
+                        for (let i = 0; i < barData.length; i++) {
+                            barMonth.push(barData[i].Month);
+                            barMoney.push(barData[i].MoneySum);
+                            barCount.push(barData[i].Count);
+                        }
+
+                        var option = {
+                            xAxis: {
+                                data: barMonth
+                            }
+                        };
+                        barChart.setOption(option);
+
+                        $("#selectBarType").trigger("change");
+                    } else {
+                        alert(res.Msg);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
+                },
+            });
+
+            var barOption = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    data: []
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: [],
+                    type: 'bar',
+                    label: {
+                        normal: {
+                            show: true,
+                        }
+                    },
+                }]
+            };
+
+            barChart.setOption(barOption);
+
+            var pieOption = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                    orient: 'vertical',
+                    right: 10,
+                    top: 20,
+                    data: []
+                },
+                series: [
+                    {
+                        name: '收费项目',
+                        type: 'pie',
+                        radius: '55%',
+                        center: ['50%', '40%'],
+                        data: [],
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+
+            pieChart.setOption(pieOption);
+        }
+
+        function bindEvent() {
+            var $document = $(document);
+            $document.on("change", "#selectBarType", function () {
+                var value = $(this).val();
+                if (value == 0) {
+                    if (barMoney.length > 0) {
+                        var option = {
+                            series: [{
+                                data: barMoney,
+                            }]
+                        };
+                        barChart.setOption(option);
+                    }
+                } else {
+                    if (barCount.length > 0) {
+                        var option = {
+                            series: [{
+                                data: barCount,
+                            }]
+                        };
+                        barChart.setOption(option);
+                    }
+                }
+            });
+
+            $document.on("change", "#selectPieType", function () {
+                var value = $(this).val();
+                if (value == 0) {
+                    if (pieMoney.length > 0) {
+                        var option = {
+                            series: [{
+                                data: pieMoney,
+                            }]
+                        };
+                        pieChart.setOption(option);
+                    }
+                } else {
+                    if (pieCount.length > 0) {
+                        var option = {
+                            series: [{
+                                data: pieCount,
+                            }]
+                        };
+                        pieChart.setOption(option);
+                    }
+                }
+            });
+
+            $document.on("click", "#btnSearch", function () {
+                var $btnSearch = $(this);
+                var $formSearch = $("#formSearch");
+                $.ajax({
+                    dataType: "JSON",
+                    type: "POST",
+                    data: {
+                        beginDate: $formSearch.find("[name='BeginDate']").val(),
+                        endDate: $formSearch.find("[name='EndDate']").val()
+                    },
+                    url: "/Fee/GetFeePieData",
+                    success: function (res) {
+                        if (res.Success) {
+                            var pieName = [];
+                            pieData = res.Result;
+                            for (let i = 0; i < pieData.length; i++) {
+                                pieName.push(pieData[i].FeeItemName);
+                                pieMoney.push({ value: pieData[i].MoneySum, name: pieData[i].FeeItemName });
+                                pieCount.push({ value: pieData[i].Count, name: pieData[i].FeeItemName });
+                            }
+
+                            var option = {
+                                legend: {
+                                    data: pieName
+                                }
+                            };
+                            pieChart.setOption(option);
+
+                            $("#selectPieType").trigger("change");
+                        } else {
+                            alert(res.Msg);
+                        }
+                    },
+                    error: function (xmlHttpRequest, textStatus, errorThrown) {
+                        Common.ajaxError(xmlHttpRequest, textStatus, errorThrown);
+                    },
+                    beforeSend: function () {
+                        $btnSearch.attr("disabled", true);
+                    },
+                    complete: function () {
+                        $btnSearch.attr("disabled", false);
+                    },
+                });
+            });
+        }
+    </script>
+</body>
+</html>

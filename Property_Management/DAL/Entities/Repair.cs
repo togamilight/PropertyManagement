@@ -25,7 +25,7 @@ namespace Property_Management.DAL.Entities {
 
         public bool Disuse { get; set; }
 
-        [Display(Name = "费用"), Range(0, float.MaxValue, ErrorMessage = "费用不能为负")]
+        [Display(Name = "费用")]
         public float Money { get; set; }
     }
 }
