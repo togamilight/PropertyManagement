@@ -79,12 +79,6 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-xs-3">日期</label>
-                                <div class="col-xs-6">
-                                    <input type="text" class="form-control datepicker" placeholder="请输入日期" id="addDate" name="Date" validate-type="required" data-toggle="popover" data-placement="right">
-                                </div>
-                            </div>
-                            <div class="form-group">
                                 <label class="control-label col-xs-3">内容</label>
                                 <div class="col-xs-6">
                                     <textarea class="form-control my-announcement-content" name="Content" maxlength="500" placeholder="请输入公告内容" validate-type="required" data-toggle="popover" data-placement="right"></textarea>
@@ -125,7 +119,7 @@
                             <div class="form-group">
                                 <label class="control-label col-xs-3">日期</label>
                                 <div class="col-xs-6">
-                                    <input type="text" class="form-control datepicker" placeholder="请输入日期" id="addDate" name="Date" validate-type="required" data-toggle="popover" data-placement="right">
+                                    <input readonly type="text" class="form-control" placeholder="请输入日期" name="DateTime">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -159,6 +153,12 @@
         var myDataTable;      //datatables对象
         var waitReload = false;     //表示修改或添加过，需要重载表格
 
+        var searchData = {
+            title: "",
+            beginDate: "",
+            endDate: ""
+        };
+
         function init() {
             initView();
             bindEvent();
@@ -177,7 +177,7 @@
             //初始化datatable
             var $myTable = $("#myTable");
             //$myTable.DataTable(Common.datatablesOptions);
-            var $formSearch = $("#formSearch");
+            //var $formSearch = $("#formSearch");
             myDataTable = $myTable.DataTable({
                 ajax: function (data, callback, settings) {
                     var $btnSearch = $("#btnSearch");
@@ -187,9 +187,9 @@
                         data: {
                             pageSize: data.length,		//data.length:每页的条数
                             page: parseInt((data.start + 1) / data.length) + 1,	//data.start:第一条数据的起始位置(0)
-                            title: $formSearch.find("[name='Title']").val(),
-                            beginDate: $formSearch.find("[name='BeginDate']").val(),
-                            endDate: $formSearch.find("[name='EndDate']").val()
+                            title: searchData.title,
+                            beginDate: searchData.beginDate,
+                            endDate: searchData.endDate
                         },
                         url: "/Announcement/GetAnnouncementPage",
                         success: function (res) {
@@ -230,11 +230,11 @@
                     { data: "Id"},
                     { data: "Title"},
                     {
-                        data: "Date",
+                        data: "DateTime",
                         className: "my-announcement-buildDate",
                         render: function (data) {
                             var date = Common.parseDate(data);
-                            return date.format("yyyy-MM-dd");
+                            return date.format("yyyy-MM-dd hh:mm:ss");
                         }
                     },
                     {
@@ -263,8 +263,8 @@
             $document.on("show.bs.modal", "#modalAdd", function (e) {
                 var $this = $(this);
                 $this.find("input").val("");
-                //设置默认日期为今天
-                $("#addDate").datepicker("setDate", Date());
+                ////设置默认日期为今天
+                //$("#addDate").datepicker("setDate", Date());
             });
 
             //添加、编辑的弹出窗口隐藏时隐藏提示.
@@ -291,7 +291,6 @@
                         data: {
                             Title: $form.find("[name='Title']").val(),
                             Content: $form.find("[name='Content']").val(),
-                            Date: $form.find("[name='Date']").val(),
                         },
                         success: function (res) {
                             alert(res.Msg);
@@ -314,6 +313,12 @@
 
             //查询按钮点击事件
             $document.on("click", "#btnSearch", function () {
+                var $formSearch = $("#formSearch");
+
+                searchData.title = $formSearch.find("[name='Title']").val(),
+                searchData.beginDate = $formSearch.find("[name='BeginDate']").val(),
+                searchData.endDate = $formSearch.find("[name='EndDate']").val()
+
                 myDataTable.ajax.reload();
             });
 
@@ -327,7 +332,7 @@
                 $form.find("[name='Id']").val(data.Id);
                 $form.find("[name='Title']").val(data.Title);
                 $form.find("[name='Content']").val(data.Content);
-                $form.find("[name='Date']").val(Common.parseDate(data.Date).format("yyyy-MM-dd"));
+                $form.find("[name='DateTime']").val(Common.parseDate(data.DateTime).format("yyyy-MM-dd hh:mm:ss"));
 
                 //显示编辑框
                 $('#modalEdit').modal('show');
@@ -345,7 +350,6 @@
                             Id: $form.find("[name='Id']").val(),
                             Title: $form.find("[name='Title']").val(),
                             Content: $form.find("[name='Content']").val(),
-                            Date: $form.find("[name='Date']").val(),
                         },
                         success: function (res) {
                             alert(res.Msg);

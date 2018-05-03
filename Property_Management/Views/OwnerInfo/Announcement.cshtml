@@ -44,7 +44,7 @@
                         <input type="text" class="form-control" name="EndDate">
                     </div>
                 </div>
-                <button type="button" class="btn btn-default" id="btnSearch">查询</button>
+                <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
             </form>
 
             <div class="my-toolbar">
@@ -81,7 +81,7 @@
                         </div>
                         <div class="row">
                             <label class="control-label col-xs-3 text-right"></label>
-                            <div class="col-xs-6 text-right" name="Date"></div>
+                            <div class="col-xs-6 text-right" name="DateTime"></div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -99,12 +99,20 @@
     <script src="~/js/Common.js"></script>
 
     <script>
+        var lastLookTime = new Date("@(((DateTime)ViewData["LastLookTime"]).ToString("yyyy-MM-dd HH:mm:ss"))");
+
         $(function () {
             init();
         });
 
         var myDataTable;      //datatables对象
         var waitReload = false;     //表示修改或添加过，需要重载表格
+
+        var searchData = {
+            title: "",
+            beginDate: "",
+            endDate: ""
+        };
 
         function init() {
             initView();
@@ -124,7 +132,7 @@
             //初始化datatable
             var $myTable = $("#myTable");
             //$myTable.DataTable(Common.datatablesOptions);
-            var $formSearch = $("#formSearch");
+            //var $formSearch = $("#formSearch");
             myDataTable = $myTable.DataTable({
                 ajax: function (data, callback, settings) {
                     var $btnSearch = $("#btnSearch");
@@ -134,9 +142,9 @@
                         data: {
                             pageSize: data.length,		//data.length:每页的条数
                             page: parseInt((data.start + 1) / data.length) + 1,	//data.start:第一条数据的起始位置(0)
-                            title: $formSearch.find("[name='Title']").val(),
-                            beginDate: $formSearch.find("[name='BeginDate']").val(),
-                            endDate: $formSearch.find("[name='EndDate']").val()
+                            title: searchData.title,
+                            beginDate: searchData.beginDate,
+                            endDate: searchData.endDate
                         },
                         url: "/OwnerInfo/GetAnnouncementPage",
                         success: function (res) {
@@ -170,15 +178,19 @@
                 columns: [
                     {
                         data: "Title",
-                        render: function (data, row, type, meta) {
-                            return "<a href='#' class='my-announcement-title my-innerDiv' data-rowIndex='" + meta.row + "'>" + data + "</a>"
+                        render: function (data, type, row, meta) {
+                            var html = "<a href='#' class='my-announcement-title my-innerDiv' data-rowIndex='" + meta.row + "'>" + data + "</a>";
+                            if (lastLookTime < Common.parseDate(row["DateTime"])) {
+                                html += "<span style='color:red'>（新）</span>";
+                            }
+                            return html;
                         }
                     },
                     {
-                        data: "Date",
+                        data: "DateTime",
                         render: function (data) {
                             var date = Common.parseDate(data);
-                            return date.format("yyyy-MM-dd");
+                            return date.format("yyyy-MM-dd hh:mm:ss");
                         }
                     },
                 ],
@@ -207,7 +219,7 @@
                 //给编辑框里的输入框赋值
                 $modalInfo.find("[name='Title']").text(data.Title);
                 $modalInfo.find("[name='Content']").text(data.Content);
-                $modalInfo.find("[name='Date']").text(Common.parseDate(data.Date).format("yyyy-MM-dd"));
+                $modalInfo.find("[name='DateTime']").text(Common.parseDate(data.DateTime).format("yyyy-MM-dd hh:mm:ss"));
 
                 //显示编辑框
                 $('#modalInfo').modal('show');
@@ -215,6 +227,12 @@
 
             //查询按钮点击事件
             $document.on("click", "#btnSearch", function () {
+                var $formSearch = $("#formSearch");
+
+                searchData.title = $formSearch.find("[name='Title']").val(),
+                searchData.beginDate = $formSearch.find("[name='BeginDate']").val(),
+                searchData.endDate = $formSearch.find("[name='EndDate']").val()
+
                 myDataTable.ajax.reload();
             });
         }

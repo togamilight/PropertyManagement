@@ -240,6 +240,14 @@
         var waitReload = false;     //表示修改或添加过，需要重载表格
         var ownerOptHtml = "";   //住户select的option
 
+        var searchData = {
+            name: "",
+            carType: "",
+            carNum: "",
+            beginDate: "",
+            endDate: ""
+        };
+
         function init() {
             initView();
             bindEvent();
@@ -265,7 +273,7 @@
             //初始化datatable
             var $myTable = $("#myTable");
             //$myTable.DataTable(Common.datatablesOptions);
-            var $formSearch = $("#formSearch");
+            //var $formSearch = $("#formSearch");
             myDataTable = $myTable.DataTable({
                 ajax: function (data, callback, settings) {
                     var $btnSearch = $("#btnSearch");
@@ -275,11 +283,11 @@
                         data: {
                             pageSize: data.length,		//data.length:每页的条数
                             page: parseInt((data.start + 1) / data.length) + 1,	//data.start:第一条数据的起始位置(0)
-                            name: $formSearch.find("[name='Name']").val(),
-                            carType: $formSearch.find("[name='CarType']").val(),
-                            carNum: $formSearch.find("[name='CarNum']").val(),
-                            beginDate: $formSearch.find("[name='BeginDate']").val(),
-                            endDate: $formSearch.find("[name='EndDate']").val()
+                            name: searchData.name,
+                            carType: searchData.carType,
+                            carNum: searchData.carNum,
+                            beginDate: searchData.beginDate,
+                            endDate: searchData.endDate
                         },
                         url: "/Parking/GetParkingPage",
                         success: function (res) {
@@ -432,6 +440,14 @@
 
             //查询按钮点击事件
             $document.on("click", "#btnSearch", function () {
+                var $formSearch = $("#formSearch");
+
+                searchData.name = $formSearch.find("[name='Name']").val(),
+                searchData.carType = $formSearch.find("[name='CarType']").val(),
+                searchData.carNum = $formSearch.find("[name='CarNum']").val(),
+                searchData.beginDate = $formSearch.find("[name='BeginDate']").val(),
+                searchData.endDate = $formSearch.find("[name='EndDate']").val()
+
                 myDataTable.ajax.reload();
             });
 

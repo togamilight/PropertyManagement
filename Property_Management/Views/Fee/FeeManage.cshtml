@@ -353,6 +353,15 @@
         var disuseOwnerOptHtml = "";   //现有住户select的option
         var feeItemOptHtml = "";        //收费项目select的option
 
+        var searchData = {
+            feeItemId: 0,
+            ownerId: 0,
+            beginDate: "",
+            endDate: "",
+            isFinish: 2,
+            isDisuse: 2,
+        };
+
         function init() {
             initView();
             bindEvent();
@@ -406,7 +415,7 @@
 
             //初始化datatable
             var $myTable = $("#myTable");
-            var $formSearch = $("#formSearch");
+            //var $formSearch = $("#formSearch");
             myDataTable = $myTable.DataTable({
                 ajax: function (data, callback, settings) {
                     var $btnSearch = $("#btnSearch");
@@ -416,12 +425,12 @@
                         data: {
                             pageSize: data.length,		//data.length:每页的条数
                             page: parseInt((data.start + 1) / data.length) + 1,	//data.start:第一条数据的起始位置(0)
-                            feeItemId: $formSearch.find("[name='FeeItemId']").val(),
-                            ownerId: $formSearch.find("[name='OwnerId']").val(),
-                            beginDate: $formSearch.find("[name='BeginDate']").val(),
-                            endDate: $formSearch.find("[name='EndDate']").val(),
-                            isFinish: $formSearch.find("[name='IsFinish']").val(),
-                            isDisuse: $formSearch.find("[name='IsDisuse']").val(),
+                            feeItemId: searchData.feeItemId,
+                            ownerId: searchData.ownerId,
+                            beginDate: searchData.beginDate,
+                            endDate: searchData.endDate,
+                            isFinish: searchData.isFinish,
+                            isDisuse: searchData.isDisuse,
                         },
                         url: "/Fee/GetFeePage",
                         success: function (res) {
@@ -607,6 +616,15 @@
 
             //查询按钮点击事件
             $document.on("click", "#btnSearch", function () {
+                var $formSearch = $("#formSearch");
+
+                searchData.feeItemId = $formSearch.find("[name='FeeItemId']").val(),
+                searchData.ownerId = $formSearch.find("[name='OwnerId']").val(),
+                searchData.beginDate = $formSearch.find("[name='BeginDate']").val(),
+                searchData.endDate = $formSearch.find("[name='EndDate']").val(),
+                searchData.isFinish = $formSearch.find("[name='IsFinish']").val(),
+                searchData.isDisuse = $formSearch.find("[name='IsDisuse']").val(),
+
                 myDataTable.ajax.reload();
             });
 

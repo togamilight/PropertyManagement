@@ -311,6 +311,12 @@
         var waitReload = false;     //表示修改或添加过，需要重载表格
         var buildingOptHtml = "";   //楼栋select的option
 
+        var searchData = {
+            name: "",
+            type: "",
+            buildingId: 0
+        };
+
         function init() {
             initView();
             bindEvent();
@@ -351,7 +357,7 @@
             //初始化datatable
             var $myTable = $("#myTable");
             //$myTable.DataTable(Common.datatablesOptions);
-            var $formSearch = $("#formSearch");
+            //var $formSearch = $("#formSearch");
             myDataTable = $myTable.DataTable({
                 ajax: function (data, callback, settings) {
                     var $btnSearch = $("#btnSearch");
@@ -361,9 +367,9 @@
                         data: {
                             pageSize: data.length,		//data.length:每页的条数
                             page: parseInt((data.start + 1) / data.length) + 1,	//data.start:第一条数据的起始位置(0)
-                            name: $formSearch.find("[name='Name']").val(),
-                            type: $formSearch.find("[name='Type']").val(),
-                            buildingId: $formSearch.find("[name='BuildingId']").val()
+                            name: searchData.name,
+                            type: searchData.type,
+                            buildingId: searchData.buildingId
                         },
                         url: "/Room/GetRoomPage",
                         success: function (res) {
@@ -513,6 +519,12 @@
 
             //查询按钮点击事件
             $document.on("click", "#btnSearch", function () {
+                var $formSearch = $("#formSearch");
+
+                searchData.name = $formSearch.find("[name='Name']").val(),
+                searchData.type = $formSearch.find("[name='Type']").val(),
+                searchData.buildingId = $formSearch.find("[name='BuildingId']").val()
+
                 myDataTable.ajax.reload();
             });
 

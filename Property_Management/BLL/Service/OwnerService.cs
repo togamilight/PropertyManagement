@@ -118,11 +118,15 @@ namespace Property_Management.BLL.Service {
                         return new ResultInfo(false, "该房子已有住户", null);
                     }
 
+                    owner.NewReplyNum = 0;
+                    owner.LastLookTime = DateTime.Now;
+                    owner.DisuseDate = null;
                     owner.Disuse = false;
                     owner.ParkingId = null;
                     owners.Add(owner);
                     dbContext.SaveChanges();
                     room.OwnerId = owner.Id;
+
                     dbContext.SaveChanges();
 
                     transaction.Commit();
@@ -331,6 +335,17 @@ namespace Property_Management.BLL.Service {
                         }).FirstOrDefault();
 
             return new ResultInfo(true, "", data);
+        }
+
+        public DateTime UpdateLastLookTime(int id) {
+            var owner = dbContext.Owners.FirstOrDefault(o => o.Id == id);
+            var time = owner.LastLookTime;
+
+            owner.LastLookTime = DateTime.Now;
+
+            dbContext.SaveChanges();
+
+            return time;
         }
     }
 }

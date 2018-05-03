@@ -31,5 +31,9 @@ namespace Property_Management.DAL.Entities {
         public bool Disuse { get; set; }
 
         public DateTime? DisuseDate { get; set; }
+
+        public DateTime LastLookTime { get; set; }
+
+        public int NewReplyNum { get; set; }
     }
 }

@@ -8,5 +8,6 @@ using System.Threading.Tasks;
 
 namespace Property_Management.BLL.IService {
     public interface IAnnouncementService : IBaseService<Announcement> {
+        int GetUnReadCountForOwner(int id);
     }
 }

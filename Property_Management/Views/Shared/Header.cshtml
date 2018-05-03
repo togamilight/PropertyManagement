@@ -40,6 +40,7 @@
                                 <ul class="dropdown-menu">
                                     <li><a href="/FeeItem/FeeItemManage">收费项目</a></li>
                                     <li><a href="/Fee/FeeManage">收费记录</a></li>
+                                    <li><a href="/Fee/FeeStatistics">收费统计</a></li>
                                 </ul>
                             </li>
                             <li id="liRepairManage"><a href="/Repair/RepairManage">维修管理
@@ -62,9 +63,15 @@
                     }
                     else {
                         int feeCount = (int)ViewData["FeeUnFinishCount"];
+                        int announCount = (int)ViewData["AnnounUnReadCount"];
 
                         <ul class="nav navbar-nav">
-                            <li id="liOwnerAnnouncement"><a href="/OwnerInfo/Announcement">公告</a></li>
+                            <li id="liOwnerAnnouncement"><a href="/OwnerInfo/Announcement">公告
+                                 @{
+                                    if (announCount > 0) {
+                                        <span class="badge">@announCount</span>
+                                    }
+                                }</a></li>
                             <li id="liOwnerBaseInfo"><a href="/OwnerInfo/OwnerBaseInfo">个人信息</a></li>
                             <li id="liOwnerFee"><a href="/OwnerInfo/Fee">缴费记录
                                 @{

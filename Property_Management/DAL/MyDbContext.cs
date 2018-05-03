@@ -54,5 +54,15 @@ namespace Property_Management.DAL {
         /// 公告
         /// </summary>
         public DbSet<Announcement> Announcements { get; set; }
+
+        /// <summary>
+        /// 建议
+        /// </summary>
+        public DbSet<Advice> Advices { get; set; }
+
+        /// <summary>
+        /// 回复
+        /// </summary>
+        public DbSet<Reply> Replies { get; set; }
     }
 }

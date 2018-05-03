@@ -128,6 +128,13 @@
         var waitReload = false;     //表示修改或添加过，需要重载表格
         var feeItemOptHtml = "";        //收费项目select的option
 
+        var searchData = {
+            feeItemId: 0,
+            beginDate: "",
+            endDate: "",
+            isFinish: 2,
+        };
+
         function init() {
             initView();
             bindEvent();
@@ -167,7 +174,7 @@
 
             //初始化datatable
             var $myTable = $("#myTable");
-            var $formSearch = $("#formSearch");
+            //var $formSearch = $("#formSearch");
             myDataTable = $myTable.DataTable({
                 ajax: function (data, callback, settings) {
                     var $btnSearch = $("#btnSearch");
@@ -177,10 +184,10 @@
                         data: {
                             pageSize: data.length,		//data.length:每页的条数
                             page: parseInt((data.start + 1) / data.length) + 1,	//data.start:第一条数据的起始位置(0)
-                            feeItemId: $formSearch.find("[name='FeeItemId']").val(),
-                            beginDate: $formSearch.find("[name='BeginDate']").val(),
-                            endDate: $formSearch.find("[name='EndDate']").val(),
-                            isFinish: $formSearch.find("[name='IsFinish']").val(),
+                            feeItemId: searchData.feeItemId,
+                            beginDate: searchData.beginDate,
+                            endDate: searchData.endDate,
+                            isFinish: searchData.isFinish,
                         },
                         url: "/OwnerInfo/GetFeePage",
                         success: function (res) {
@@ -302,6 +309,13 @@
 
             //查询按钮点击事件
             $document.on("click", "#btnSearch", function () {
+                var $formSearch = $("#formSearch");
+
+                searchData.feeItemId = $formSearch.find("[name='FeeItemId']").val(),
+                searchData.beginDate = $formSearch.find("[name='BeginDate']").val(),
+                searchData.endDate = $formSearch.find("[name='EndDate']").val(),
+                searchData.isFinish = $formSearch.find("[name='IsFinish']").val(),
+
                 myDataTable.ajax.reload();
             });
         }

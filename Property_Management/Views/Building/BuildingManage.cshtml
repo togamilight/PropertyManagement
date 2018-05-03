@@ -172,6 +172,11 @@
 
         var myDataTable;      //datatables对象
         var waitReload = false;     //表示修改或添加过，需要重载表格
+        var searchData = {
+            name: "",
+            beginDate: "",
+            endDate: ""
+        };
 
         function init() {
             initView();
@@ -191,7 +196,7 @@
             //初始化datatable
             var $myTable = $("#myTable");
             //$myTable.DataTable(Common.datatablesOptions);
-            var $formSearch = $("#formSearch");
+            //var $formSearch = $("#formSearch");
             myDataTable = $myTable.DataTable({
                 ajax: function (data, callback, settings) {
                     var $btnSearch = $("#btnSearch");
@@ -201,9 +206,9 @@
                         data: {
                             pageSize: data.length,		//data.length:每页的条数
                             page: parseInt((data.start + 1) / data.length) + 1,	//data.start:第一条数据的起始位置(0)
-                            name: $formSearch.find("[name='Name']").val(),
-                            beginDate: $formSearch.find("[name='BeginDate']").val(),
-                            endDate: $formSearch.find("[name='EndDate']").val()
+                            name: searchData.name,
+                            beginDate: searchData.beginDate,
+                            endDate: searchData.endDate
                         },
                         url: "/Building/GetBuildingPage",
                         success: function (res) {
@@ -331,6 +336,12 @@
 
             //查询按钮点击事件
             $document.on("click", "#btnSearch", function () {
+                var $formSearch = $("#formSearch");
+
+                searchData.name = $formSearch.find("[name='Name']").val(),
+                searchData.beginDate = $formSearch.find("[name='BeginDate']").val(),
+                searchData.endDate = $formSearch.find("[name='EndDate']").val()
+
                 myDataTable.ajax.reload();
             });
 

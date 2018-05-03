@@ -51,14 +51,15 @@ namespace Property_Management.Controllers
             if (!string.IsNullOrEmpty(beginDate)) {
                 DateTime begin;
                 if (DateTime.TryParse(beginDate, out begin)) {
-                    where = where.And(a => a.Date >= begin);
+                    where = where.And(a => a.DateTime >= begin);
                 }
             }
 
             if (!string.IsNullOrEmpty(endDate)) {
                 DateTime end;
                 if (DateTime.TryParse(endDate, out end)) {
-                    where = where.And(a => a.Date <= end);
+                    end.AddDays(1);
+                    where = where.And(a => a.DateTime < end);
                 }
             }
 

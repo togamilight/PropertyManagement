@@ -28,6 +28,9 @@ namespace Property_Management.Controllers {
                 }else {
                     var feeService = new FeeService();
                     ViewData["FeeUnFinishCount"] = feeService.GetUnFinishCountForOwner(account.Id);
+
+                    var announService = new AnnouncementService();
+                    ViewData["AnnounUnReadCount"] = announService.GetUnReadCountForOwner(account.Id);
                 }
             }
             return PartialView("Header");

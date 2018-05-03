@@ -57,6 +57,7 @@
         var pieData = null;
         var pieMoney = [];
         var pieCount = [];
+
         $(function () {
             init();
         });
@@ -64,9 +65,14 @@
         function init() {
             initView();
             bindEvent();
+
+            $("#btnSearch").trigger("click");
         }
 
         function initView() {
+            //设置菜单选项激活
+            $("#liFeeManage").addClass("active");
+
             //初始化日期插件
             $(".datepicker").datepicker({
                 autoclose: true,            //选择日期后自动关闭选择框
@@ -81,14 +87,14 @@
             barChart = echarts.init(document.getElementById('barChart'));
             pieChart = echarts.init(document.getElementById('pieChart'));
 
-            $("#btnSearch").trigger("click");
-
             $.ajax({
                 url: "/Fee/GetFeeBarData",
                 method: "post",
                 success: function(res){
                     if (res.Success) {
                         var barMonth = [];
+                        barMoney = [];
+                        barCount = [];
                         barData = res.Result;
                         for (let i = 0; i < barData.length; i++) {
                             barMonth.push(barData[i].Month);
@@ -234,6 +240,8 @@
                     success: function (res) {
                         if (res.Success) {
                             var pieName = [];
+                            pieMoney = [];
+                            pieCount = [];
                             pieData = res.Result;
                             for (let i = 0; i < pieData.length; i++) {
                                 pieName.push(pieData[i].FeeItemName);

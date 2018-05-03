@@ -41,5 +41,7 @@ namespace Property_Management.BLL.IService {
         ResultInfo Recover(Owner owner);
 
         ResultInfo GetBaseInfoForOwner(int ownerId);
+
+        DateTime UpdateLastLookTime(int id);
     }
 }
