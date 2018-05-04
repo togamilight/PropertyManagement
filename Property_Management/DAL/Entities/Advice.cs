@@ -21,5 +21,9 @@ namespace Property_Management.DAL.Entities {
         public int NewReplyNum { get; set; }
 
         public bool Disuse { get; set; }
+
+        public DateTime LastReplyTime { get; set; }
+
+        public DateTime LastLookTime { get; set; }
     }
 }

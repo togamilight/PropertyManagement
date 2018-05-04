@@ -213,6 +213,13 @@ namespace Property_Management.BLL.Service {
                     var repairs = dbContext.Set<Repair>().Where(r => r.OwnerId == owner.Id);
                     dbContext.Set<Repair>().RemoveRange(repairs);
 
+                    var advices = dbContext.Advices.Where(a => a.OwnerId == id);
+                    foreach (var advice in advices) {
+                        var replies = dbContext.Replies.Where(r => r.AdviceId == advice.Id);
+                        dbContext.Replies.RemoveRange(replies);
+                    }
+                    dbContext.Advices.RemoveRange(advices);
+
                     owners.Remove(owner);
                 }
             }
@@ -250,6 +257,11 @@ namespace Property_Management.BLL.Service {
                     var repairs = dbContext.Set<Repair>().Where(r => r.OwnerId == owner.Id);
                     foreach(var repair in repairs) {
                         repair.Disuse = true;
+                    }
+
+                    var advices = dbContext.Advices.Where(a => a.OwnerId == owner.Id);
+                    foreach (var advice in advices) {
+                        advice.Disuse = true;
                     }
 
 

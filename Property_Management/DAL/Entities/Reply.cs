@@ -11,6 +11,8 @@ namespace Property_Management.DAL.Entities {
 
         public DateTime DateTime { get; set; }
 
-        public int AdminId { get; set; }
+        public int? AdminId { get; set; }
+
+        public int AdviceId { get; set; }
     }
 }

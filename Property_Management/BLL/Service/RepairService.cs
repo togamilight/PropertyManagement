@@ -78,19 +78,10 @@ namespace Property_Management.BLL.Service {
                 return new ResultInfo(false, msg, null);
             }
 
-
-            var oldRepair = dbContext.Set<Repair>().FirstOrDefault(f => f.Id == repair.Id);
+            var oldRepair = dbContext.Set<Repair>().FirstOrDefault(r => r.Id == repair.Id && r.OwnerId != repair.OwnerId && !r.Disuse);
 
             if (oldRepair == null) {
                 return new ResultInfo(false, "该记录不存在", null);
-            }
-
-            if (oldRepair.Disuse) {
-                return new ResultInfo(false, "无法修改已搬走住户的记录", null);
-            }
-
-            if(oldRepair.OwnerId != repair.OwnerId) {
-                return new ResultInfo(false, "无法修改不属于你的记录", null);
             }
 
             if(oldRepair.FinishDate != null) {

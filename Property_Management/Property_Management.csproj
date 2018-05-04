@@ -173,6 +173,7 @@
     <Compile Include="BLL\Base\BaseService.cs" />
     <Compile Include="BLL\Base\IBaseService.cs" />
     <Compile Include="BLL\IService\IAdminService.cs" />
+    <Compile Include="BLL\IService\IAdviceService.cs" />
     <Compile Include="BLL\IService\IAnnouncementService.cs" />
     <Compile Include="BLL\IService\IBuildingService.cs" />
     <Compile Include="BLL\IService\IFeeItemService.cs" />
@@ -180,8 +181,10 @@
     <Compile Include="BLL\IService\IOwnerService.cs" />
     <Compile Include="BLL\IService\IParkingService.cs" />
     <Compile Include="BLL\IService\IRepairService.cs" />
+    <Compile Include="BLL\IService\IReplyService.cs" />
     <Compile Include="BLL\IService\IRoomService.cs" />
     <Compile Include="BLL\Service\AdminService.cs" />
+    <Compile Include="BLL\Service\AdviceService.cs" />
     <Compile Include="BLL\Service\AnnouncementService.cs" />
     <Compile Include="BLL\Service\BuildingService.cs" />
     <Compile Include="BLL\Service\FeeItemService.cs" />
@@ -189,6 +192,7 @@
     <Compile Include="BLL\Service\OwnerService.cs" />
     <Compile Include="BLL\Service\ParkingService.cs" />
     <Compile Include="BLL\Service\RepairService.cs" />
+    <Compile Include="BLL\Service\ReplyService.cs" />
     <Compile Include="BLL\Service\RoomService.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminInfoController.cs" />
