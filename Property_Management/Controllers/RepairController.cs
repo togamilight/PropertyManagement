@@ -24,6 +24,10 @@ namespace Property_Management.Controllers
             return View();
         }
 
+        public ActionResult RepairStatistics() {
+            return View();
+        }
+
         [JsonExceptionFilter]
         public ActionResult AddRepair(Repair repair) {
             return Json(repairService.Add(repair));
@@ -77,6 +81,11 @@ namespace Property_Management.Controllers
             }
 
             return Json(repairService.QueryToPage(where, page, pageSize));
+        }
+
+        [JsonExceptionFilter]
+        public ActionResult GetRepairBarData() {
+            return Json(repairService.GetBarData());
         }
     }
 }

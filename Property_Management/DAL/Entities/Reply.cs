@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
 namespace Property_Management.DAL.Entities {
+    [Table("reply")]
     public class Reply : BaseEntity{
         [Display(Name = "内容"), Required, StringLength(200)]
         public string Content { get; set; }

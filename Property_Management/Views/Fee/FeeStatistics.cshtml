@@ -87,38 +87,6 @@
             barChart = echarts.init(document.getElementById('barChart'));
             pieChart = echarts.init(document.getElementById('pieChart'));
 
-            $.ajax({
-                url: "/Fee/GetFeeBarData",
-                method: "post",
-                success: function(res){
-                    if (res.Success) {
-                        var barMonth = [];
-                        barMoney = [];
-                        barCount = [];
-                        barData = res.Result;
-                        for (let i = 0; i < barData.length; i++) {
-                            barMonth.push(barData[i].Month);
-                            barMoney.push(barData[i].MoneySum);
-                            barCount.push(barData[i].Count);
-                        }
-
-                        var option = {
-                            xAxis: {
-                                data: barMonth
-                            }
-                        };
-                        barChart.setOption(option);
-
-                        $("#selectBarType").trigger("change");
-                    } else {
-                        alert(res.Msg);
-                    }
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
-                },
-            });
-
             var barOption = {
                 tooltip: {
                     trigger: 'axis',
@@ -176,6 +144,38 @@
             };
 
             pieChart.setOption(pieOption);
+
+            $.ajax({
+                url: "/Fee/GetFeeBarData",
+                method: "post",
+                success: function(res){
+                    if (res.Success) {
+                        var barMonth = [];
+                        barMoney = [];
+                        barCount = [];
+                        barData = res.Result;
+                        for (let i = 0; i < barData.length; i++) {
+                            barMonth.push(barData[i].Month);
+                            barMoney.push(barData[i].MoneySum);
+                            barCount.push(barData[i].Count);
+                        }
+
+                        var option = {
+                            xAxis: {
+                                data: barMonth
+                            }
+                        };
+                        barChart.setOption(option);
+
+                        $("#selectBarType").trigger("change");
+                    } else {
+                        alert(res.Msg);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
+                },
+            });
         }
 
         function bindEvent() {

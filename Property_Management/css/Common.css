@@ -64,6 +64,20 @@ td .my-innerDiv{
     min-height: 350px;
 }
 
-pre.my-announcement-content{
+.my-advice-content{
+    min-height: 200px;
+}
+
+h4.my-announcement-title{
+    padding-left: 0;
+    padding-right: 0;
+}
+
+pre.my-announcement-content, pre.my-advice-content{
     background-color: white;
+}
+
+ul.pagination{
+    margin-top: 10px;
+    margin-bottom: 10px;
 }

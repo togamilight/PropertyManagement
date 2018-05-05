@@ -58,7 +58,7 @@ namespace Property_Management.Controllers
             if (!string.IsNullOrEmpty(endDate)) {
                 DateTime end;
                 if (DateTime.TryParse(endDate, out end)) {
-                    end.AddDays(1);
+                    end = end.AddDays(1);
                     where = where.And(a => a.DateTime < end);
                 }
             }

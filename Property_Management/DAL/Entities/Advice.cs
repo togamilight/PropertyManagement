@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
 namespace Property_Management.DAL.Entities {
+    [Table("advice")]
     public class Advice : BaseEntity{
         [Display(Name = "标题")Required, StringLength(30)]
         public string Title { get; set; }

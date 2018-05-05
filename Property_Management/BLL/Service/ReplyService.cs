@@ -71,7 +71,7 @@ namespace Property_Management.BLL.Service {
 
             var entities = dbContext.Replies.Where(whereLambda);
             var total = entities.Count();
-            var replies = entities.OrderByDescending(e => e.DateTime).Skip(skipCount).Take(pageSize);
+            var replies = entities.OrderBy(e => e.DateTime).Skip(skipCount).Take(pageSize);
 
             var data = (from r in replies
                        join a in dbContext.Admins
@@ -80,7 +80,7 @@ namespace Property_Management.BLL.Service {
                        select new {
                            Reply = r,
                            AdminName = g.Name ?? "管理员"
-                       }).OrderByDescending(e => e.Reply.DateTime);
+                       }).OrderBy(e => e.Reply.DateTime);
 
             return new ResultInfo(true, "", new { Total = total, Data = data });
         }

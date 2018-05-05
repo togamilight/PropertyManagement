@@ -359,5 +359,9 @@ namespace Property_Management.BLL.Service {
 
             return time;
         }
+
+        public int GetNewReplyCount(int id) {
+            return dbContext.Owners.Where(o => o.Id == id).Select(o => o.NewReplyNum).FirstOrDefault();
+        }
     }
 }

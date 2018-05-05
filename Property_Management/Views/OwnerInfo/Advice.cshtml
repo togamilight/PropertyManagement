@@ -1,0 +1,600 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width" />
+    <title>投诉建议</title>
+
+    @Styles.Render("~/bundles/css/bootstrap")
+    @Styles.Render("~/bundles/css/datepicker")
+    @Styles.Render("~/bundles/css/datatables")
+    <link rel="stylesheet" type="text/css" href="~/css/Common.css" />
+
+    <style>
+    </style>
+</head>
+<body>
+    @{Html.RenderAction("GetHeader", "Account"); }
+
+    <div class="container">
+        <h2>投诉建议</h2>
+        <div>
+            <form class="form-inline" id="formSearch">
+                <div class="form-group">
+                    <label>&nbsp;&nbsp;回复状态</label>
+                    <select class="form-control" name="IsFinish">
+                        <option value="2">全部</option>
+                        <option value="0">未回复</option>
+                        <option value="1">已回复</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="sr-only">日期</label>
+                    <div class="input-group input-daterange datepicker">
+                        <div class="input-group-addon">日期</div>
+                        <input type="text" class="form-control" name="BeginDate">
+                        <div class="input-group-addon">至</div>
+                        <input type="text" class="form-control" name="EndDate">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
+            </form>
+
+            <div class="my-toolbar">
+                <button class="btn btn-danger" id="btnDelete">删除所选</button>
+                <button class="btn btn-primary" id="btnAdd" data-toggle="modal" data-target="#modalAdd">添加</button>
+            </div>
+
+            <table id="myTable" class="table table-striped my-datatables">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="chkAllSelect" /></th>
+                        <th>标题</th>
+                        <th>发表时间</th>
+                        <th>回复数</th>
+                        <th>新回复数</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- 添加弹出窗口 -->
+        <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="modalAdd">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">发表投诉建议</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formAdd" class="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-xs-3">标题</label>
+                                <div class="col-xs-6">
+                                    <input type="text" class="form-control" name="Title" placeholder="请输入标题" maxlength="30" validate-type="required" data-toggle="popover" data-placement="right">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-3">内容</label>
+                                <div class="col-xs-6">
+                                    <textarea class="form-control my-advice-content" placeholder="请输入内容" name="Content" validate-type="required length" validate-maxLen="500" data-toggle="popover" data-placement="right"></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" id="btnAddApply">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 编辑弹出窗口 -->
+        <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modalEdit">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">编辑投诉建议</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formEdit" class="form-horizontal">
+                            <div class="form-group hidden">
+                                <label class="control-label col-xs-3 text-right">编号</label>
+                                <div class="col-xs-6">
+                                    <input type="text" readonly class="form-control" name="Id">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-3">标题</label>
+                                <div class="col-xs-6">
+                                    <input type="text" class="form-control" name="Title" placeholder="请输入标题" maxlength="30" validate-type="required" data-toggle="popover" data-placement="right">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-3">发表时间</label>
+                                <div class="col-xs-6">
+                                    <input type="text" class="form-control" name="DateTime" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-xs-3">内容</label>
+                                <div class="col-xs-6">
+                                    <textarea class="form-control my-advice-content" placeholder="请输入内容" name="Content" validate-type="required length" validate-maxLen="500" data-toggle="popover" data-placement="right"></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" id="btnEditApply">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 投诉建议详情弹出窗口 -->
+        <div class="modal fade" id="modalAdviceInfo" tabindex="-1" role="dialog" aria-labelledby="modalAdviceInfo">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">投诉建议详情</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row hidden">
+                            <label class="control-label col-xs-3 text-right"></label>
+                            <div class="col-xs-6" name="Id"></div>
+                        </div>
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right"></label>
+                            <h3 class="col-xs-6 my-advice-title" name="Title"></h3>
+                        </div>
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right"></label>
+                            <div class="col-xs-6">
+                                @*<strong name="OwnerName"></strong>&nbsp;&nbsp;*@
+                                <small name="DateTime"></small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right"></label>
+                            <div class="col-xs-6">
+                                <pre class="my-advice-content" name="Content">
+                                </pre>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="control-label col-xs-3 text-right"></label>
+                            <div class="col-xs-6">
+                                <div name="Replies">
+                                </div>
+                                <div class="text-right">
+                                    <nav>
+                                        <ul class="pagination pagination-sm" id="ulReplyPagination" name="ReplyPagination"></ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    @Scripts.Render("~/bundles/js/jquery_bootstrap")
+    @Scripts.Render("~/bundles/js/datepicker")
+    @Scripts.Render("~/bundles/js/datatables")
+    <script src="~/js/Common.js"></script>
+
+    <script>
+        $(function () {
+            init();
+        });
+
+        var myDataTable;      //datatables对象
+        var waitReload = false;     //表示修改或添加过，需要重载表格
+        var useOwnerOptHtml = "";   //现有住户select的option
+        var disuseOwnerOptHtml = "";   //现有住户select的option
+
+        var searchData = {
+            beginDate: "",
+            endDate: "",
+            isFinish: 2
+        };
+
+        var ReplyPagination = {
+            pageSize: 5,
+            adviceId: 0,
+            currentPage: 0,
+            loadPage: function (currentPage) {
+                if (currentPage < 1 || this.adviceId < 1) return;
+                var _this = this;
+                $.ajax({
+                    url: "/Reply/GetReplyPage",
+                    method: "post",
+                    data: {
+                        adviceId: this.adviceId,
+                        page: currentPage,
+                        pageSize: _this.pageSize
+                    },
+                    success: function (res) {
+                        if (res.Success) {
+                            var $modal = $("#modalAdviceInfo");
+
+                            _this.currentPage = currentPage;
+                            var total = res.Result.Total;
+                            var data = res.Result.Data;
+
+                            var replyHtml = "";
+                            for (let i = 0; i < data.length; i++) {
+                                replyHtml +=
+                                    "<div>" +
+                                        "<div>" +
+                                            "<strong name='ReplyAdminName'>" + data[i].AdminName + "</strong>&nbsp;&nbsp;" +
+                                            "<small name='ReplyDateTime'>" +
+                                            Common.parseDate(data[i].Reply.DateTime).format("yyyy-MM-dd hh:mm:ss")
+                                            +"</small>" +
+                                        "</div>" +
+                                        "<pre class='my-reply-content'>" + data[i].Reply.Content + "</pre>" +
+                                    "</div>";
+                            }
+
+                            $modal.find("div[name='Replies']").html(replyHtml);
+                            var $ulPagination = $modal.find("ul[name='ReplyPagination']");
+                            $ulPagination.html("");
+
+                            if (replyHtml) {
+                                var totalPage = Math.ceil(total / _this.pageSize);
+                                var paginationHtml = Common.getPaginationHtml(currentPage, totalPage);
+                                $ulPagination.html(paginationHtml);
+                                $ulPagination.data("currentPage", currentPage);
+                            }
+                        } else {
+                            alert("加载回复列表失败：" + res.Msg);
+                        }
+                    },
+                    error: function (xmlHttpRequest, textStatus, errorThrown) {
+                        Common.ajaxError(xmlHttpRequest, textStatus, errorThrown);
+                    },
+                });
+            },
+            reload: function () {
+                this.loadPage(this.currentPage);
+            }
+        };
+
+        function init() {
+            initView();
+            bindEvent();
+        }
+
+        function initView() {
+            //设置菜单选项激活
+            $("#liOwnerAdvice").addClass("active");
+
+            //初始化popover组件
+            $("[data-toggle='popover']").popover(Common.popoverOptions);
+
+            //初始化日期插件
+            $(".datepicker").datepicker(Common.datepickerOptions);
+
+            //初始化datatable
+            var $myTable = $("#myTable");
+            //var $formSearch = $("#formSearch");
+            myDataTable = $myTable.DataTable({
+                ajax: function (data, callback, settings) {
+                    var $btnSearch = $("#btnSearch");
+                    $.ajax({
+                        dataType: "JSON",
+                        type: "POST",
+                        data: {
+                            pageSize: data.length,		//data.length:每页的条数
+                            page: parseInt((data.start + 1) / data.length) + 1,	//data.start:第一条数据的起始位置(0)
+                            beginDate: searchData.beginDate,
+                            endDate: searchData.endDate,
+                            isFinish: searchData.isFinish,
+                        },
+                        url: "/OwnerInfo/GetAdvicePage",
+                        success: function (res) {
+                            var returnData = {};
+                            if (res.Success) {
+                                //封装返回的json变为dataTable要求的标准
+                                returnData.data = res.Result.Data;               //数据
+                                returnData.recordsTotal = res.Result.Total;      //总数据数
+                                returnData.recordsFiltered = res.Result.Total;   //过滤后的数据总数
+                            } else {
+                                alert(res.Msg);
+
+                                returnData.data = {};
+                                returnData.recordsTotal = 0;
+                                returnData.recordsFiltered = 0;
+                            }
+                            returnData.draw = data.draw;
+                            callback(returnData);
+                        },
+                        error: function (xmlHttpRequest, textStatus, errorThrown) {
+                            Common.ajaxError(xmlHttpRequest, textStatus, errorThrown);
+                        },
+                        beforeSend: function () {
+                            $btnSearch.attr("disabled", true);
+                        },
+                        complete: function () {
+                            $btnSearch.attr("disabled", false);
+                        },
+                    });
+                },
+                columns: [
+                    {
+                        data: "Id",
+                        render: function (data, type, row) {
+                            if (row["ReplyNum"] > 0) {
+                                return "";
+                            }
+                            return "<input type='checkbox' class='my-chkSelect' data-id='" + data + "'/>";
+                        }
+                    },
+                    {
+                        data: "Title",
+                        render: function (data, type, row, meta) {
+                            var html = "<a href='#' class='my-advice-title my-innerDiv' data-rowIndex='" + meta.row + "'>" + data + "</a>";
+                            return html;
+                        }
+                    },
+                    {
+                        data: "DateTime",
+                        render: function (data) {
+                            return Common.parseDate(data).format("yyyy-MM-dd hh:mm:ss");
+                        }
+                    },
+                    {
+                        data: "ReplyNum"
+                    },
+                    {
+                        data: "NewReplyNum"
+                    },
+                    {
+                        render: function (data, type, row, meta) {
+                            if (row["ReplyNum"] > 0) {
+                                return "";
+                            }
+                            return "<button type='button' class='btn btn-primary btn-sm my-btnEdit' data-rowIndex='" + meta.row + "'>编辑</button>";
+                        }
+                    }
+                ],
+            });
+        }
+
+        function bindEvent() {
+            var $document = $(document);
+
+            //阻止datepicker的show/hide事件向上冒泡，因为会触发modal的事件
+            $document.on("show", ".datepicker", function (e) {
+                //e.preventDefault();
+                e.stopPropagation();
+            });
+            $document.on("hide", ".datepicker", function (e) {
+                //e.preventDefault();
+                e.stopPropagation();
+            });
+
+            //添加的弹出窗口显示时初始化字段
+            $document.on("show.bs.modal", "#modalAdd", function (e) {
+                var $this = $(this);
+                $this.find("input").val("");
+            });
+
+            //添加、编辑的弹出窗口隐藏时隐藏提示.
+            $document.on("hide.bs.modal", "#modalAdd,#modalEdit", function (e) {
+                var $this = $(this);
+                //隐藏提示
+                $this.find("[data-toggle='popover']").popover("hide");
+
+                if (waitReload) {
+                    myDataTable.ajax.reload();
+                    waitReload = false;
+                }
+            });
+
+            //添加提交按钮点击事件
+            $document.on("click", "#btnAddApply", function () {
+                var $form = $("#formAdd");
+                if (Common.validateForm($form)) {
+                    var $this = $(this);
+                    //TODO
+                    $.ajax({
+                        url: "/OwnerInfo/AddAdvice",
+                        method: "post",
+                        data: {
+                            Title: $form.find("[name='Title']").val(),
+                            Content: $form.find("[name='Content']").val()
+                        },
+                        success: function (res) {
+                            alert(res.Msg);
+                            if (res.Success) {
+                                waitReload = true;
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
+                        },
+                        beforeSend: function () {
+                            $this.attr("disabled", true);
+                        },
+                        complete: function () {
+                            $this.attr("disabled", false);
+                        },
+                    });
+                }
+            });
+
+            //查询按钮点击事件
+            $document.on("click", "#btnSearch", function () {
+                var $formSearch = $("#formSearch");
+
+                searchData.beginDate = $formSearch.find("[name='BeginDate']").val(),
+                searchData.endDate = $formSearch.find("[name='EndDate']").val(),
+                searchData.isFinish = $formSearch.find("[name='IsFinish']").val(),
+
+                myDataTable.ajax.reload();
+            });
+
+            //编辑按钮点击事件
+            $document.on("click", ".my-btnEdit", function () {
+                var $this = $(this);
+                var $form = $("#formEdit");
+                var data = myDataTable.rows($this.attr("data-rowIndex")).data()[0];
+
+                //给编辑框里的输入框赋值
+                $form.find("[name='Id']").val(data.Id);
+                $form.find("[name='Title']").val(data.Title);
+                $form.find("[name='Content']").val(data.Content);
+                $form.find("[name='DateTime']").val(Common.parseDate(data.DateTime).format("yyyy-MM-dd hh:mm:ss"));
+
+                //显示编辑框
+                $('#modalEdit').modal('show');
+            });
+
+            //编辑框提交按钮
+            $document.on("click", "#btnEditApply", function () {
+                var $form = $("#formEdit");
+                if (Common.validateForm($form)) {
+                    var $this = $(this);
+                    $.ajax({
+                        url: "/OwnerInfo/UpdateAdvice",
+                        method: "post",
+                        data: {
+                            Id: $form.find("[name='Id']").val(),
+                            Title: $form.find("[name='Title']").val(),
+                            Content: $form.find("[name='Content']").val(),
+                        },
+                        success: function (res) {
+                            alert(res.Msg);
+                            if (res.Success) {
+                                waitReload = true;
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
+                        },
+                        beforeSend: function () {
+                            $this.attr("disabled", true);
+                        },
+                        complete: function () {
+                            $this.attr("disabled", false);
+                        },
+                    });
+                }
+            });
+
+            //全选
+            $document.on("change", "#chkAllSelect", function () {
+                $("input.my-chkSelect").prop("checked", $(this).is(":checked"));
+            });
+
+            //datatable重绘时取消全选
+            myDataTable.on("draw", function () {
+                $("#chkAllSelect").prop("checked", false);
+            });
+
+            $document.on("click", "#btnDelete", function () {
+                var ids = [];
+                $("input.my-chkSelect:checked").each(function (index, element) {
+                    ids.push($(this).attr("data-id"));
+                });
+
+                if (ids.length == 0) {
+                    alert("请先勾选要删除的条目");
+                } else {
+                    if (confirm("确定要删除吗？")) {
+                        $this = $(this);
+
+                        $.ajax({
+                            url: "/OwnerInfo/DeleteAdvices",
+                            method: "post",
+                            data: {
+                                ids: ids
+                            },
+                            traditional: true,  //规定是否使用参数序列化的传统样式。这样后台数组变量才能接受到值
+                            success: function (res) {
+                                alert(res.Msg);
+                                if (res.Success) {
+                                    myDataTable.ajax.reload();
+                                }
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
+                            },
+                            beforeSend: function () {
+                                $this.attr("disabled", true);
+                            },
+                            complete: function () {
+                                $this.attr("disabled", false);
+                            },
+                        });
+                    }
+                }
+            });
+
+            //标题点击时显示详情和回复
+            $document.on("click", "a.my-advice-title", function () {
+                var $this = $(this);
+                var $modal = $("#modalAdviceInfo");
+                var data = myDataTable.rows($this.attr("data-rowIndex")).data()[0];
+
+                $.ajax({
+                    url: "/OwnerInfo/UpdateAdviceLook",
+                    method: "post",
+                    data: {
+                        adviceId: data.Id
+                    }
+                });
+
+                $modal.find("[name='Id']").text(data.Id);
+                $modal.find("[name='Title']").text(data.Title);
+                $modal.find("[name='Content']").text(data.Content);
+                $modal.find("[name='DateTime']").text(Common.parseDate(data.DateTime).format("yyyy-MM-dd hh:mm:ss"));
+
+                ReplyPagination.adviceId = data.Id;
+                ReplyPagination.loadPage(1);
+
+                //显示
+                $modal.modal('show');
+
+                return false;
+            });
+
+            //分页组件点击事件
+            $("#ulReplyPagination").on("click", "a", function () {
+                var $this = $(this);
+                var action = $this.attr("aria-label");
+                var currPage = $("#ulReplyPagination").data("currentPage");
+
+                if (action == "Previous") {
+                    currPage--;
+                } else if (action == "Next") {
+                    currPage++;
+                } else {
+                    currPage = $this.text();
+                }
+
+                ReplyPagination.loadPage(currPage);
+            });
+        }
+    </script>
+</body>
+</html>

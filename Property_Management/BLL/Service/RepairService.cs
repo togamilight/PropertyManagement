@@ -168,5 +168,13 @@ namespace Property_Management.BLL.Service {
         public int GetUnFinishCount() {
             return dbContext.Set<Repair>().Where(r => r.FinishDate == null && !r.Disuse).Count();
         }
+
+        public ResultInfo GetBarData() {
+            var sql = "select Date_Format(ApplyDate, '%Y-%m') as Month, count(*) as Count, sum(Money) as MoneySum from repair group by Month order by Month; ";
+
+            var data = dbContext.Database.SqlQuery<RepairBarData>(sql).ToList();
+
+            return new ResultInfo(true, "", data);
+        }
     }
 }

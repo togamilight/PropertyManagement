@@ -1,0 +1,138 @@
+﻿
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width" />
+    <title>维修记录统计</title>
+
+    @Styles.Render("~/bundles/css/bootstrap")
+    <link rel="stylesheet" type="text/css" href="~/css/Common.css" />
+
+    <style>
+    </style>
+</head>
+<body>
+    @{Html.RenderAction("GetHeader", "Account"); }
+    <div class="container">
+        <h3>月度统计</h3>
+        <select class="form-control" style="margin-left: 100px; max-width: 150px" id="selectBarType">
+            <option value="1">数量</option>
+            <option value="0">费用</option>
+        </select>
+        <div id="barChart" style="height:400px;"></div>
+    </div>
+    @Scripts.Render("~/bundles/js/jquery_bootstrap")
+    @Scripts.Render("~/bundles/js/echarts")
+
+    <script>
+        var barChart;
+        var barData = null;
+        var barMoney = [];
+        var barCount = [];
+
+        $(function () {
+            init();
+        });
+
+        function init() {
+            initView();
+            bindEvent();
+        }
+
+        function initView() {
+            //设置菜单选项激活
+            $("#liRepairManage").addClass("active");
+
+            barChart = echarts.init(document.getElementById('barChart'));
+
+            var barOption = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    data: []
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: [],
+                    type: 'bar',
+                    label: {
+                        normal: {
+                            show: true,
+                        }
+                    },
+                }]
+            };
+
+            barChart.setOption(barOption);
+
+            $.ajax({
+                url: "/Repair/GetRepairBarData",
+                method: "post",
+                success: function(res){
+                    if (res.Success) {
+                        var barMonth = [];
+                        barMoney = [];
+                        barCount = [];
+                        barData = res.Result;
+                        for (let i = 0; i < barData.length; i++) {
+                            barMonth.push(barData[i].Month);
+                            barMoney.push(barData[i].MoneySum);
+                            barCount.push(barData[i].Count);
+                        }
+
+                        var option = {
+                            xAxis: {
+                                data: barMonth
+                            }
+                        };
+                        barChart.setOption(option);
+
+                        $("#selectBarType").trigger("change");
+                    } else {
+                        alert(res.Msg);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
+                },
+            });
+        }
+
+        function bindEvent() {
+            var $document = $(document);
+            $document.on("change", "#selectBarType", function () {
+                var value = $(this).val();
+                if (value == 0) {
+                    if (barMoney.length > 0) {
+                        var option = {
+                            series: [{
+                                data: barMoney,
+                            }]
+                        };
+                        barChart.setOption(option);
+                    }
+                } else {
+                    if (barCount.length > 0) {
+                        var option = {
+                            series: [{
+                                data: barCount,
+                            }]
+                        };
+                        barChart.setOption(option);
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

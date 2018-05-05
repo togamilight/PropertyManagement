@@ -17,7 +17,16 @@ namespace Property_Management.BLL.Service {
 
             var entities = dbContext.Advices.Where(whereLambda);
             var total = entities.Count();
-            var data = entities.OrderByDescending(e => e.LastReplyTime).Skip(skipCount).Take(pageSize).ToList();
+            var advices = entities.OrderByDescending(e => e.DateTime).Skip(skipCount).Take(pageSize);
+
+            var data = from a in advices
+                       join o in dbContext.Owners
+                       on a.OwnerId equals o.Id into grp1
+                       from g in grp1.DefaultIfEmpty()
+                       select new {
+                           Advice = a,
+                           OwnerName = g.Name
+                       };
 
             return new ResultInfo(true, "", new { Total = total, Data = data });
         }
@@ -83,6 +92,18 @@ namespace Property_Management.BLL.Service {
             return new ResultInfo(true, "删除成功", null);
         }
 
+        public ResultInfo QueryToPageByOwner(Expression<Func<Advice, bool>> whereLambda, int page, int pageSize) {
+            page = page < 1 ? 1 : page;
+            pageSize = pageSize < 10 ? 10 : pageSize;
+            var skipCount = pageSize * (page - 1);
+
+            var entities = dbContext.Advices.Where(whereLambda);
+            var total = entities.Count();
+            var data = entities.OrderByDescending(e => e.LastReplyTime).Skip(skipCount).Take(pageSize).ToList();
+
+            return new ResultInfo(true, "", new { Total = total, Data = data });
+        }
+
         public ResultInfo UpdateByOwner(Advice advice) {
             string msg = ValidateEntity(advice);
             if (!string.IsNullOrEmpty(msg)) {
@@ -141,6 +162,18 @@ namespace Property_Management.BLL.Service {
             dbContext.SaveChanges();
 
             return new ResultInfo(true, "", null);
+        }
+
+        public int GetUnReplyCount() {
+            return dbContext.Advices.Where(a => a.ReplyNum < 1 && !a.Disuse).Count();
+        }
+
+        public ResultInfo GetBarData() {
+            var sql = "select Date_Format(DateTime, '%Y-%m') as Month, count(*) as Count from advice group by Month order by Month; ";
+
+            var data = dbContext.Database.SqlQuery<AdviceBarData>(sql).ToList();
+
+            return new ResultInfo(true, "", data);
         }
     }
 }

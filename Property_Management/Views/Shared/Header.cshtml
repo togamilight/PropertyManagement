@@ -17,6 +17,7 @@
                 if (account != null) {
                     if (account.IsAdmin) {
                         int repairCount = (int)ViewData["RepairUnFinishCount"];
+                        int adviceCount = (int)ViewData["AdviceUnReplyCount"];
 
                         <ul class="nav navbar-nav">
                             <li id="liAnnouncementManage"><a href="/Announcement/AnnouncementManage">公告管理</a></li>
@@ -43,12 +44,34 @@
                                     <li><a href="/Fee/FeeStatistics">收费统计</a></li>
                                 </ul>
                             </li>
-                            <li id="liRepairManage"><a href="/Repair/RepairManage">维修管理
+
+                            <li class="dropdown" id="liRepairManage">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">维修管理
                                 @{
                                     if (repairCount > 0) {
                                         <span class="badge">@repairCount</span>
                                     }
-                                }</a></li>
+                                } <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/Repair/RepairManage">维修记录</a></li>
+                                    <li><a href="/Repair/RepairStatistics">维修统计</a></li>
+                                </ul>
+                            </li>
+
+                            <li class="dropdown" id="liRepairManage">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    投诉管理
+                                    @{
+                                        if (adviceCount > 0) {
+                                            <span class="badge">@adviceCount</span>
+                                        }
+                                    } <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/Advice/AdviceManage">投诉记录</a></li>
+                                    <li><a href="/Advice/AdviceStatistics">投诉统计</a></li>
+                                </ul>
+                            </li>
                         </ul>
 
                         <ul class="nav navbar-nav navbar-right">
@@ -64,6 +87,7 @@
                     else {
                         int feeCount = (int)ViewData["FeeUnFinishCount"];
                         int announCount = (int)ViewData["AnnounUnReadCount"];
+                        int replyCount = (int)ViewData["NewReplyCount"];
 
                         <ul class="nav navbar-nav">
                             <li id="liOwnerAnnouncement"><a href="/OwnerInfo/Announcement">公告
@@ -80,6 +104,16 @@
                                     }
                                 }</a></li>
                             <li id="liOwnerRepair"><a href="/OwnerInfo/Repair">维修记录</a></li>
+                            <li id="liOwnerAdvice">
+                                <a href="/OwnerInfo/Advice">
+                                    投诉建议
+                                    @{
+                                        if (replyCount > 0) {
+                                            <span class="badge">@replyCount</span>
+                                        }
+                                    }
+                                </a>
+                            </li>
                         </ul>
 
                         <ul class="nav navbar-nav navbar-right">

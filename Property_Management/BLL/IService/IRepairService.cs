@@ -13,5 +13,6 @@ namespace Property_Management.BLL.IService {
         ResultInfo QueryToPageByOwner(Expression<Func<Repair, bool>> whereLambda, int page, int pageSize);
         ResultInfo DeleteByOwner(int[] ids, int ownerId);
         int GetUnFinishCount();
+        ResultInfo GetBarData();
     }
 }

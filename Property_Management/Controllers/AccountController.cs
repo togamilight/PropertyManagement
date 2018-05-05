@@ -25,12 +25,19 @@ namespace Property_Management.Controllers {
                 if (account.IsAdmin) {
                     var repairService = new RepairService();
                     ViewData["RepairUnFinishCount"] = repairService.GetUnFinishCount();
-                }else {
+
+                    var adviceService = new AdviceService();
+                    ViewData["AdviceUnReplyCount"] = adviceService.GetUnReplyCount();
+                }
+                else {
                     var feeService = new FeeService();
                     ViewData["FeeUnFinishCount"] = feeService.GetUnFinishCountForOwner(account.Id);
 
                     var announService = new AnnouncementService();
                     ViewData["AnnounUnReadCount"] = announService.GetUnReadCountForOwner(account.Id);
+
+                    var ownerService = new OwnerService();
+                    ViewData["NewReplyCount"] = ownerService.GetNewReplyCount(account.Id);
                 }
             }
             return PartialView("Header");

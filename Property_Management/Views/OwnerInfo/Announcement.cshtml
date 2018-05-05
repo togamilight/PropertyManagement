@@ -72,7 +72,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <label class="control-label col-xs-3 text-right"></label>
-                            <h4 class="col-xs-6" name="Title" style="padding-left: 0;padding-right: 0;"></h4>
+                            <h3 class="col-xs-6 my-announcement-title" name="Title"></h3>
                         </div>
                         <div class="row">
                             <label class="control-label col-xs-3 text-right"></label>
@@ -223,6 +223,8 @@
 
                 //显示编辑框
                 $('#modalInfo').modal('show');
+                
+                return false;
             });
 
             //查询按钮点击事件

@@ -53,6 +53,9 @@ if ($.fn.dataTable) {
 
 //将后台传过来的日期字符串转换为Date格式
 Common.parseDate = function (dateStr) {
+    if (!dateStr) {
+        return new Date("1970-01-01");
+    }
     var str = dateStr.replace("/Date(", "").replace(")/", "");
     return new Date(parseInt(str));
 }
@@ -199,4 +202,67 @@ Common.ajaxError = function (XMLHttpRequest, textStatus, errorThrown) {
     console.log("状态码：" + XMLHttpRequest.status + " 状态：" + XMLHttpRequest.readyState + " 错误信息：" + textStatus);
     
     alert("连接错误，请稍后重试");
+};
+
+Common.getPaginationHtml = function (currPage, totalPage) {
+    currPage = Number(currPage);
+    totalPage = Number(totalPage);
+    if (isNaN(currPage) || isNaN(totalPage)) return "";
+    var html = "";
+    if (currPage != 1) {
+        html += "<li><a href='#' aria-label='Previous'><span aria-hidden='true'>&laquo;</span></a></li>";
+    } else {
+        html += "<li class='disabled'><span aria-hidden='true'>&laquo;</span></li>";
+    }
+
+    var num = 7;
+    var start = 1;
+    if (currPage <= 4) {
+        for (; start < currPage; start++) {
+            html += "<li><a href='#'>" + start + "</a></li>";
+            num--;
+        }
+    } else if (totalPage > 7) {
+        html += "<li><a href='#'>1</a></li>";
+        html += "<li class='disabled'><span>...</span></li>";
+        num -= 2;
+        start = 0;
+    }
+
+    var start2 = totalPage - num + 1;
+    if (start2 < currPage) {
+        for (start2 = start2 < start ? start : start2; start2 <= totalPage; start2++) {
+            if (start2 != currPage) {
+                html += "<li><a href='#'>" + start2 + "</a></li>";
+            } else {
+                html += "<li class='active'><span>" + start2 + "</span></li>";
+            }
+        }
+    } else {
+        if (num >= 3 && start != 0) {
+            for (; num > 2; num--, start++) {
+                if (start != currPage) {
+                    html += "<li><a href='#'>" + start + "</a></li>";
+                } else {
+                    html += "<li class='active'><span>" + start + "</span></li>";
+                }
+            }
+        }
+        else {
+            html += "<li><a href='#'>" + (currPage - 1) + "</a></li>";
+            html += "<li class='active'><span>" + currPage + "</span></li>";
+            html += "<li><a href='#'>" + (currPage + 1) + "</a></li>";
+        }
+        html += "<li class='disabled'><span>...</span></li>";
+        html += "<li><a href='#'>" + totalPage + "</a></li>";
+    }
+
+
+    if (currPage != totalPage) {
+        html += "<li><a href='#' aria-label='Next'><span aria-hidden='true'>&raquo;</span></a></li>";
+    } else {
+        html += "<li class='disabled'><span aria-hidden='true'>&raquo;</span></li>";
+    }
+
+    return html;
 };

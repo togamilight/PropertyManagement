@@ -60,6 +60,10 @@ namespace Property_Management.Controllers
             return View();
         }
 
+        public ActionResult Advice() {
+            return View();
+        }
+
         public ActionResult OwnerBaseInfo() {
             var ownerService = new OwnerService();
             var account = Session["Account"] as AccountInfo;
@@ -86,7 +90,7 @@ namespace Property_Management.Controllers
             if (!string.IsNullOrEmpty(endDate)) {
                 DateTime end;
                 if (DateTime.TryParse(endDate, out end)) {
-                    end.AddDays(1);
+                    end = end.AddDays(1);
                     where = where.And(a => a.DateTime < end);
                 }
             }
@@ -187,6 +191,81 @@ namespace Property_Management.Controllers
             }
 
             return Json(repairService.QueryToPageByOwner(where, page, pageSize));
+        }
+
+        [JsonExceptionFilter]
+        public ActionResult AddAdvice(Advice advice) {
+            var adviceService = new AdviceService();
+
+            var ownerId = (Session["Account"] as AccountInfo).Id;
+            advice.OwnerId = ownerId;
+            return Json(adviceService.Add(advice));
+        }
+
+        [JsonExceptionFilter]
+        public ActionResult UpdateAdvice(Advice advice) {
+            var adviceService = new AdviceService();
+
+            var ownerId = (Session["Account"] as AccountInfo).Id;
+            advice.OwnerId = ownerId;
+
+            return Json(adviceService.UpdateByOwner(advice));
+        }
+
+        [JsonExceptionFilter]
+        public ActionResult DeleteAdvices(int[] ids) {
+            var adviceService = new AdviceService();
+
+            var ownerId = (Session["Account"] as AccountInfo).Id;
+
+            return Json(adviceService.DeleteByOwner(ids, ownerId));
+        }
+
+        [JsonExceptionFilter]
+        public ActionResult GetAdvicePage(int page = 1, int pageSize = 10, string title = "", string beginDate = "", string endDate = "", int isFinish = 2) {
+            var adviceService = new AdviceService();
+
+            var where = PredicateBuilder.True<Advice>();
+
+            if (!string.IsNullOrEmpty(title)) {
+                where = where.And(a => a.Title.Contains(title));
+            }
+
+            var ownerId = (Session["Account"] as AccountInfo).Id;
+            where = where.And(a => a.OwnerId == ownerId);
+
+            if (!string.IsNullOrEmpty(beginDate)) {
+                DateTime begin;
+                if (DateTime.TryParse(beginDate, out begin)) {
+                    where = where.And(a => a.DateTime >= begin);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(endDate)) {
+                DateTime end;
+                if (DateTime.TryParse(endDate, out end)) {
+                    end = end.AddDays(1);
+                    where = where.And(a => a.DateTime < end);
+                }
+            }
+
+            if (isFinish == 1) {
+                where = where.And(a => a.ReplyNum > 0);
+            }
+            else if (isFinish == 0) {
+                where = where.And(a => a.ReplyNum <= 0);
+            }
+
+            return Json(adviceService.QueryToPageByOwner(where, page, pageSize));
+        }
+
+        [JsonExceptionFilter]
+        public ActionResult UpdateAdviceLook(int adviceId) {
+            var adviceService = new AdviceService();
+
+            var ownerId = (Session["Account"] as AccountInfo).Id;
+
+            return Json(adviceService.UpdateLook(adviceId, ownerId));
         }
     }
 }

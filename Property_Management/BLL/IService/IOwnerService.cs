@@ -43,5 +43,7 @@ namespace Property_Management.BLL.IService {
         ResultInfo GetBaseInfoForOwner(int ownerId);
 
         DateTime UpdateLastLookTime(int id);
+
+        int GetNewReplyCount(int id);
     }
 }
