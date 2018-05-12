@@ -19,7 +19,7 @@ namespace Property_Management.BLL.Service {
             var advice = dbContext.Advices.FirstOrDefault(a => a.Id == reply.AdviceId && !a.Disuse);
 
             if(advice == null) {
-                return new ResultInfo(false, "该投诉建议记录不存在或住户已搬走", null);
+                return new ResultInfo(false, "该投诉建议记录不存在或业主已搬走", null);
             }
 
             var owner = dbContext.Owners.FirstOrDefault(o => o.Id == advice.OwnerId);
@@ -55,7 +55,7 @@ namespace Property_Management.BLL.Service {
             }
 
             //if (advice == null) {
-            //    return new ResultInfo(false, "该投诉建议记录不存在或住户已搬走", null);
+            //    return new ResultInfo(false, "该投诉建议记录不存在或业主已搬走", null);
             //}
 
             dbContext.Replies.Remove(reply);

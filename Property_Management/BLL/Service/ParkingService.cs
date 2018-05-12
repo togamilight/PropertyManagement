@@ -67,7 +67,7 @@ namespace Property_Management.BLL.Service {
                 if(parking.OwnerId != null) {
                     var newOwner = owners.FirstOrDefault(o => o.Id == parking.OwnerId && !o.Disuse);
                     if(newOwner == null) {
-                        return new ResultInfo(false, "该住户不存在或已搬走", null);
+                        return new ResultInfo(false, "该业主不存在或已搬走", null);
                     }
 
                     if(newOwner.ParkingId != null) {

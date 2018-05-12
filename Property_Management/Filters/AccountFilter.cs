@@ -20,19 +20,16 @@ namespace Property_Management.Filters {
             bool flag = false;
             if (account == null) {
                 flag = true;
-                //TODO 跳转到用户登录页面
             }else {
                 switch (CheckType) {
                     case "Admin":
                         if (!account.IsAdmin) {
                             flag = true;
-                            //TODO 跳转到您无权限页面
                         }
                         break;
                     case "Owner":
                         if (account.IsAdmin) {
                             flag = true;
-                            //TODO 跳转到用户登录页面
                         }
                         break;
                     case "Both":
@@ -41,6 +38,7 @@ namespace Property_Management.Filters {
                 }
             }
 
+            //验证不通过，跳转到登录页面
             if (flag) {
                 filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Account", action = "OwnerLogin", message = "请先登录" }));
             }

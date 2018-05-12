@@ -53,9 +53,9 @@ namespace Property_Management.BLL.Service {
             var rooms = dbContext.Set<Room>();
             foreach (int id in ids) {
                 if (id > 0) {
-                    //当楼中有房子已经有住户，则不能删除
+                    //当楼中有房子已经有业主，则不能删除
                     if (rooms.Any(r => r.BuildingId == id && r.OwnerId != null)) {
-                        return new ResultInfo(false, "删除失败，编号为" + id + "的楼中已有住户，请先为他们分配其它房子", null);
+                        return new ResultInfo(false, "删除失败，编号为" + id + "的楼中已有业主，请先为他们分配其它房子", null);
                     }
                 }
             }

@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="BLL\Base\BaseService.cs" />
     <Compile Include="BLL\Base\IBaseService.cs" />
@@ -223,6 +224,7 @@
     <Compile Include="DAL\MyDbContext.cs" />
     <Compile Include="DAL\MyDbContextFactory.cs" />
     <Compile Include="Filters\AccountFilter.cs" />
+    <Compile Include="Filters\ExceptionFilter.cs" />
     <Compile Include="Filters\JsonExceptionFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -235,6 +237,7 @@
     <Compile Include="Models\RepairBarData.cs" />
     <Compile Include="Models\ResultInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\ExceptionLogger.cs" />
     <Compile Include="Util\PredicateBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -264,6 +267,7 @@
     <Content Include="Views\OwnerInfo\Advice.cshtml" />
     <Content Include="Views\Repair\RepairStatistics.cshtml" />
     <Content Include="Views\Advice\AdviceStatistics.cshtml" />
+    <None Include="Properties\PublishProfiles\本地配置.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -273,6 +277,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Log\" />
     <Folder Include="Views\Reply\" />
     <Folder Include="Views\Test\" />
   </ItemGroup>

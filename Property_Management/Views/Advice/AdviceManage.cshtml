@@ -29,15 +29,15 @@
         <div>
             <form class="form-inline" id="formSearch">
                 <div class="form-group">
-                    <label>&nbsp;&nbsp;住户状态</label>
+                    <label>&nbsp;&nbsp;业主状态</label>
                     <select class="selectpicker form-control" name="IsDisuse">
                         <option value="2">全部</option>
-                        <option value="0">现有住户</option>
-                        <option value="1">搬走住户</option>
+                        <option value="0">现有业主</option>
+                        <option value="1">搬走业主</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>&nbsp;&nbsp;住户</label>
+                    <label>&nbsp;&nbsp;业主</label>
                     <select class="selectpicker form-control" name="OwnerId">
                         <option value="0">全部</option>
                     </select>
@@ -74,7 +74,7 @@
                         <th>编号</th>
                         <th>标题</th>
                         <th>发表时间</th>
-                        <th>住户</th>
+                        <th>业主</th>
                         <th>回复数</th>
                         <th>操作</th>
                     </tr>
@@ -106,7 +106,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-xs-3">住户</label>
+                                <label class="control-label col-xs-3">业主</label>
                                 <div class="col-xs-6">
                                     <input type="text" class="form-control" name="OwnerName" readonly>
                                 </div>
@@ -203,7 +203,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">住户详情</h4>
+                        <h4 class="modal-title" id="myModalLabel">业主详情</h4>
                     </div>
                     <div class="modal-body">
                         <div class="row">
@@ -283,8 +283,8 @@
 
         var myDataTable;      //datatables对象
         var waitReload = false;     //表示修改或添加过，需要重载表格
-        var useOwnerOptHtml = "";   //现有住户select的option
-        var disuseOwnerOptHtml = "";   //现有住户select的option
+        var useOwnerOptHtml = "";   //现有业主select的option
+        var disuseOwnerOptHtml = "";   //现有业主select的option
 
         var searchData = {
             ownerId: 0,
@@ -380,11 +380,11 @@
                 width: "auto"
             });
 
-            //获取住户选项
+            //获取业主选项
             $.when(setOwnerOptHtml()).done(function (data) {
                 var html = "<option value='0'>全部</option>";
                 if (data) {
-                    alert("加载住户信息失败：" + data);
+                    alert("加载业主信息失败：" + data);
                 } else {
                     html += useOwnerOptHtml + disuseOwnerOptHtml;
                 }
@@ -506,7 +506,7 @@
             //    $.when(setOwnerOptHtml()).done(function (data) {
             //        var html = "<option value='0'>加载中...</option>";
             //        if (data) {
-            //            alert("加载住户信息失败：" + data);
+            //            alert("加载业主信息失败：" + data);
             //        } else {
             //            html = useOwnerOptHtml;
             //        }
@@ -537,7 +537,7 @@
             //    var $form = $("#formAdd");
             //    var $owner = $form.find("[name='OwnerId']");
             //    if ($owner.val() <= 0) {
-            //        alert("请先选择住户，如果加载失败，请重新打开");
+            //        alert("请先选择业主，如果加载失败，请重新打开");
             //    } else if (Common.validateForm($form)) {
             //        var $this = $(this);
             //        //TODO
@@ -680,16 +680,16 @@
                 }
             });
 
-            //住户状态select选择时更新住户select
+            //业主状态select选择时更新业主select
             $document.on("changed.bs.select", "select[name='IsDisuse']", function () {
                 var $this = $(this);
                 var $ownerSelect = $this.closest("form").find("select[name='OwnerId']");
                 if ($ownerSelect.length > 0) {
-                    //获取住户选项
+                    //获取业主选项
                     $.when(setOwnerOptHtml()).done(function (data) {
                         var html = "<option value='0'>全部</option>";
                         if (data) {
-                            alert("加载住户信息失败：" + data);
+                            alert("加载业主信息失败：" + data);
                         } else {
                             console.log($this.val());
                             switch ($this.val()) {
@@ -727,7 +727,7 @@
                 $modal.find("[name='Content']").text(data.Advice.Content);
                 $modal.find("[name='DateTime']").text(Common.parseDate(data.Advice.DateTime).format("yyyy-MM-dd hh:mm:ss"));
 
-                //当住户已搬走时禁止编辑
+                //当业主已搬走时禁止编辑
                 if (data.Advice.Disuse) {
                     $modal.find("div[name='ReplyRow']").hide();
                 } else {
@@ -831,7 +831,7 @@
                 return false;
             });
 
-            //住户名称点击时显示住户详情
+            //业主名称点击时显示业主详情
             $document.on("click", "a.my-advice-owner", function () {
                 var $this = $(this);
                 var $modalOwnerInfo = $("#modalOwnerInfo");
@@ -904,7 +904,7 @@
             });
         }
 
-        //住户select的选项,传入延迟对象来配合ajax保证延迟执行，不阻塞线程
+        //业主select的选项,传入延迟对象来配合ajax保证延迟执行，不阻塞线程
         function setOwnerOptHtml() {
             var deferredObj = $.Deferred();
             //当没有时用ajax获取
@@ -921,7 +921,7 @@
                             //myDataTable.ajax.reload();
                             var uselist = res.Result.UseOwner;
                             if (uselist.length == 0) {
-                                deferredObj.resolve("请先添加住户");
+                                deferredObj.resolve("请先添加业主");
                                 return;
                             } else {
                                 var html1 = "";

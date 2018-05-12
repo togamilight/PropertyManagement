@@ -18,7 +18,7 @@ namespace Property_Management.BLL.Service {
             }
 
             if(!dbContext.Set<Owner>().Any(o => o.Id == fee.OwnerId && !o.Disuse)) {
-                return new ResultInfo(false, "该住户不存在或已搬走", null);
+                return new ResultInfo(false, "该业主不存在或已搬走", null);
             }
 
             fee.FinishDate = null;
@@ -44,12 +44,12 @@ namespace Property_Management.BLL.Service {
             }
 
             if (oldFee.Disuse) {
-                return new ResultInfo(false, "无法修改已搬走住户的记录", null);
+                return new ResultInfo(false, "无法修改已搬走业主的记录", null);
             }
 
             if(oldFee.OwnerId != fee.OwnerId) {
                 if(!dbContext.Set<Owner>().Any(o => o.Id == fee.OwnerId && !o.Disuse)) {
-                    return new ResultInfo(false, "该住户不存在或已搬走", null);
+                    return new ResultInfo(false, "该业主不存在或已搬走", null);
                 }
                 oldFee.OwnerId = fee.OwnerId;
             }
@@ -122,7 +122,7 @@ namespace Property_Management.BLL.Service {
                 }
             }else {
                 if(fee.OwnerId <= 0) {
-                    msg += "住户编号错误 \n";
+                    msg += "业主编号错误 \n";
                 }
                 if(fee.FeeItemId <= 0) {
                     msg += "收费项目编号错误 \n";

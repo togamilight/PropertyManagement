@@ -107,7 +107,7 @@ namespace Property_Management.BLL.Service {
                 try {
                     var owners = dbContext.Set<Owner>();
                     if (owners.Any(o => o.Name == owner.Name)) {
-                        return new ResultInfo(false, "该名字已存在，如果是同名住户，请添加一些标识进行区分", null);
+                        return new ResultInfo(false, "该名字已存在，如果是同名业主，请添加一些标识进行区分", null);
                     }
 
                     var room = dbContext.Set<Room>().FirstOrDefault(r => r.Id == owner.RoomId);
@@ -115,7 +115,7 @@ namespace Property_Management.BLL.Service {
                         return new ResultInfo(false, "该房子不存在", null);
                     }
                     if (room.OwnerId != null) {
-                        return new ResultInfo(false, "该房子已有住户", null);
+                        return new ResultInfo(false, "该房子已有业主", null);
                     }
 
                     owner.NewReplyNum = 0;
@@ -141,7 +141,7 @@ namespace Property_Management.BLL.Service {
         }
 
         /// <summary>
-        /// 现有住户的更新方法
+        /// 现有业主的更新方法
         /// </summary>
         /// <param name="owner"></param>
         public override ResultInfo Update(Owner owner) {
@@ -155,11 +155,11 @@ namespace Property_Management.BLL.Service {
 
             var oldOwner = owners.FirstOrDefault(o => o.Id == owner.Id && !o.Disuse);
             if(oldOwner == null) {
-                return new ResultInfo(false, "该住户不存在或已搬走", null);
+                return new ResultInfo(false, "该业主不存在或已搬走", null);
             }
 
             if (oldOwner.Name != owner.Name && owners.Any(o => o.Name == owner.Name)) {
-                return new ResultInfo(false, "该名字已存在，如果是同名住户，请添加一些标识进行区分", null);
+                return new ResultInfo(false, "该名字已存在，如果是同名业主，请添加一些标识进行区分", null);
             }
 
             if(oldOwner.RoomId != owner.RoomId) {
@@ -170,7 +170,7 @@ namespace Property_Management.BLL.Service {
                 }
 
                 if (newRoom.OwnerId != null) {
-                    return new ResultInfo(false, "该房子已有其它住户", null);
+                    return new ResultInfo(false, "该房子已有其它业主", null);
                 }
 
                 var oldRoom = rooms.FirstOrDefault(r => r.Id == oldOwner.RoomId);
@@ -287,7 +287,7 @@ namespace Property_Management.BLL.Service {
 
             var oldOwner = owners.FirstOrDefault(o => o.Id == owner.Id && o.Disuse);
             if (oldOwner == null) {
-                return new ResultInfo(false, "该住户不存在", null);
+                return new ResultInfo(false, "该业主不存在", null);
             }
 
             var newRoom = rooms.FirstOrDefault(r => r.Id == owner.RoomId);
@@ -297,7 +297,7 @@ namespace Property_Management.BLL.Service {
             }
 
             if (newRoom.OwnerId != null) {
-                return new ResultInfo(false, "该房子已有其它住户", null);
+                return new ResultInfo(false, "该房子已有其它业主", null);
             }
 
             newRoom.OwnerId = owner.Id;
@@ -316,7 +316,7 @@ namespace Property_Management.BLL.Service {
             var owner = dbContext.Set<Owner>().Where(o => o.Id == ownerId && !o.Disuse);
 
             if (!owner.Any()) {
-                return new ResultInfo(false, "该住户不存在", null);
+                return new ResultInfo(false, "该业主不存在", null);
             }
 
             var data = (from o in owner

@@ -17,26 +17,26 @@ namespace Property_Management.BLL.IService {
         /// <summary>
         /// 修改密码，需要传入帐户名和原密码
         /// </summary>
-        ResultInfo ChangePassword(Owner admin, string newPassword);
+        ResultInfo ChangePassword(Owner owner, string newPassword);
 
         /// <summary>
-        /// 搬走住户
+        /// 搬走业主
         /// </summary>
         ResultInfo Disuse(int[] ids);
 
         /// <summary>
-        /// 获取所有现有住户的姓名和id
+        /// 获取所有现有业主的姓名和id
         /// </summary>
         /// <returns></returns>
         ResultInfo GetCoreInfo(Expression<Func<Owner, bool>> whereLambda);
 
         /// <summary>
-        /// 分页查询搬走住户
+        /// 分页查询搬走业主
         /// </summary>
         ResultInfo QueryDisuseToPage(Expression<Func<Owner, bool>> whereLambda, int page, int pageSize);
 
         /// <summary>
-        /// 恢复搬走住户
+        /// 恢复搬走业主
         /// </summary>
         ResultInfo Recover(Owner owner);
 

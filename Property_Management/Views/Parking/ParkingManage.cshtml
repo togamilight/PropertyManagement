@@ -63,7 +63,7 @@
                         <th><input type="checkbox" id="chkAllSelect" /></th>
                         <th>编号</th>
                         <th>车位号</th>
-                        <th>住户</th>
+                        <th>业主</th>
                         <th>车型</th>
                         <th>车牌号</th>
                         <th>分配日期</th>
@@ -123,7 +123,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-xs-3">住户</label>
+                                <label class="control-label col-xs-3">业主</label>
                                 <div class="col-xs-6">
                                     <select class="selectpicker" name="OwnerId">
                                         <option value="0">加载中...</option>
@@ -164,7 +164,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">住户详情</h4>
+                        <h4 class="modal-title" id="myModalLabel">业主详情</h4>
                     </div>
                     <div class="modal-body">
                         <div class="row">
@@ -238,7 +238,7 @@
 
         var myDataTable;      //datatables对象
         var waitReload = false;     //表示修改或添加过，需要重载表格
-        var ownerOptHtml = "";   //住户select的option
+        var ownerOptHtml = "";   //业主select的option
 
         var searchData = {
             name: "",
@@ -457,11 +457,11 @@
                 var $form = $("#formEdit");
                 var data = myDataTable.rows($this.attr("data-rowIndex")).data()[0];
 
-                //获取现有住户选项
+                //获取现有业主选项
                 $.when(setOwnerOptHtml()).done(function (res) {
                     var html = "<option value='0'>无</option>"
                     if (res) {
-                        alert("加载住户信息失败：" + res);
+                        alert("加载业主信息失败：" + res);
                         if (data.Parking.OwnerId) {
                             html += "<option value='" + data.Parking.OwnerId + "'>" + data.OwnerName + "</option>";
                         }
@@ -579,7 +579,7 @@
                 }
             });
 
-            //住户select选择时
+            //业主select选择时
             $document.on("changed.bs.select", "select[name='OwnerId']", function () {
                 var $this = $(this);
                 var $form = $this.closest("form");
@@ -588,7 +588,7 @@
                 $form.find("[name='Date']").prop("disabled", $this.val() <= 0);
             });
 
-            //住户名称点击时显示住户详情
+            //业主名称点击时显示业主详情
             $document.on("click", "a.my-parking-owner", function () {
                 var $this = $(this);
                 var $modalOwnerInfo = $("#modalOwnerInfo");
@@ -648,7 +648,7 @@
             });
         }
 
-        //住户select的选项,传入延迟对象来配合ajax保证延迟执行，不阻塞线程
+        //业主select的选项,传入延迟对象来配合ajax保证延迟执行，不阻塞线程
         function setOwnerOptHtml() {
             var deferredObj = $.Deferred();
             //当没有时用ajax获取
@@ -665,7 +665,7 @@
                             //myDataTable.ajax.reload();
                             var list = res.Result;
                             if (list.length == 0) {
-                                deferredObj.resolve("请先添加住户");
+                                deferredObj.resolve("请先添加业主");
                             } else {
                                 var html = "";
                                 for (let i = 0; i < list.length; i++) {

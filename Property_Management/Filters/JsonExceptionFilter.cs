@@ -13,7 +13,7 @@ namespace Property_Management.Filters {
         public override void OnException(ExceptionContext filterContext) {
             //base.OnException(filterContext);
             //表示已处理异常，MVC引擎不需要再次处理，不会显示默认错误页面
-            filterContext.ExceptionHandled = true;
+            //filterContext.ExceptionHandled = true;
 
             var result = new ResultInfo(false, filterContext.Exception.Message, null);
             filterContext.Result = new JsonResult() { Data = result };

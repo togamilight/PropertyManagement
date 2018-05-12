@@ -104,7 +104,7 @@ namespace Property_Management.BLL.Service {
                 if (id > 0) {
                     var room = rooms.FirstOrDefault(r => r.Id == id);
                     if (room.OwnerId != null) {
-                        return new ResultInfo(false, "删除失败，"+ room.Name + "房子中已有住户，请先为他们分配其它房子", null);
+                        return new ResultInfo(false, "删除失败，"+ room.Name + "房子中已有业主，请先为他们分配其它房子", null);
                     }
                     rooms.Remove(room);
                 }

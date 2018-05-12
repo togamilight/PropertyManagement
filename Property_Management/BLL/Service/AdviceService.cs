@@ -38,7 +38,7 @@ namespace Property_Management.BLL.Service {
             }
 
             if(!dbContext.Owners.Any(o => o.Id == advice.OwnerId && !o.Disuse)) {
-                return new ResultInfo(false, "该住户不存在或已搬走", null);
+                return new ResultInfo(false, "该业主不存在或已搬走", null);
             }
 
             advice.DateTime = DateTime.Now;
@@ -147,7 +147,7 @@ namespace Property_Management.BLL.Service {
             var owner = dbContext.Owners.FirstOrDefault(o => o.Id == ownerId && !o.Disuse);
 
             if(owner == null) {
-                return new ResultInfo(false, "该住户不存在", null);
+                return new ResultInfo(false, "该业主不存在", null);
             }
 
             var advice = dbContext.Advices.FirstOrDefault(a => a.Id == id && a.OwnerId == ownerId);

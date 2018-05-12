@@ -60,7 +60,7 @@
                         <th>房型</th>
                         <th>楼栋</th>
                         <th>楼层</th>
-                        <th>住户</th>
+                        <th>业主</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -235,7 +235,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">住户详情</h4>
+                        <h4 class="modal-title" id="myModalLabel">业主详情</h4>
                     </div>
                     <div class="modal-body">
                         <div class="row">
@@ -708,7 +708,7 @@
                 return false;
             });
 
-            //住户名称点击时显示住户详情
+            //业主名称点击时显示业主详情
             $document.on("click", "a.my-room-owner", function () {
                 var $this = $(this);
                 var $modalOwnerInfo = $("#modalOwnerInfo");
