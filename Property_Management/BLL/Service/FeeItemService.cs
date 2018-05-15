@@ -63,18 +63,31 @@ namespace Property_Management.BLL.Service {
         public override ResultInfo Delete(int[] ids) {
             var feeItems = dbContext.Set<FeeItem>();
             var fees = dbContext.Set<Fee>();
-            foreach (var id in ids) {
-                var feeItem = feeItems.FirstOrDefault(e => e.Id == id);
-                if (feeItem != null) {
-                    var removeFees = fees.Where(f => f.FeeItemId == feeItem.Id);
-                    fees.RemoveRange(removeFees);
-                    feeItems.Remove(feeItem);
+
+            using (var transaction = dbContext.Database.BeginTransaction()) {
+                try {
+                    foreach (var id in ids) {
+                        var feeItem = feeItems.FirstOrDefault(e => e.Id == id);
+                        if (feeItem != null) {
+
+                            var sql = "delete from fee where FeeItemId = '"+ feeItem.Id +"';";
+                            dbContext.Database.ExecuteSqlCommand(sql);
+
+                            feeItems.Remove(feeItem);
+                        }
+                    }
+
+                    dbContext.SaveChanges();
+
+                    transaction.Commit();
+
+                    return new ResultInfo(true, "删除成功", null);
+                }
+                catch (Exception) {
+                    transaction.Rollback();
+                    throw;
                 }
             }
-
-            dbContext.SaveChanges();
-
-            return new ResultInfo(true, "删除成功", null);
         }
     }
 }

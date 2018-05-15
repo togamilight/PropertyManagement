@@ -23,6 +23,10 @@ namespace Property_Management.Controllers
             return View();
         }
 
+        public ActionResult AdminSignUp() {
+            return View();
+        }
+
         [JsonExceptionFilter]
         public ActionResult DoChangePassword(string oldPassword, string newPassword ) {
             var service = new AdminService();
@@ -33,6 +37,13 @@ namespace Property_Management.Controllers
                 Password = oldPassword
             };
             return Json(service.ChangePassword(admin, newPassword));
+        }
+
+        [JsonExceptionFilter]
+        public ActionResult DoAdminSignUp(Admin admin) {
+            var service = new AdminService();
+
+            return Json(service.Add(admin));
         }
 
         public ActionResult LogOut() {

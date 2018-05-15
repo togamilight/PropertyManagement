@@ -193,86 +193,96 @@ namespace Property_Management.BLL.Service {
         }
 
         public override ResultInfo Delete(int[] ids) {
-            var owners = dbContext.Set<Owner>();
-            foreach (var id in ids) {
-                var owner = owners.FirstOrDefault(e => e.Id == id);
-                if (owner != null) {
-                    var room = dbContext.Set<Room>().FirstOrDefault(r => r.Id == owner.RoomId);
-                    room.OwnerId = null;
+            using (var transaction = dbContext.Database.BeginTransaction()) {
+                try {
+                    var owners = dbContext.Set<Owner>();
+                    foreach (var id in ids) {
+                        var owner = owners.FirstOrDefault(e => e.Id == id);
+                        if (owner != null) {
+                            var room = dbContext.Set<Room>().FirstOrDefault(r => r.Id == owner.RoomId);
+                            room.OwnerId = null;
 
-                    var parking = dbContext.Set<Parking>().FirstOrDefault(r => r.Id == owner.ParkingId);
-                    parking.OwnerId = null;
-                    parking.CarNum = null;
-                    parking.CarType = null;
-                    parking.Date = null;
+                            var parking = dbContext.Set<Parking>().FirstOrDefault(r => r.Id == owner.ParkingId);
+                            parking.OwnerId = null;
+                            parking.CarNum = null;
+                            parking.CarType = null;
+                            parking.Date = null;
 
-                    //TODO 删除收费和维修记录
-                    var fees = dbContext.Set<Fee>().Where(f => f.OwnerId == owner.Id);
-                    dbContext.Set<Fee>().RemoveRange(fees);
+                            //TODO 删除收费和维修记录
+                            string sql1 = "delete from fee where OwnerId = '" + owner.Id + "'";
+                            dbContext.Database.ExecuteSqlCommand(sql1);
 
-                    var repairs = dbContext.Set<Repair>().Where(r => r.OwnerId == owner.Id);
-                    dbContext.Set<Repair>().RemoveRange(repairs);
+                            string sql2 = "delete from repair where OwnerId = '" + owner.Id + "'";
+                            dbContext.Database.ExecuteSqlCommand(sql2);
 
-                    var advices = dbContext.Advices.Where(a => a.OwnerId == id);
-                    foreach (var advice in advices) {
-                        var replies = dbContext.Replies.Where(r => r.AdviceId == advice.Id);
-                        dbContext.Replies.RemoveRange(replies);
+                            string sql3 = "delete from reply where AdviceId in (select Id from advice where OwnerId = '" + owner.Id + "')";
+                            dbContext.Database.ExecuteSqlCommand(sql3);
+                            string sql4 = "delete from advice where OwnerId = '" + owner.Id + "'";
+                            dbContext.Database.ExecuteSqlCommand(sql4);
+
+                            owners.Remove(owner);
+                        }
                     }
-                    dbContext.Advices.RemoveRange(advices);
 
-                    owners.Remove(owner);
+                    dbContext.SaveChanges();
+
+                    transaction.Commit();
+                    return new ResultInfo(true, "删除成功", null);
+                }
+                catch (Exception) {
+                    transaction.Rollback();
+                    throw;
                 }
             }
-
-            dbContext.SaveChanges();
-
-            return new ResultInfo(true, "删除成功", null);
         }
 
         public ResultInfo Disuse(int[] ids) {
-            var owners = dbContext.Set<Owner>();
-            foreach (var id in ids) {
-                var owner = owners.FirstOrDefault(e => e.Id == id && !e.Disuse);
-                if (owner != null) {
-                    var room = dbContext.Set<Room>().FirstOrDefault(r => r.Id == owner.RoomId);
-                    room.OwnerId = null;
-                    owner.RoomId = null;
+            using (var transaction = dbContext.Database.BeginTransaction()) {
+                try {
+                    var owners = dbContext.Set<Owner>();
+                    foreach (var id in ids) {
+                        var owner = owners.FirstOrDefault(e => e.Id == id);
+                        if (owner != null) {
+                            var room = dbContext.Set<Room>().FirstOrDefault(r => r.Id == owner.RoomId);
+                            room.OwnerId = null;
+                            owner.RoomId = null;
 
-                    if(owner.ParkingId != null) {
-                        var parking = dbContext.Set<Parking>().FirstOrDefault(r => r.Id == owner.ParkingId);
-                        parking.OwnerId = null;
-                        parking.CarNum = null;
-                        parking.CarType = null;
-                        parking.Date = null;
+                            if (owner.ParkingId != null) {
+                                var parking = dbContext.Set<Parking>().FirstOrDefault(r => r.Id == owner.ParkingId);
+                                parking.OwnerId = null;
+                                parking.CarNum = null;
+                                parking.CarType = null;
+                                parking.Date = null;
 
-                        owner.ParkingId = null;
+                                owner.ParkingId = null;
+                            }
+
+                            //TODO 删除收费和维修记录
+                            string sql1 = "update fee set Disuse = 1 where OwnerId = '" + owner.Id + "'";
+                            dbContext.Database.ExecuteSqlCommand(sql1);
+
+                            string sql2 = "update repair set Disuse = 1 where OwnerId = '" + owner.Id + "'";
+                            dbContext.Database.ExecuteSqlCommand(sql2);
+
+                            string sql3 = "update advice set Disuse = 1 where OwnerId = '" + owner.Id + "'";
+                            dbContext.Database.ExecuteSqlCommand(sql3);
+
+                            owner.Disuse = true;
+                            owner.DisuseDate = DateTime.Now.Date;
+                        }
                     }
 
-                    //TODO disuse收费和维修记录
-                    var fees = dbContext.Set<Fee>().Where(f => f.OwnerId == owner.Id);
-                    foreach(var fee in fees) {
-                        fee.Disuse = true;
-                    }
+                    dbContext.SaveChanges();
 
-                    var repairs = dbContext.Set<Repair>().Where(r => r.OwnerId == owner.Id);
-                    foreach(var repair in repairs) {
-                        repair.Disuse = true;
-                    }
+                    transaction.Commit();
 
-                    var advices = dbContext.Advices.Where(a => a.OwnerId == owner.Id);
-                    foreach (var advice in advices) {
-                        advice.Disuse = true;
-                    }
-
-
-                    owner.Disuse = true;
-                    owner.DisuseDate = DateTime.Now.Date;
+                    return new ResultInfo(true, "搬走成功", null);
+                }
+                catch (Exception) {
+                    transaction.Rollback();
+                    throw;
                 }
             }
-
-            dbContext.SaveChanges();
-
-            return new ResultInfo(true, "搬走成功", null);
         }
 
         public ResultInfo GetCoreInfo(Expression<Func<Owner, bool>> whereLambda) {

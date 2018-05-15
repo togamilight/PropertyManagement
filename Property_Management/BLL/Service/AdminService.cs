@@ -30,5 +30,21 @@ namespace Property_Management.BLL.Service {
                 return 0;
             return dbContext.Set<Admin>().Where(a => a.Name == admin.Name && a.Password == admin.Password).Select(a => a.Id).FirstOrDefault();
         }
+
+        public override ResultInfo Add(Admin admin) {
+            string msg = ValidateEntity(admin);
+            if (!string.IsNullOrEmpty(msg)) {
+                return new ResultInfo(false, msg, null);
+            }
+
+            if(dbContext.Admins.Any(a => a.Name == admin.Name)) {
+                return new ResultInfo(false, "该用户名已存在", null);
+            }
+
+            dbContext.Admins.Add(admin);
+            dbContext.SaveChanges();
+
+            return new ResultInfo(true, "注册成功", new { admin.Id });
+        }
     }
 }

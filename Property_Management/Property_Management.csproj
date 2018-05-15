@@ -268,6 +268,7 @@
     <Content Include="Views\Repair\RepairStatistics.cshtml" />
     <Content Include="Views\Advice\AdviceStatistics.cshtml" />
     <None Include="Properties\PublishProfiles\本地配置.pubxml" />
+    <Content Include="Views\AdminInfo\AdminSignUp.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

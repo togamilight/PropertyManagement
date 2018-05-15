@@ -74,22 +74,31 @@ namespace Property_Management.BLL.Service {
         }
 
         public override ResultInfo Delete(int[] ids) {
-            foreach (var id in ids) {
-                var advice = dbContext.Advices.FirstOrDefault(e => e.Id == id);
-                if (advice != null) {
-                    var owner = dbContext.Owners.FirstOrDefault(o => o.Id == advice.OwnerId);
-                    owner.NewReplyNum -= advice.NewReplyNum;
+            using (var transaction = dbContext.Database.BeginTransaction()) {
+                try {
+                    foreach (var id in ids) {
+                        var advice = dbContext.Advices.FirstOrDefault(e => e.Id == id);
+                        if (advice != null) {
+                            var owner = dbContext.Owners.FirstOrDefault(o => o.Id == advice.OwnerId);
+                            owner.NewReplyNum -= advice.NewReplyNum;
 
-                    var replies = dbContext.Replies.Where(r => r.AdviceId == advice.Id);
+                            var sql = "delete from reply where AdviceId = '"+ advice.Id +"';";
+                            dbContext.Database.ExecuteSqlCommand(sql);
 
-                    dbContext.Replies.RemoveRange(replies);
-                    dbContext.Advices.Remove(advice);
+                            dbContext.Advices.Remove(advice);
+                        }
+                    }
+
+                    dbContext.SaveChanges();
+
+                    transaction.Commit();
+                    return new ResultInfo(true, "删除成功", null);
+                }
+                catch (Exception) {
+                    transaction.Rollback();
+                    throw;
                 }
             }
-
-            dbContext.SaveChanges();
-
-            return new ResultInfo(true, "删除成功", null);
         }
 
         public ResultInfo QueryToPageByOwner(Expression<Func<Advice, bool>> whereLambda, int page, int pageSize) {
