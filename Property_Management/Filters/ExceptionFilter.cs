@@ -1,4 +1,5 @@
-﻿using Property_Management.Util;
+﻿using Property_Management.Models;
+using Property_Management.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,16 @@ namespace Property_Management.Filters {
         public override void OnException(ExceptionContext filterContext) {
             //当异常未处理时进行处理
             if (!filterContext.ExceptionHandled) {
-                //string controllerName = filterContext.RouteData.Values["controller"].ToString();
-                //string actionName = filterContext.RouteData.Values["action"].ToString();
+                string controllerName = filterContext.RouteData.Values["controller"].ToString();
+                string actionName = filterContext.RouteData.Values["action"].ToString();
                 //将异常插入队列
-                ExceptionLogger.ExceptionQueue.Enqueue(filterContext.Exception);
+                ExceptionLogger.ExceptionQueue.Enqueue(
+                    new ExceptionInfo() {
+                        ControllerName = controllerName,
+                        ActionName = actionName,
+                        Exception = filterContext.Exception,
+                        DateTime = DateTime.Now
+                    });
                 //当结果是JSON时，不用跳转页面，将其设为已处理
                 if(filterContext.Result is JsonResult) {
                     filterContext.ExceptionHandled = true;

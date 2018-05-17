@@ -231,6 +231,7 @@
     </Compile>
     <Compile Include="Models\AccountInfo.cs" />
     <Compile Include="Models\AdviceBarData.cs" />
+    <Compile Include="Models\ExceptionInfo.cs" />
     <Compile Include="Models\FeeBarData.cs" />
     <Compile Include="Models\FeePieData.cs" />
     <Compile Include="Models\OwnerBaseInfo.cs" />
