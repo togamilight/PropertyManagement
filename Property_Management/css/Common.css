@@ -75,6 +75,7 @@ h4.my-announcement-title{
 
 pre.my-announcement-content, pre.my-advice-content{
     background-color: white;
+    font-size: 14px;
 }
 
 ul.pagination{

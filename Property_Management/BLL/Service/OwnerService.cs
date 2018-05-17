@@ -292,34 +292,52 @@ namespace Property_Management.BLL.Service {
         }
 
         public ResultInfo Recover(Owner owner) {
-            var owners = dbContext.Set<Owner>();
-            var rooms = dbContext.Set<Room>();
+            using (var transaction = dbContext.Database.BeginTransaction()) {
+                try {
+                    var owners = dbContext.Set<Owner>();
+                    var rooms = dbContext.Set<Room>();
 
-            var oldOwner = owners.FirstOrDefault(o => o.Id == owner.Id && o.Disuse);
-            if (oldOwner == null) {
-                return new ResultInfo(false, "该业主不存在", null);
+                    var oldOwner = owners.FirstOrDefault(o => o.Id == owner.Id && o.Disuse);
+                    if (oldOwner == null) {
+                        return new ResultInfo(false, "该业主不存在", null);
+                    }
+
+                    var newRoom = rooms.FirstOrDefault(r => r.Id == owner.RoomId);
+
+                    if (newRoom == null) {
+                        return new ResultInfo(false, "该房子不存在", null);
+                    }
+
+                    if (newRoom.OwnerId != null) {
+                        return new ResultInfo(false, "该房子已有其它业主", null);
+                    }
+
+                    newRoom.OwnerId = owner.Id;
+                    oldOwner.RoomId = owner.RoomId;
+
+                    oldOwner.Date = owner.Date;
+                    oldOwner.Disuse = false;
+                    oldOwner.DisuseDate = null;
+
+                    string sql1 = "update fee set Disuse = 0 where OwnerId = '" + owner.Id + "'";
+                    dbContext.Database.ExecuteSqlCommand(sql1);
+
+                    string sql2 = "update repair set Disuse = 0 where OwnerId = '" + owner.Id + "'";
+                    dbContext.Database.ExecuteSqlCommand(sql2);
+
+                    string sql3 = "update advice set Disuse = 0 where OwnerId = '" + owner.Id + "'";
+                    dbContext.Database.ExecuteSqlCommand(sql3);
+
+                    dbContext.SaveChanges();
+                    transaction.Commit();
+
+                    return new ResultInfo(true, "恢复成功", null);
+                }
+                catch (Exception) {
+                    transaction.Rollback();
+                    throw;
+                }
             }
-
-            var newRoom = rooms.FirstOrDefault(r => r.Id == owner.RoomId);
-
-            if (newRoom == null) {
-                return new ResultInfo(false, "该房子不存在", null);
-            }
-
-            if (newRoom.OwnerId != null) {
-                return new ResultInfo(false, "该房子已有其它业主", null);
-            }
-
-            newRoom.OwnerId = owner.Id;
-            oldOwner.RoomId = owner.RoomId;
-
-            oldOwner.Date = owner.Date;
-            oldOwner.Disuse = false;
-            oldOwner.DisuseDate = null;
-
-            dbContext.SaveChanges();
-
-            return new ResultInfo(true, "恢复成功", null);
         }
 
         public ResultInfo GetBaseInfoForOwner(int ownerId) {
