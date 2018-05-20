@@ -446,9 +446,9 @@
             $document.on("click", "#btnSearch", function () {
                 var $formSearch = $("#formSearch");
 
-                searchData.beginDate = $formSearch.find("[name='BeginDate']").val(),
-                searchData.endDate = $formSearch.find("[name='EndDate']").val(),
-                searchData.isFinish = $formSearch.find("[name='IsFinish']").val(),
+                searchData.beginDate = $formSearch.find("[name='BeginDate']").val();
+                searchData.endDate = $formSearch.find("[name='EndDate']").val();
+                searchData.isFinish = $formSearch.find("[name='IsFinish']").val();
 
                 myDataTable.ajax.reload();
             });

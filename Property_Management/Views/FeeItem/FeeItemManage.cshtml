@@ -302,7 +302,7 @@
             $document.on("click", "#btnSearch", function () {
                 var $formSearch = $("#formSearch");
 
-                searchData.name = $formSearch.find("[name='Name']").val(),
+                searchData.name = $formSearch.find("[name='Name']").val();
 
                 myDataTable.ajax.reload();
             });

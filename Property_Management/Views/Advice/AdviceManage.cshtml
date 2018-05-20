@@ -573,11 +573,11 @@
             $document.on("click", "#btnSearch", function () {
                 var $formSearch = $("#formSearch");
 
-                searchData.ownerId = $formSearch.find("[name='OwnerId']").val(),
-                searchData.beginDate = $formSearch.find("[name='BeginDate']").val(),
-                searchData.endDate = $formSearch.find("[name='EndDate']").val(),
-                searchData.isFinish = $formSearch.find("[name='IsFinish']").val(),
-                searchData.isDisuse = $formSearch.find("[name='IsDisuse']").val(),
+                searchData.ownerId = $formSearch.find("[name='OwnerId']").val();
+                searchData.beginDate = $formSearch.find("[name='BeginDate']").val();
+                searchData.endDate = $formSearch.find("[name='EndDate']").val();
+                searchData.isFinish = $formSearch.find("[name='IsFinish']").val();
+                searchData.isDisuse = $formSearch.find("[name='IsDisuse']").val();
 
                 myDataTable.ajax.reload();
             });

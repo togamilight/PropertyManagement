@@ -42,7 +42,7 @@ namespace Property_Management.Controllers
 
 
         [JsonExceptionFilter]
-        public ActionResult GetParkingPage(int page = 1, int pageSize = 10, string name = "", string carType = "", string carNum = "", string beginDate = "", string endDate = "") {
+        public ActionResult GetParkingPage(int page = 1, int pageSize = 10, string name = "", string carType = "", string carNum = "", string beginDate = "", string endDate = "", int hasOwner = 2) {
             var where = PredicateBuilder.True<Parking>();
 
             if (!string.IsNullOrEmpty(name)) {
@@ -69,6 +69,13 @@ namespace Property_Management.Controllers
                 if (DateTime.TryParse(endDate, out end)) {
                     where = where.And(p => p.Date <= end);
                 }
+            }
+
+            if (hasOwner == 0) {
+                where = where.And(p => p.OwnerId == null);
+            }
+            else if (hasOwner == 1) {
+                where = where.And(p => p.OwnerId != null);
             }
 
             return Json(parkingService.QueryToPage(where, page, pageSize));

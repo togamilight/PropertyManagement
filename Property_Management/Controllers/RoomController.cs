@@ -42,7 +42,7 @@ namespace Property_Management.Controllers
 
 
         [JsonExceptionFilter]
-        public ActionResult GetRoomPage(int page = 1, int pageSize = 10, string name = "", string type = "", int buildingId = 0) {
+        public ActionResult GetRoomPage(int page = 1, int pageSize = 10, string name = "", string type = "", int buildingId = 0, int hasOwner = 2) {
             var where = PredicateBuilder.True<Room>();
 
             if (!string.IsNullOrEmpty(name)) {
@@ -55,6 +55,12 @@ namespace Property_Management.Controllers
 
             if(buildingId > 0) {
                 where = where.And(r => r.BuildingId == buildingId);
+            }
+
+            if (hasOwner == 0) {
+                where = where.And(r => r.OwnerId == null);
+            } else if(hasOwner == 1) {
+                where = where.And(r => r.OwnerId != null);
             }
 
             return Json(roomService.QueryToPage(where, page, pageSize));

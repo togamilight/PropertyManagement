@@ -49,6 +49,14 @@
                         <input type="text" class="form-control" name="EndDate">
                     </div>
                 </div>
+                <div class="form-group">
+                    <label>&nbsp;&nbsp;有无业主</label>
+                    <select class="form-control" name="HasOwner">
+                        <option value="2">全部</option>
+                        <option value="1">有</option>
+                        <option value="0">无</option>
+                    </select>
+                </div>
                 <button type="button" class="btn btn-primary" id="btnSearch">查询</button>
             </form>
 
@@ -245,7 +253,8 @@
             carType: "",
             carNum: "",
             beginDate: "",
-            endDate: ""
+            endDate: "",
+            hasOwner: 2
         };
 
         function init() {
@@ -287,7 +296,8 @@
                             carType: searchData.carType,
                             carNum: searchData.carNum,
                             beginDate: searchData.beginDate,
-                            endDate: searchData.endDate
+                            endDate: searchData.endDate,
+                            hasOwner: searchData.hasOwner
                         },
                         url: "/Parking/GetParkingPage",
                         success: function (res) {
@@ -442,11 +452,12 @@
             $document.on("click", "#btnSearch", function () {
                 var $formSearch = $("#formSearch");
 
-                searchData.name = $formSearch.find("[name='Name']").val(),
-                searchData.carType = $formSearch.find("[name='CarType']").val(),
-                searchData.carNum = $formSearch.find("[name='CarNum']").val(),
-                searchData.beginDate = $formSearch.find("[name='BeginDate']").val(),
-                searchData.endDate = $formSearch.find("[name='EndDate']").val()
+                searchData.name = $formSearch.find("[name='Name']").val();
+                searchData.carType = $formSearch.find("[name='CarType']").val();
+                searchData.carNum = $formSearch.find("[name='CarNum']").val();
+                searchData.beginDate = $formSearch.find("[name='BeginDate']").val();
+                searchData.endDate = $formSearch.find("[name='EndDate']").val();
+                searchData.hasOwner = $formSearch.find("[name='HasOwner']").val();
 
                 myDataTable.ajax.reload();
             });

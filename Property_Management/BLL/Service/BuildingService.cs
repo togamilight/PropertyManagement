@@ -41,7 +41,22 @@ namespace Property_Management.BLL.Service {
                 return new ResultInfo(false, "该名称已存在，修改失败", null);
             }
 
-            dbContext.Entry(building).State = System.Data.Entity.EntityState.Modified;
+            var oldBuilding = dbContext.Buildings.FirstOrDefault(b => b.Id == building.Id);
+            if(oldBuilding == null) {
+                return new ResultInfo(false, "Id错误，修改失败", null);
+            }
+
+            //当修改了楼层数且楼层数小于原来时检查楼内的房子的所在楼层是否被移除
+            if(oldBuilding.FloorNum > building.FloorNum) {
+                if(dbContext.Rooms.Any(r => r.BuildingId == oldBuilding.Id && r.Floor > building.FloorNum)) {
+                    return new ResultInfo(false, "存在所在楼层大于修改后的楼层的房子记录，修改失败", null);
+                }
+            }
+
+            oldBuilding.Name = building.Name;
+            oldBuilding.Area = building.Area;
+            oldBuilding.BuildDate = building.BuildDate;
+            oldBuilding.FloorNum = building.FloorNum;
 
             dbContext.SaveChanges();
 
@@ -60,20 +75,30 @@ namespace Property_Management.BLL.Service {
                 }
             }
 
-            foreach (int id in ids) {
-                if (id > 0) {
-                    var building = buildings.FirstOrDefault(b => b.Id == id);
-                    if (building != null) {
-                        var deleteRooms = rooms.Where(r => r.BuildingId == id);
-                        rooms.RemoveRange(deleteRooms);
+            using (var transaction = dbContext.Database.BeginTransaction()) {
+                try {
+                    foreach (var id in ids) {
+                        var building = buildings.FirstOrDefault(b => b.Id == id);
+                        if (building != null) {
 
-                        buildings.Remove(building);
+                            var sql = "delete from room where BuildingId = '" + building.Id + "';";
+                            dbContext.Database.ExecuteSqlCommand(sql);
+
+                            buildings.Remove(building);
+                        }
                     }
+
+                    dbContext.SaveChanges();
+
+                    transaction.Commit();
+
+                    return new ResultInfo(true, "删除成功", null);
+                }
+                catch (Exception) {
+                    transaction.Rollback();
+                    throw;
                 }
             }
-
-            dbContext.SaveChanges();
-            return new ResultInfo(true, "删除成功", null);
         }
 
         public ResultInfo GetCoreInfos() {
