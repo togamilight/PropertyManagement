@@ -105,6 +105,12 @@
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
                 },
+                beforeSend: function () {
+                    barChart.showLoading();
+                },
+                complete: function () {
+                    barChart.hideLoading();
+                }
             });
         }
 
@@ -113,23 +119,23 @@
             $document.on("change", "#selectBarType", function () {
                 var value = $(this).val();
                 if (value == 0) {
-                    if (barMoney.length > 0) {
+                    //if (barMoney.length > 0) {
                         var option = {
                             series: [{
                                 data: barMoney,
                             }]
                         };
                         barChart.setOption(option);
-                    }
+                    //}
                 } else {
-                    if (barCount.length > 0) {
+                    //if (barCount.length > 0) {
                         var option = {
                             series: [{
                                 data: barCount,
                             }]
                         };
                         barChart.setOption(option);
-                    }
+                    //}
                 }
             });
         }

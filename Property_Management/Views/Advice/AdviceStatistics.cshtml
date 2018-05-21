@@ -99,6 +99,12 @@
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
                 },
+                beforeSend: function () {
+                    barChart.showLoading();
+                },
+                complete: function () {
+                    barChart.hideLoading();
+                }
             });
         }
 

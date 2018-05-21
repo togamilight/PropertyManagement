@@ -175,6 +175,12 @@
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     Common.ajaxError(XMLHttpRequest, textStatus, errorThrown);
                 },
+                beforeSend: function () {
+                    barChart.showLoading();
+                },
+                complete: function () {
+                    barChart.hideLoading();
+                }
             });
         }
 
@@ -183,46 +189,46 @@
             $document.on("change", "#selectBarType", function () {
                 var value = $(this).val();
                 if (value == 0) {
-                    if (barMoney.length > 0) {
+                    //if (barMoney.length > 0) {
                         var option = {
                             series: [{
                                 data: barMoney,
                             }]
                         };
                         barChart.setOption(option);
-                    }
+                    //}
                 } else {
-                    if (barCount.length > 0) {
+                    //if (barCount.length > 0) {
                         var option = {
                             series: [{
                                 data: barCount,
                             }]
                         };
                         barChart.setOption(option);
-                    }
+                    //}
                 }
             });
 
             $document.on("change", "#selectPieType", function () {
                 var value = $(this).val();
                 if (value == 0) {
-                    if (pieMoney.length > 0) {
+                    //if (pieMoney.length > 0) {
                         var option = {
                             series: [{
                                 data: pieMoney,
                             }]
                         };
                         pieChart.setOption(option);
-                    }
+                    //}
                 } else {
-                    if (pieCount.length > 0) {
+                    //if (pieCount.length > 0) {
                         var option = {
                             series: [{
                                 data: pieCount,
                             }]
                         };
                         pieChart.setOption(option);
-                    }
+                    //}
                 }
             });
 
@@ -239,6 +245,8 @@
                     url: "/Fee/GetFeePieData",
                     success: function (res) {
                         if (res.Success) {
+                            //pieChart.clear();
+
                             var pieName = [];
                             pieMoney = [];
                             pieCount = [];
@@ -266,9 +274,11 @@
                     },
                     beforeSend: function () {
                         $btnSearch.attr("disabled", true);
+                        pieChart.showLoading();
                     },
                     complete: function () {
                         $btnSearch.attr("disabled", false);
+                        pieChart.hideLoading();
                     },
                 });
             });

@@ -49,7 +49,7 @@
 
             <div class="my-toolbar">
                 <button class="btn btn-danger" id="btnDelete">删除所选</button>
-                <button class="btn btn-primary" id="btnAdd" data-toggle="modal" data-target="#modalAdd">添加</button>
+                <button class="btn btn-primary" id="btnAdd" data-toggle="modal" data-target="#modalAdd">发表</button>
             </div>
 
             <table id="myTable" class="table table-striped my-datatables">
@@ -68,7 +68,7 @@
         </div>
 
         <!-- 添加弹出窗口 -->
-        <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="modalAdd">
+        <div class="modal fade" data-backdrop="static" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="modalAdd">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -100,7 +100,7 @@
         </div>
 
         <!-- 编辑弹出窗口 -->
-        <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modalEdit">
+        <div class="modal fade" data-backdrop="static" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modalEdit">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -396,6 +396,7 @@
             $document.on("show.bs.modal", "#modalAdd", function (e) {
                 var $this = $(this);
                 $this.find("input").val("");
+                $this.find("textarea").val("");
             });
 
             //添加、编辑的弹出窗口隐藏时隐藏提示.

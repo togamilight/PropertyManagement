@@ -43,7 +43,7 @@
         </div>
         <div class="row">
             <label class="control-label col-xs-2">入住日期</label>
-            <div class="col-xs-4">@Model.OwnerDate.Date</div>
+            <div class="col-xs-4">@Model.OwnerDate.Date.ToString("yyyy-MM-dd")</div>
         </div>
 
         <h3>住房信息</h3>
@@ -71,7 +71,7 @@
                     <label class="control-label col-xs-2">车位号</label>
                     <div class="col-xs-4">@Model.ParkingName</div>
                     <label class="control-label col-xs-2">分配日期</label>
-                    <div class="col-xs-4">@Model.ParkingDate.Value.Date</div>
+                    <div class="col-xs-4">@Model.ParkingDate.Value.Date.ToString("yyyy-MM-dd")</div>
                 </div>
                 <div class="row">
                     <label class="control-label col-xs-2">车型</label>
