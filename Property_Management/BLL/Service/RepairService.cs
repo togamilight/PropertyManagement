@@ -103,16 +103,16 @@ namespace Property_Management.BLL.Service {
 
             var entities = dbContext.Set<Repair>().Where(whereLambda);
             var total = entities.Count();
-            var repairs = entities.OrderByDescending(e => e.ApplyDate).Skip(skipCount).Take(pageSize).ToList();
+            var repairs = entities.OrderByDescending(e => e.ApplyDate).ThenByDescending(e => e.Id).Skip(skipCount).Take(pageSize);
 
-            var data = from r in repairs
+            var data = (from r in repairs
                        join o in dbContext.Set<Owner>()
                        on r.OwnerId equals o.Id into grp1
                        from g1 in grp1.DefaultIfEmpty()
                        select new {
                            Repair = r,
                            OwnerName = g1.Name
-                       };
+                       }).OrderByDescending(e => e.Repair.ApplyDate).ThenByDescending(e => e.Repair.Id);
 
             return new ResultInfo(true, "", new { Total = total, Data = data.OrderByDescending(e => e.Repair.ApplyDate) });
         }
@@ -124,7 +124,7 @@ namespace Property_Management.BLL.Service {
 
             var entities = dbContext.Set<Repair>().Where(whereLambda);
             var total = entities.Count();
-            var repairs = entities.OrderByDescending(e => e.ApplyDate).Skip(skipCount).Take(pageSize).ToList();
+            var repairs = entities.OrderByDescending(e => e.ApplyDate).ThenByDescending(e => e.Id).Skip(skipCount).Take(pageSize).ToList();
 
             return new ResultInfo(true, "", new { Total = total, Data = repairs});
         }

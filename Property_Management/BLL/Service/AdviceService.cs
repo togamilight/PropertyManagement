@@ -19,14 +19,14 @@ namespace Property_Management.BLL.Service {
             var total = entities.Count();
             var advices = entities.OrderByDescending(e => e.DateTime).Skip(skipCount).Take(pageSize);
 
-            var data = from a in advices
+            var data = (from a in advices
                        join o in dbContext.Owners
                        on a.OwnerId equals o.Id into grp1
                        from g in grp1.DefaultIfEmpty()
                        select new {
                            Advice = a,
                            OwnerName = g.Name
-                       };
+                       }).OrderByDescending(e => e.Advice.DateTime);
 
             return new ResultInfo(true, "", new { Total = total, Data = data });
         }

@@ -20,7 +20,7 @@ namespace Property_Management.BLL.Service {
             var total = entities.Count();
             var rooms = entities.OrderByDescending(e => e.Id).Skip(skipCount).Take(pageSize);
 
-            var data = from r in rooms
+            var data = (from r in rooms
                        join b in dbContext.Set<Building>()
                        on r.BuildingId equals b.Id into grp1
                        join o in dbContext.Set<Owner>()
@@ -31,7 +31,7 @@ namespace Property_Management.BLL.Service {
                            Room = r,
                            BuildingName = g1.Name,
                            OwnerName = g2.Name
-                       };
+                       }).OrderByDescending(e => e.Room.Id);
 
             return new ResultInfo(true, "", new { Total = total, Data = data });
         }

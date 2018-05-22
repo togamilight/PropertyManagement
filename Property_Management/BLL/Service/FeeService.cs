@@ -72,9 +72,9 @@ namespace Property_Management.BLL.Service {
 
             var entities = dbContext.Set<Fee>().Where(whereLambda);
             var total = entities.Count();
-            var fees = entities.OrderByDescending(e => e.Date).Skip(skipCount).Take(pageSize).ToList();
+            var fees = entities.OrderByDescending(e => e.Date).ThenByDescending(e => e.Id).Skip(skipCount).Take(pageSize);
 
-            var data = from f in fees
+            var data = (from f in fees
                        join i in dbContext.Set<FeeItem>()
                        on f.FeeItemId equals i.Id into grp1
                        join o in dbContext.Set<Owner>()
@@ -86,7 +86,7 @@ namespace Property_Management.BLL.Service {
                            FeeItemName = g1.Name,
                            Scale = g1.Scale,
                            OwnerName = g2.Name
-                       };
+                       }).OrderByDescending(e => e.Fee.Date).ThenByDescending(e => e.Fee.Id);
 
             return new ResultInfo(true, "", new { Total = total, Data = data.OrderByDescending(e => e.Fee.Date) });
         }
@@ -98,9 +98,9 @@ namespace Property_Management.BLL.Service {
 
             var entities = dbContext.Set<Fee>().Where(whereLambda);
             var total = entities.Count();
-            var fees = entities.OrderByDescending(e => e.Date).Skip(skipCount).Take(pageSize).ToList();
+            var fees = entities.OrderByDescending(e => e.Date).ThenByDescending(e => e.Id).Skip(skipCount).Take(pageSize);
 
-            var data = from f in fees
+            var data = (from f in fees
                        join i in dbContext.Set<FeeItem>()
                        on f.FeeItemId equals i.Id into grp1
                        from g1 in grp1.DefaultIfEmpty()
@@ -108,7 +108,7 @@ namespace Property_Management.BLL.Service {
                            Fee = f,
                            FeeItemName = g1.Name,
                            Scale = g1.Scale,
-                       };
+                       }).OrderByDescending(e => e.Fee.Date).ThenByDescending(e => e.Fee.Id);
 
             return new ResultInfo(true, "", new { Total = total, Data = data.OrderByDescending(e => e.Fee.Date) });
         }

@@ -122,14 +122,14 @@ namespace Property_Management.BLL.Service {
             var total = entities.Count();
             var parkings = entities.OrderByDescending(e => e.Id).Skip(skipCount).Take(pageSize);
 
-            var data = from p in parkings
+            var data = (from p in parkings
                        join o in dbContext.Set<Owner>()
                        on p.OwnerId equals o.Id into grp1
                        from g in grp1.DefaultIfEmpty()
                        select new {
                            Parking = p,
                            OwnerName = g.Name
-                       };
+                       }).OrderByDescending(e => e.Parking.Id);
 
             return new ResultInfo(true, "", new { Total = total, Data = data });
         }
