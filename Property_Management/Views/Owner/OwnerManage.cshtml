@@ -68,7 +68,7 @@
                         <th>联系电话</th>
                         <th>身份证号</th>
                         <th>入住日期</th>
-                        <th>房子</th>
+                        <th>房屋</th>
                         <th>车位</th>
                         <th>操作</th>
                     </tr>
@@ -119,7 +119,7 @@
                             <div class="form-group">
                                 <label class="control-label col-xs-3">身份证号</label>
                                 <div class="col-xs-6">
-                                    <input type="text" class="form-control" name="IDCard" placeholder="请输入身份证号" maxlength="20" validate-type="required idcard" data-toggle="popover" data-placement="right">
+                                    <input type="text" class="form-control" name="IDCard" placeholder="请输入身份证号" maxlength="20" validate-type="required idCard" data-toggle="popover" data-placement="right">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -131,7 +131,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-xs-3">房子</label>
+                                <label class="control-label col-xs-3">房屋</label>
                                 <div class="col-xs-6">
                                     <select class="selectpicker" name="RoomId">
                                         <option value="0">请先选择楼栋</option>
@@ -214,7 +214,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-xs-3">房子</label>
+                                <label class="control-label col-xs-3">房屋</label>
                                 <div class="col-xs-6">
                                     <select class="selectpicker" name="RoomId">
                                         <option value="0">请先选择楼栋</option>
@@ -237,13 +237,13 @@
             </div>
         </div>
 
-        <!-- 房子详情弹出窗口 -->
+        <!-- 房屋详情弹出窗口 -->
         <div class="modal fade" id="modalRoomInfo" tabindex="-1" role="dialog" aria-labelledby="modalRoomInfo">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">房子详情</h4>
+                        <h4 class="modal-title" id="myModalLabel">房屋详情</h4>
                     </div>
                     <div class="modal-body">
                         <div class="row">
@@ -545,7 +545,7 @@
                 var $form = $("#formAdd");
                 var $roomId = $form.find("[name='RoomId']");
                 if ($roomId.val() <= 0) {
-                    alert("请先选择楼栋和房子，如果楼栋或房子加载失败，请重新打开");
+                    alert("请先选择楼栋和房屋，如果楼栋或房屋加载失败，请重新打开");
                 } else if (Common.validateForm($form)) {
                     var $this = $(this);
                     //TODO
@@ -640,7 +640,7 @@
                 var $form = $("#formEdit");
                 var $roomId = $form.find("[name='RoomId']");
                 if ($roomId.val() <= 0) {
-                    alert("请先选择楼栋和房子，如果楼栋或房子加载失败，请重新打开");
+                    alert("请先选择楼栋和房屋，如果楼栋或房屋加载失败，请重新打开");
                 } else if (Common.validateForm($form)) {
                     var $this = $(this);
                     var roomId = $roomId.val();
@@ -768,7 +768,7 @@
                 }
             });
 
-            //楼栋select选择时更新房子select
+            //楼栋select选择时更新房屋select
             $document.on("changed.bs.select", "select[name='BuildingId']", function (e) {
                 var $this = $(this);
                 var $roomSelect = $this.closest("form").find("select[name='RoomId']");
@@ -782,7 +782,7 @@
                         $roomSelect.html(data);
                         $roomSelect.selectpicker("refresh");
                     }).fail(function (data) {
-                        alert("获取房子失败：" + data);
+                        alert("获取房屋失败：" + data);
                         if (room) {
                             $roomSelect.html("<option value='" + room.roomId + "'>" + room.roomName + "</option>");
                         }
@@ -793,7 +793,7 @@
                 }
             });
 
-            //房号点击时显示房子详情
+            //房号点击时显示房屋详情
             $document.on("click", "a.my-owner-room", function () {
                 var $this = $(this);
                 var $modalRoomInfo = $("#modalRoomInfo");
@@ -937,7 +937,7 @@
             return deferredObj;
         }
 
-        //获取房子select的选项,用延迟对象来配合ajax保证延迟执行，不阻塞线程
+        //获取房屋select的选项,用延迟对象来配合ajax保证延迟执行，不阻塞线程
         function getRoomOptHtml(buildingId) {
             var deferredObj = $.Deferred();
             //当没有时用ajax获取
@@ -955,7 +955,7 @@
                             var html = "";
                             var list = res.Result;
                             if (list.length == 0) {
-                                html += "<option value='0'>该楼中没有空房子</option>"
+                                html += "<option value='0'>该楼中没有空房屋</option>"
                             } else {
                                 for (let i = 0; i < list.length; i++) {
                                     html += "<option value='" + list[i].Id + "'>" + list[i].Name + "</option>";

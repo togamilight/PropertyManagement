@@ -78,7 +78,7 @@ namespace Property_Management.BLL.Service {
                 return new ResultInfo(false, msg, null);
             }
 
-            var oldRepair = dbContext.Set<Repair>().FirstOrDefault(r => r.Id == repair.Id && r.OwnerId != repair.OwnerId && !r.Disuse);
+            var oldRepair = dbContext.Set<Repair>().FirstOrDefault(r => r.Id == repair.Id && r.OwnerId == repair.OwnerId && !r.Disuse);
 
             if (oldRepair == null) {
                 return new ResultInfo(false, "该记录不存在", null);

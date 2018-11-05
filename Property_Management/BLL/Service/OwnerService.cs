@@ -112,10 +112,10 @@ namespace Property_Management.BLL.Service {
 
                     var room = dbContext.Set<Room>().FirstOrDefault(r => r.Id == owner.RoomId);
                     if (room == null) {
-                        return new ResultInfo(false, "该房子不存在", null);
+                        return new ResultInfo(false, "该房屋不存在", null);
                     }
                     if (room.OwnerId != null) {
-                        return new ResultInfo(false, "该房子已有业主", null);
+                        return new ResultInfo(false, "该房屋已有业主", null);
                     }
 
                     owner.NewReplyNum = 0;
@@ -166,11 +166,11 @@ namespace Property_Management.BLL.Service {
                 var newRoom = rooms.FirstOrDefault(r => r.Id == owner.RoomId);
 
                 if(newRoom == null) {
-                    return new ResultInfo(false, "该房子不存在", null);
+                    return new ResultInfo(false, "该房屋不存在", null);
                 }
 
                 if (newRoom.OwnerId != null) {
-                    return new ResultInfo(false, "该房子已有其它业主", null);
+                    return new ResultInfo(false, "该房屋已有其它业主", null);
                 }
 
                 var oldRoom = rooms.FirstOrDefault(r => r.Id == oldOwner.RoomId);
@@ -305,11 +305,11 @@ namespace Property_Management.BLL.Service {
                     var newRoom = rooms.FirstOrDefault(r => r.Id == owner.RoomId);
 
                     if (newRoom == null) {
-                        return new ResultInfo(false, "该房子不存在", null);
+                        return new ResultInfo(false, "该房屋不存在", null);
                     }
 
                     if (newRoom.OwnerId != null) {
-                        return new ResultInfo(false, "该房子已有其它业主", null);
+                        return new ResultInfo(false, "该房屋已有其它业主", null);
                     }
 
                     newRoom.OwnerId = owner.Id;

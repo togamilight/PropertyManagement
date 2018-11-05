@@ -15,7 +15,8 @@ Common.datepickerOptions = {
     language: "zh-CN",          //语言：中文
     todayBtn: true,             //显示“今天”按钮
     todayHighlight: true,       //高亮今天
-    container: "body"
+    container: "body",
+    clearBtn: true
 }
 
 // 设置datatables默认值

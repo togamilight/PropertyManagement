@@ -237,7 +237,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <label class="control-label col-xs-3 text-right">房子</label>
+                            <label class="control-label col-xs-3 text-right">房屋</label>
                             <div class="col-xs-6" name="Room">
                                 加载中...
                             </div>
@@ -727,10 +727,11 @@
                 $modal.find("[name='Content']").text(data.Advice.Content);
                 $modal.find("[name='DateTime']").text(Common.parseDate(data.Advice.DateTime).format("yyyy-MM-dd hh:mm:ss"));
 
-                //当业主已搬走时禁止编辑
+                //当业主已搬走时禁止回复
                 if (data.Advice.Disuse) {
                     $modal.find("div[name='ReplyRow']").hide();
                 } else {
+                    $modal.find("textarea").val("");
                     $modal.find("div[name='ReplyRow']").show();
                 }
 

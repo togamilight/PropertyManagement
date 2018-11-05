@@ -46,10 +46,10 @@ namespace Property_Management.BLL.Service {
                 return new ResultInfo(false, "Id错误，修改失败", null);
             }
 
-            //当修改了楼层数且楼层数小于原来时检查楼内的房子的所在楼层是否被移除
+            //当修改了楼层数且楼层数小于原来时检查楼内的房屋的所在楼层是否被移除
             if(oldBuilding.FloorNum > building.FloorNum) {
                 if(dbContext.Rooms.Any(r => r.BuildingId == oldBuilding.Id && r.Floor > building.FloorNum)) {
-                    return new ResultInfo(false, "存在所在楼层大于修改后的楼层的房子记录，修改失败", null);
+                    return new ResultInfo(false, "存在所在楼层大于修改后的楼层的房屋记录，修改失败", null);
                 }
             }
 
@@ -68,9 +68,9 @@ namespace Property_Management.BLL.Service {
             var rooms = dbContext.Set<Room>();
             foreach (int id in ids) {
                 if (id > 0) {
-                    //当楼中有房子已经有业主，则不能删除
+                    //当楼中有房屋已经有业主，则不能删除
                     if (rooms.Any(r => r.BuildingId == id && r.OwnerId != null)) {
-                        return new ResultInfo(false, "删除失败，编号为" + id + "的楼中已有业主，请先为他们分配其它房子", null);
+                        return new ResultInfo(false, "删除失败，编号为" + id + "的楼中已有业主，请先为他们分配其它房屋", null);
                     }
                 }
             }

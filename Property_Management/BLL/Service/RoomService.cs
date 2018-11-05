@@ -81,7 +81,7 @@ namespace Property_Management.BLL.Service {
             var oldRoom = rooms.Where(r => r.Id == room.Id).FirstOrDefault();
 
             if(oldRoom == null) {
-                return new ResultInfo(false, "该房子不存在，修改失败", null);
+                return new ResultInfo(false, "该房屋不存在，修改失败", null);
             }
 
             if(rooms.Any(r => r.Name == room.Name && r.BuildingId == room.BuildingId && r.Id != room.Id)) {
@@ -104,7 +104,7 @@ namespace Property_Management.BLL.Service {
                 if (id > 0) {
                     var room = rooms.FirstOrDefault(r => r.Id == id);
                     if (room.OwnerId != null) {
-                        return new ResultInfo(false, "删除失败，"+ room.Name + "房子中已有业主，请先为他们分配其它房子", null);
+                        return new ResultInfo(false, "删除失败，"+ room.Name + "房屋中已有业主，请先为他们分配其它房屋", null);
                     }
                     rooms.Remove(room);
                 }

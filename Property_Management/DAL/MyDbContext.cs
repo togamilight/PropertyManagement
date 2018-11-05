@@ -21,7 +21,7 @@ namespace Property_Management.DAL {
         public DbSet<Building> Buildings { get; set; }
 
         /// <summary>
-        /// 房子表
+        /// 房屋表
         /// </summary>
         public DbSet<Room> Rooms { get; set; }
     
